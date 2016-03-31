@@ -1,0 +1,2892 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd"> 
+<html lang="de">
+<head>
+	<!--http://demo.fairgarage.de/myDemoTest.html-->
+	<!--[if IE]>
+		<meta http-equiv="X-UA-Compatible" content="IE=Edge"/>
+	<![endif]-->
+	
+	<title>Werkstatt Angebote vergleichen, Termin reservieren, Geld sparen - FairGarage</title>
+	<meta name ="keywords" content="FairGarage, KFZ-Service-Marktplatz, fairgarage.de, service, Werkstätten finden, Werkstätten vergleichen, günstigsten Preis, Festpreis Angebote">
+	<meta name ="description" content="Die passende Werkstatt in ihrer Region finden Sie mit dem KFZ-Service-Marktplatz FairGarage. In wenigen Sekunden erhalten Sie Angebote von Autowerkstätten, die sie direkt online buchen können. Vergleichen und Sparen sie jetzt!">
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+	<meta name ="copyright" content="Fair Garage">
+	<meta name ="robots" content="all">
+	<meta name ="viewport" content="width=1200">
+	<meta name="google-site-verification" content="4TWaCn6BAqWa01cnFMHi_9CxsY4LuqBV9EQKcbhlT00">
+	
+	<link rel="icon" type="image/png" href="_resources/img/favicon.png">
+
+	<!--[IF !IE]> -->
+	<link href='https://fonts.googleapis.com/css?family=Lato:400' rel='stylesheet' type='text/css'>
+	<link href='https://fonts.googleapis.com/css?family=Lato:700' rel='stylesheet' type='text/css'>
+	<!-- <![ENDIF]-->
+	
+	<link href='https://fonts.googleapis.com/css?family=Lato:400italic' rel='stylesheet' type='text/css'>
+	<link href='https://fonts.googleapis.com/css?family=Lato:700italic' rel='stylesheet' type='text/css'>
+	
+	<link media="all" type="text/css" href="_resources/css/common.css" rel="stylesheet">
+	<link media="all" type="text/css" href="_resources/css/configurator.css" rel="stylesheet">
+	<link media="all" type="text/css" href="_resources/css/service-selection.css" rel="stylesheet">
+	<link media="all" type="text/css" href="_resources/css/result-list.css" rel="stylesheet">
+	<link media="all" type="text/css" href="_resources/css/details.css" rel="stylesheet">
+	<link media="all" type="text/css" href="_resources/css/region.css" rel="stylesheet">
+	
+	<!--[if lte IE 8]>
+		<link media="all" type="text/css" href="_resources/css/ie-lte-8.css" rel="stylesheet">
+		
+		<script type="text/javascript">
+			ie8 = true;
+		</script>
+	<![endif]-->
+	
+	<script type="text/javascript" src="_resources/js/configuration.js"></script>
+	<script type="text/javascript" src="_resources/js/oem.js"></script>
+	<script type="text/javascript" src="_resources/js/main.js"></script>
+	<script type="text/javascript" src="_resources/js/user-dialog.js"></script>
+	<script type="text/javascript" src="_resources/js/deeplink.js"></script>
+	<script type="text/javascript" src="_resources/js/vehicle-service-selection.js"></script>
+	<script type="text/javascript" src="_resources/js/console-fix.js"></script>
+	<script type="text/javascript" src="_resources/js/result-list.js"></script>
+	<script type="text/javascript" src="_resources/js/progress-block.js"></script>
+	<script type="text/javascript" src="_resources/js/details.js"></script>
+	<script type="text/javascript" src="_resources/js/user.js"></script>
+	<script type="text/javascript" src="_resources/js/service-selection.js"></script>
+	<script type="text/javascript" src="_resources/js/region.js"></script>
+	
+	<script type="text/javascript">
+		offerSearch.campaignkey="AAAT9x0T6OQm2wZnapr2";
+		offerSearch.GALpType = "3"; // home type
+
+		offerSearch.GALpCat = "home";
+		home = true;
+		serviceName = "";
+		offerSearch.GALServiceName = ""; // for tracking
+		isGeneric = true;
+		ia_c3 = offerSearch.GALpCat + offerSearch.GALpType + " Home"; // intelliad
+	</script>
+	
+	<script>
+		$(window).load(function(){
+			preselectVehicleByUrl();
+		});
+	
+		var UrlPreselectParamStr = {ecode:'ecode',vehicleType:'VT',vin:'vin',hsntsn:'hsntsn',webkitCatalog:'WKcatalog',vehicleCategory:'VC'};
+		var UrlPriority = [UrlPreselectParamStr.ecode,UrlPreselectParamStr.vehicleType,UrlPreselectParamStr.vin,UrlPreselectParamStr.hsntsn,UrlPreselectParamStr.webkitCatalog,UrlPreselectParamStr.vehicleCategory];
+		var UrlPreselectParamIsGiven = [];
+		for (var i=0;i<UrlPriority.length;i++) {
+			UrlPreselectParamIsGiven.push(get_url_param(UrlPriority[i]) == '' ? 0 : 1);
+		}
+		
+		function preselectVehicleByUrl(){
+			switch (UrlPriority[UrlPreselectParamIsGiven.indexOf(1)]) {
+				case UrlPreselectParamStr.ecode:
+					getVehicleTypeByExternalId(function(jqXHR,textStatus){
+						var data = getStringAsJson(jqXHR.responseText);
+						if (textStatus == 'success') {
+							if (data[0] == null) {return;}
+							setAndSelectVehicle(data[0]);
+						}
+					},get_url_param(UrlPreselectParamStr.ecode));
+					break;
+				case UrlPreselectParamStr.vehicleType:
+					getVehicleTypeById(get_url_param(UrlPreselectParamStr.vehicleType),function(jqXHR,textStatus){
+						var data = getStringAsJson(jqXHR.responseText);
+						if (textStatus == 'success') {
+							setAndSelectVehicle(data);
+						}
+					});
+					break;
+				case UrlPreselectParamStr.vin:
+					getVehicleTypeByVin(get_url_param(UrlPreselectParamStr.vin),function(jqXHR,textStatus){
+						var data = getStringAsJson(jqXHR.responseText);
+						if (textStatus == 'success') {
+							// TODO: need to be tested
+							setAndSelectVehicle(data);
+						}
+					});
+					break;
+				case UrlPreselectParamStr.hsntsn:
+					
+					break;
+				case UrlPreselectParamStr.webkitCatalog:
+					getVehicleByWebkitCatalog(get_url_param(UrlPreselectParamStr.webkitCatalog).split('-'),0);
+					break;
+				case UrlPreselectParamStr.vehicleCategory:
+					getVehicleByVehicleCategoryId(get_url_param(UrlPreselectParamStr.vehicleCategory),function(jqXHR,textStatus){
+						var data = getStringAsJson(jqXHR.responseText);
+						if (textStatus == 'success') {
+							var materializedPathSuffix = '.0';
+							kmax = 5;
+							if (data.materializedPath.indexOf('.') > 0) {
+								console.log(data.materializedPath.match(/\./g).length)
+								kmax -= data.materializedPath.match(/\./g).length;
+							}
+							console.log(kmax);
+							for (var k=1;k<=kmax;k++) {
+								data.materializedPath += materializedPathSuffix;
+							}
+							
+							setAndSelectVehicle(data);
+						}
+					});
+					break;
+				default:
+					break;
+			}
+		}
+
+		function get_url_param(name){
+			name = name.replace(/[\[]/,"\\\[").replace(/[\]]/,"\\\]");
+		
+			var regexS = "[\\?&]"+name+"=([^&#]*)";
+			var regex = new RegExp( regexS );
+			var results = regex.exec( window.location.href );
+		
+			if (results == null) {
+				return "";
+			} else {
+				return results[1];
+			}
+		}
+		
+		function getVehicleTypeById(id,callback){
+			$.ajax({
+				type: 'GET',
+				cache: false,				
+				url: offerSearch.hostname + apiPath + 'vehicles/vehicletypes/' + id,
+				dataType: 'json',
+				complete: callback
+			});
+		}
+		
+		function getVehicleTypeByVin(vin,callback){
+			$.ajax({
+				type: 'GET',
+				cache: false,				
+				url: offerSearch.hostname + apiPath + 'vehicles/vehicles/' + vin,
+				dataType: 'json',
+				complete: callback
+			});
+		}
+		
+		var catalogId = 0;
+		var categoryIndex = 0;
+		var dataCatagories = [''];
+		function getVehicleByWebkitCatalog(catalog,i){
+			if (catalog.length > 0) {
+				if (i < catalog.length) {
+					$.ajax({
+						type: 'GET',
+						cache: false,				
+						url: offerSearch.hostname + apiPath + 'vehicles/catalog/' + catalogId.toString() + '?campaignKey=' + offerSearch.campaignkey,
+						dataType: 'json',
+						complete: function(jqXHR,textStatus){
+							var data = getStringAsJson(jqXHR.responseText);
+							if (textStatus == 'success') {
+								var hasMatch = false;
+								$.each(data.categories,function(j){
+									if (this.externalId == catalog[i]) {
+										catalogId = this.id;
+										categoryIndex = j;
+										hasMatch = true;
+										return;
+									}
+								});
+								
+								if (!hasMatch) {
+									if (i==0) {return;} // wrong fza
+									var materializedPathSuffix = '.0';
+									for (var k=i-1;k<5;k++) {
+										dataCatagories[categoryIndex].materializedPath += materializedPathSuffix;
+									}
+									
+									setAndSelectVehicle(dataCatagories[categoryIndex]);
+									return;
+								}
+								
+								if (i == catalog.length - 1) {
+									var materializedPathSuffix = '.0';
+									for (var k=i;k<5;k++) {
+										data.categories[categoryIndex].materializedPath += materializedPathSuffix;
+									}
+									
+									setAndSelectVehicle(data.categories[categoryIndex]);
+									return;
+								}
+								dataCatagories = data.categories;
+								getVehicleByWebkitCatalog(catalog,i+1)
+							}
+						}
+					});
+				}
+			}
+		}
+		
+		function getVehicleByVehicleCategoryId(VC,callback){
+			$.ajax({
+				type: 'GET',
+				cache: false,				
+				url: offerSearch.hostname + apiPath + 'vehicles/vehiclecategories/' + VC,
+				dataType: 'json',
+				complete: callback
+			});
+		}
+		
+		function setAndSelectVehicle(data){
+			preselectVehicle = true;
+			
+			user.getVehicle().setType(data);
+			var keys = [];
+			for (var k in data.constructionTimeMap) {
+				keys.push(k);
+			}
+			keys.sort();
+			
+			var constructionTime = new Date(keys[0]+'/'+data.constructionTimeMap[keys[0]][0]+'/1').getTime();
+			user.getVehicle().setConstructionTime(constructionTime);
+			// preselect vehicle
+			triggerVehicle();
+		}
+	</script>
+	
+</head>
+<body class="with-service-selection">
+	
+	<div id="page">
+		<div id="modal-layer">&nbsp;</div>
+		
+		<img class="bg-image" src="_resources/img/home.jpg">
+	
+		<div id="back-link" class="back-link">
+			<a href=""><p>Z<br>U<br>R<br>Ü<br>C<br>K</p></a>
+		</div>
+		
+		<div id="back-to-vehicle-selection" class="back-link">
+			<a href=""><p>Z<br>U<br>R<br>Ü<br>C<br>K</p></a>
+		</div>
+	
+		<div id="back-to-garage-start" class="back-link">
+			<a href=""><p>Z<br>U<br>R<br>Ü<br>C<br>K</p></a>
+		</div>
+		
+		<div id="back-to-garage-result-list" class="back-link">
+			<a href=""><p>Z<br>U<br>R<br>Ü<br>C<br>K</p></a>
+		</div>
+		
+		<!-- start header -->
+		<div id="header">
+			<img class="bg-image" src="_resources/img/home.jpg">
+			<div class="bg" style="z-index:1;">&nbsp;</div>
+			
+			<div class="content-wrapper">
+				<div class="logo">
+					<img src="/_resources/img/logo-fairgarage.png" alt="FairGarage">
+				</div>
+				
+				<div class="content">
+					<div class="navi">
+						<a class="logout user link" target="_self" href="">Logout</a>
+						<a class="user-garage user link" target="_self" href="/profile.html">&nbsp;</a>
+						<a class="register user link" target="_self" href="">Registrieren</a>
+						<a class="login user link" target="_self" href="">Login</a>
+						<a class="workshop-info-page link" target="_self" href="/werkstatt-registrieren.html">Neue WERKSTÄTTEN hier klicken!</a>
+					</div>
+					
+					<!--<div class="hotline">
+						<p>
+							<strong>Hotline 089- 885657-059</strong><br>
+							Mo. - Fr. 9:30 - 18:00 Uhr
+						</p>
+					</div>-->
+					<div class="contact-mail">
+						<p>Kontakt: <a href="mailto:support@fairgarage.de"><strong>support@fairgarage.de</strong></a></p>
+					</div>
+				</div>
+				
+				<!-- start login layer -->
+				<div class="login-wrapper dialog-wrapper">
+					<a class="link close" href="">&nbsp;</a>
+					<span class="paragraph-headline">Login.</span>
+					<p class="error">Login fehlgeschlagen. Bitte überprüfen Sie E-Mail und Passwort.</p>
+					<form name="login">
+						<div>
+							<span>E-Mail*</span>
+							<input type="text" name="emailAddress" value="" maxlength="100" class="mandatory">
+						</div>
+						<div>
+							<span>Passwort*</span>
+							<input type="password" name="password" value="" maxlength="100" class="mandatory">
+						</div>
+						<button class="cta-blue" type="submit">
+							Login
+						</button>
+					</form>
+					<br clear="all">
+					
+					<a class="link-blue-orange password-reminder">Passwort vergessen</a><br>
+					<span class="mandatory-hint">* notwendige Angaben</span>
+				</div>
+				
+				<div class="login-error-wrapper dialog-wrapper">
+					<a class="link close" href="">&nbsp;</a>
+					<span class="paragraph-headline">Ein Fehler ist aufgetreten.</span>
+					<p style="float:left;">
+						Beim Login ist ein Fehler aufgetreten. Bitte versuchen Sie es noch einmal.<br>
+						Sollte der Fehler weiterhin bestehen, so wenden Sie ich bitte an unseren Kundensupport per E-Mail oder Telefon.<br><br>
+						E-Mail: <a href="mailto:support@fairgarage.de?subject=Stoerung Login">support@fairgarage.de</a><br>
+						Telefon: 089- 885657-059
+					</p>
+					<br clear="all">
+					
+					<a class="link-blue-orange login">Erneut einloggen</a><br>
+				</div>
+				<!-- end login layer -->
+				
+				<!-- start password layer -->
+				<div class="password-reminder-wrapper dialog-wrapper">
+					<a class="link close" href="">&nbsp;</a>
+					<span class="paragraph-headline">Passwort zurücksetzen?</span>
+					<p style="float:left;">
+						Sie haben Ihr Passwort vergessen? Kein Problem. Wir senden<br>
+						Ihnen per E-Mail einen Link zum Zurücksetzen Ihres Passworts.
+					</p>
+					<p class="error">E-Mail-Adresse nicht gefunden. Bitte überprüfen Sie die eingegebene E-Mail-Adresse.</p>
+					<form name="password-reminder">
+						<div>
+							<span>E-Mail*</span>
+							<input type="text" name="emailAddress" value="" maxlength="100" class="mandatory">
+						</div>
+						<button class="cta-blue" type="submit">
+							Passwort zurücksetzen
+						</button>
+					</form>
+					<br clear="all">
+					
+					<span class="mandatory-hint">* notwendige Angaben</span>
+				</div>
+				
+				<div class="password-reminder-success-wrapper dialog-wrapper">
+					<a class="link close" href="">&nbsp;</a>
+					<span class="paragraph-headline">E-Mail versendet.</span>
+					<p style="float:left;">
+						Eine E-Mail mit einem Link zum Zurücksetzen Ihres Passworts wurde an Sie versendet.<br>
+						Bitte öffnen Sie den Link und geben Sie Ihr neues Passwort ein.
+					</p>
+					<br clear="all">
+					
+					<a class="link-blue-orange login">Zum Login</a><br>
+				</div>
+				
+				<div class="password-reminder-error-wrapper dialog-wrapper">
+					<a class="link close" href="">&nbsp;</a>
+					<span class="paragraph-headline">Ein Fehler ist aufgetreten.</span>
+					<p style="float:left;">
+						Beim Versenden der E-Mail zum Zurücksetzen Ihres Passworts ist ein Fehler aufgetreten.
+						Sollten Sie keine E-Mail erhalten haben, so versuchen Sie es bitte noch einmal.<br>
+						Sollte der Fehler weiterhin bestehen, so wenden Sie sich bitte an unseren Kundensupport per E-Mail oder Telefon.<br><br>
+						E-Mail: <a href="mailto:support@fairgarage.de?subject=Stoerung Passwort Reminder">support@fairgarage.de</a><br>
+						Telefon: 089- 885657-059
+					</p>
+					<br clear="all">
+					
+					<a class="link-blue-orange password-reminder">Passwort erneut zurücksetzen</a><br>
+				</div>
+				<!-- end password layer -->
+				
+				<!-- start register layer -->
+				<div class="register-wrapper dialog-wrapper">
+					<a class="link close" href="">&nbsp;</a>
+					<span class="paragraph-headline">Registrierung.</span>
+					<!--<p>
+						Sie können sich hier als ganz normaler User sowie auch als Werkstatt registrieren.<br>
+						Sollten Sie sich als Werkstatt registrieren wollen, so selektieren Sie bitte die Checkbox "Ich möchte auch eine Werkstatt registrieren".
+					</p>-->
+					<p><a href="/werkstatt-registrieren.html" class="link-blue-orange register-extended-user" target="_self">Für Werkstattregistrierung bitte hier klicken</a></p>
+					<p class="error">Bitte überprüfen Sie Ihre Angaben.</p>
+					<form name="register-user">
+						<div style="float:none;">
+							<span>Anrede*</span>
+							<select name="salutation" class="mandatory">
+								<option value="-1">Bitte wählen</option>
+								<option value="f">Frau</option>
+								<option value="m">Herr</option>
+							</select>
+						</div>
+						<div>
+							<span>Vorname*</span>
+							<input type="text" name="givenname" maxlength="100" value="" class="mandatory">
+						</div>
+						<div style="float:none;">
+							<span>Nachname*</span>
+							<input type="text" name="surname" maxlength="100" value="" class="mandatory">
+						</div>
+						<div>
+							<span>E-Mail*</span>
+							<input type="text" name="emailAddress" value="" maxlength="100" class="mandatory">
+						</div>
+						<div class="checkbox" style="clear:both;">
+							<input type="checkbox" name="tosAccept" class="mandatory">
+							<span>
+								Ja, ich stimme den <a href="/agb.html" target="_blank">Nutzungsbedingungen</a> für den öffentlichen und den Endkundenbereich zu.*
+							</span>
+						</div>
+						<div class="checkbox" style="clear:both;">
+							<input type="checkbox" name="privacyAccept" class="mandatory">
+							<span>
+								Ja, ich stimme der Nutzung meiner Daten gemäß der <a href="/datenschutz.html" target="_blank">Datenschutzerklärung</a> zu.*
+							</span>
+						</div>
+						<!--<div class="checkbox" style="clear:both; margin-top:10px;">
+							<input type="checkbox" name="registerProvider" style="margin-bottom:0px;">
+							<span>
+								Ich möchte auch eine Werkstatt registrieren.
+							</span>
+						</div>
+						<div class="register-user-extended">
+							<p>
+								Für eine Werkstattregistrierung benötigen wir von Ihnen weitere persönliche Informationen.<br>
+								Ihre Werkstattdaten können Sie nach der Passwortvergabe angeben.
+							</p>
+							<div>
+								<span>Straße*</span>
+								<input type="text" name="street" value="" maxlength="100" class="mandatory">
+							</div>
+							<div>
+								<span>Haus-Nr.*</span>
+								<input type="text" name="houseNumber" value="" maxlength="50" class="mandatory">
+							</div>
+							<div>
+								<span>zusätzliche Adressangabe</span>
+								<input type="text" name="additionalAddressInfo" value="" maxlength="100">
+							</div>
+							<div style="clear:both;">
+								<span>PLZ*</span>
+								<input type="text" name="zipcode" value="" maxlength="5" class="mandatory">
+							</div>
+							<div>
+								<span>Stadt*</span>
+								<input type="text" name="city" value="" maxlength="100" class="mandatory">
+							</div>
+							<div>
+								<span>Telefonnummer*</span>
+								<input type="text" name="phone" value="" maxlength="20" class="mandatory">
+							</div>
+							<div class="checkbox" style="clear:both;">
+								<input type="checkbox" name="workshopAccept" class="mandatory">
+								<span>
+									Ja, ich stimme den <a href="/de/de/c/nutzungsbedingungen#provider" target="_blank">Nutzungsbedingungen</a> für den Werkstattbereich zu.*
+								</span>
+							</div>
+						</div>-->
+						<br clear="both">
+						<button class="cta-blue" type="submit">
+							Jetzt registrieren
+						</button>
+						<span class="mandatory-hint">* notwendige Angaben</span>
+					</form>
+					<br clear="all">
+				</div>
+				
+				<div class="register-success-wrapper dialog-wrapper">
+					<a class="link close" href="">&nbsp;</a>
+					<span class="paragraph-headline">Registrierung erfolgreich.</span>
+					<p style="float:left;">
+						Eine E-Mail mit einem Aktivierungslink wurde an Sie versendet.<br>
+						Klicken Sie auf diesen Link und legen Sie Ihr persönliches Passwort fest.<br><br>
+						Hinweis: Sollten Sie keine E-Mail in Ihrem Posteingang haben, sehen Sie in Ihrem Spam-Ordner nach und markieren Sie den Absender als vertrauenswürdig.<br><br>
+						Viel Spaß mit FairGarage!<br><br>
+						Ihr FairGarage Team
+					</p>
+					<br clear="all">
+				</div>
+				
+				<div class="register-error-wrapper dialog-wrapper">
+					<a class="link close" href="">&nbsp;</a>
+					<span class="paragraph-headline">Ein Fehler ist aufgetreten.</span>
+					<p style="float:left;">
+						Bei Ihrer Registrierung ist ein Fehler aufgetreten.
+						Sollten Sie keine E-Mail zu Anlegen Ihres Passwortes erhalten haben, so versuchen Sie es bitte noch einmal.<br>
+						Sollte der Fehler weiterhin bestehen, so wenden Sie ich bitte an unseren Kundensupport per E-Mail oder Telefon.<br><br>
+						E-Mail: <a href="mailto:support@fairgarage.de?subject=Stoerung Registrierung">support@fairgarage.de</a><br>
+						Telefon: 089- 885657-059
+					</p>
+					<br clear="all">
+					
+					<a class="link-blue-orange register">Erneut registrieren</a><br>
+				</div>
+				<!-- end register layer -->
+				
+				<!-- start profile next steps layer -->
+				<div class="profile-next-steps-wrapper dialog-wrapper" style="width:218px;">
+					<a class="link close" href="">&nbsp;</a>
+					<span class="paragraph-headline">Was möchten Sie tun?</span>
+					<ul></ul>
+				</div>
+				<!-- end profile next steps layer -->
+			</div>
+		</div>
+	<!-- end header -->
+		
+		<div id="content">
+			<div class="content-wrapper prepage overlay-box">
+				<div class="text-bg">
+					<div class="close"></div>
+					<div class="activation-wrapper prepage">
+						<h5 class="activation-headline">
+							JETZT GEHT'S FAIR ZUR SACHE!
+						</h5>
+					</div>
+					<p class="copytext">
+						In Sachen Werkstattqualität und -suche ziehen wir neue Seiten auf! Preise, Lock- und Aktionsangebote sagen nichts über Werkstatt- und Service-Qualitäten aus. FairGarage und die DAT (Deutsche Automobile Treuhand) bieten erstmalig in Deutschland* die Möglichkeit Werkstätten, Reparatur- und Serviceleistungen zu Festpreisen für jedes Automodell wirklich und vollständig - und  direkt online Termine zu vereinbaren.<br><br> 
+						FairGarage ist herstellerunabhängig. So können Sie wirklich objektiv vergleichen, haben für jede Automarke die Wahlfreiheit zwischen Freier Werkstatt und Vertragswerkstatt,  zwischen Original-Ersatzteilen und Marken-Ersatzteilen - und dabei immer die Qualitätsgarantie geprüfter Meisterwerkstätten inklusive.<br><br>
+						Finden Sie hier die Werkstatt Ihres Vertrauens - und geben Sie ihr Auto nur in beste Hände.<br><br>
+						
+						Genießen Sie einen fairen Vorsprung.<br><br>
+						<a class="link-white-grey close" href="">Schließen und los geht's!</a><br><br><br>
+					</p>
+					<p class="copytext asterisk-text">
+						* Zur Zeit ist FairGarage  nur im Münchener Raum flächendeckend aktiv. Aber wir geben Gas und planen Ende 2013 ganz Deutschland die faire Werkstatt-Suche anzubieten.
+					</p>
+				</div>
+			</div>
+			<div class="content-wrapper activation">
+				<div class="activation-wrapper start">
+					<!--<img src="_resources/img/activation-home.png">-->
+					<h1 class="activation-headline">
+						Wunschwerkstatt zum Wunschtermin.
+					</h1>
+					<h2 class="activation-subheadline"><p><strong>Jetzt unter tausenden Angeboten vergleichen und Wunschtermin sichern.</strong></p></h2>
+				</div>
+				<div class="activation-wrapper detail">
+					<!--<img src="_resources/img/headline-booking.png">-->
+					<h4 class="activation-headline">
+						Ihr Wunschtermin!
+					</h4>
+					<h5 class="activation-subheadline"><p><strong>Flexibel umbuchbar und kostenlos stornierbar.</strong></p></h5>
+				</div>
+			</div>
+			<div class="content-wrapper content-box">
+				<!-- left column - start -->
+				<div class="stage">
+					<div class="text-bg">
+						<h5 class="headline">
+							"ECHT GUT, DIE JUNGS!"
+						</h5>
+						<!--<div class="stoerer-start"><a href="/reifen-montieren.html" target="_self"><img src="_resources/img/trans.gif"></a></div>
+						<p class="copytext" style="width:500px;">-->
+						<p class="copytext">
+							Mit uns geht es bei der Werkstattsuche fair zur Sache. Erstmalig können Sie in Deutschland für <u>alle Automarken</u> sämtliche <u>Reparaturen und Services</u> wählen und somit Qualitäts-Werkstätten in Ihrem <u>Umkreis</u> 1:1 miteinander vergleichen und bei Bedarf Ihren <u>Wunschtermin online</u> vereinbaren.<br><br>
+							Neutrale Kundenbewertungen, laufende Qualitätschecks, so wie die hohen Standards der KFZ Meisterinnung garantieren dabei höchste Service Qualität unter Beibehaltung der Garantien.<br><br>
+							<u>Versuchen</u> Sie es und <u>empfehlen</u> Sie uns weiter.
+						</p>
+					</div>
+					
+					<div class="text-bg">
+						<h5 class="headline">
+							Zwei Minuten bis zum Termin in Ihrer Wunschwerkstatt.
+						</h5>
+						
+						<ul class="how-to">
+							<li>
+								<div class="info">
+									<div>
+										<p>
+											Jedes Modell und Baureihe hat eigene Teile. Das erklärt die Preisunterschiede auch bei „scheinbar“ identischen Modellen. Keine Idee der Werkstätten, sondern herstellerbedingt.
+										</p>
+										<div class="arrow"></div>
+									</div>
+								</div>
+								<span>1.</span>
+								<h4 class="subheadline">Ihr Fahrzeug.</h4>
+								<p class="copytext">
+									Hier werden nur die zur Kalkulation wichtigen Daten abgefragt. Die meisten haben Sie im Kopf, oder finden Sie in ihrem Fahrzeugschein. Liegt im Auto? Probieren Sie es trotzdem.
+								</p>
+							</li>
+							<li>
+								<div class="info">
+									<div>
+										<p>
+											Hier finden Sie über 98 Prozent der häufigsten Services. 1:1 vergleichbar ohne versteckte Zusatzkosten und inkl. aller Teile- und Werkstättengewährleistungen.
+										</p>
+										<div class="arrow"></div>
+									</div>
+								</div>
+								<span>2.</span>
+								<h4 class="subheadline">Ihr Problem.</h4>
+								<p class="copytext">
+									Zahnriemen, Bremsen, Radlager, Kupplung, Inspektion und und und – per Schnellsuche finden sie jeden Service. Und falls Sie mal nicht wissen, was konkret am Auto kaputt ist – auch hier gibt es die <a href="werkstatt-finden.html" class="garage-search-link">Lösung</a>. Unschlagbar schnell und günstig. 
+								</p>
+							</li>
+							<li>
+								<div class="info">
+									<div>
+										<p>
+											Lokale oder Umkreissuche, Sie wählen aus ständig überprüften und von FairGarage Kunden bewertete Meisterwerkstätten.
+										</p>
+										<div class="arrow"></div>
+									</div>
+								</div>
+								<span>3.</span>
+								<h4 class="subheadline">Ihr Wunschort.</h4>
+								<p class="copytext">
+									Nachbarschaft, lokaler, regionaler Umkreis. Sie entscheiden wohin Sie Ihr Auto<br>bringen wollen. Ein paar Kilometer mehr oder weniger zahlen sich da schon häufig aus.<br>Testen Sie mal.
+								</p>
+							</li>
+							<li>
+								<span class="arrow">&nbsp;</span>
+								<h4 class="subheadline">Und da ist er schon: Ihr Service-Termin.</h4>
+								<p class="copytext">
+									Schwarz auf weiß in guten Händen. Nach Terminvereinbarung bekommen Sie<br>eine Auftrags-E-Mail mit allen wichtigen Daten. Sollten Sie Änderungen wünschen,<br>können Sie diese direkt mit uns via Hotline besprechen.
+								</p>
+							</li>
+						</ul>
+						<p class="copytext asterisk-text">
+							* Natürlich können Sie Ihren Termin kostenlos verschieben oder stornieren, falls etwas dazwischen kommt.<br>Und die zum Teil erstaunlichen Sparmöglichkeiten resultieren nicht aus Einsparungen bei Teilen, oder Leistungen, sondern aus individuellen Werkstattkostenfaktoren wie Miete, Personalkosten, Kalkulationen etc.
+						</p>
+					</div>
+					
+					<div class="text-bg customer-feedback">
+						<h1 class="headline">
+							"Gut was gespart,.."
+						</h1>
+						<h3 class="subheadline">
+							Hier noch ein paar aktuelle Stimmen zu FairGarage!
+						</h3>
+						<ul class="customer-feedback">
+							<li>
+								<p class="copytext">
+										Gute Beratung! Gutes Serviceangebot!									
+								</p>
+								<span class="copytext"><!--16.01.2014 | -->Spurstangenkopf, Spurstangengelenk (Lenkung) rechts wechseln bei einem Peugeot Basic.</span>
+							</li>
+							<li>
+								<p class="copytext">
+									Problem sehr kurzfristig erledigt. Kann man weiterempfehlen. 									
+								</p>
+								<span class="copytext"><!--13.01.2014 | -->Fensterheber vorne links wechseln bei einem Audi A4</span>
+							</li>
+							<li>
+								<p class="copytext">
+									Es hat alles wunderbar geklappt.Sehr nettes, freundliches Team, Preis-, Leistungsverhältnis sehr gut. Jederzeit wieder.								
+								</p>
+								<span class="copytext">Kupplung Satz wechseln bei einem Renault Twingo</span>
+							</li>
+						</ul>
+					</div>
+					
+					<div id="press" class="press">
+						<div>
+							<div class="press-logos">
+								<a href="http://www.dailymotion.com/video/xudasn_fairgarage_auto" target="_blank"><img src="/_resources/img/logo-galileo.gif" style="margin-top:-5px;" alt="Galileo"></a>
+								<!--<a href="http://www.fairgarage.de/press/in_the_news/2012_05_12_Artikel_Sueddeutsche_CH.pdf" target="_blank"><img src="/_resources/img/logo-sueddeutsche.gif" style="margin-top:4px;" alt="Süddeutsche Zeitung"></a>
+								<a href="http://www.focus.de/finanzen/news/netzsplitter-fairgarage-draengt-in-den-werkstattmarkt_aid_727500.html" target="_blank"><img src="/_resources/img/logo-focus.gif" alt="FOCUS"></a>
+								<a href="http://www.fairgarage.de/press/in_the_news/2012_06_26_Artikel_FAZ_CH.pdf" target="_blank"><img src="/_resources/img/logo-faz.gif" style="margin-top:4px;" alt="FAZ"></a>
+								<a href="http://www.automobilwoche.de/article/20120812/NACHRICHTEN/120819986/fairgarage-wird-mit-werbas-system-kompatibel" target="_blank"><img src="/_resources/img/logo-automobilwoche.gif" alt="Automobilwoche"></a>-->
+								<a href="http://www.spiegel.de/auto/aktuell/online-vergleichsportale-fuer-autowerkstaetten-a-922521.html" target="_blank"><img src="/_resources/img/logo_spon.gif" alt="SPIEGEL ONLLINE AUTO" width="200px; margin-top:5px;"></a>
+								<a href="http://blog.autoplenum.de/kostenfalle-kfz-reparatur-werkstattvergleich-lohnt-sich/" target="_blank"><img src="/_resources/img/logo_autoplenum.gif" alt="autoplenum.de" width="180px; margin-top:5px;"></a>
+								<a href="http://www.kfz-betrieb.vogel.de/wirtschaft/articles/417624/" target="_blank"><img src="/_resources/img/logo_kfz-betrieb.gif" alt="kfz-betrieb" width="150px; margin-top:5px;"></a>
+							</div>
+							<br clear="all">
+						</div>
+					</div>
+				</div>
+				<!-- left column - end -->
+				
+				
+				<!--
+				 configurator - start
+				-->
+				<div id="configurator">
+					<div id="marginalBar">
+						<div id="lightbox"></div>
+						<div id="lightboxContent"><p>Suche Angebote...</p><div class="blockMsg"></div></div>
+						<form name="vehicleSelection">
+							<div id="vehicleWrapper">
+								<div id="vehicleSelectionHeader">
+									<p>
+										<span>Unverbindlich testen und sparen!</span>
+									</p>
+								</div>
+								<div id="vehicleSelectionArrow"></div>
+					    		<div id="vehicleSelection">
+					    			<div class="fza">
+					    				<input name="fza" type="radio" value="62303" checked="checked">
+					    				<a href=""><span>PKW/SUV</span></a>
+					    			</div>
+					    			<div class="fza">
+					    				<input name="fza" type="radio" value="83503">
+					    				<a href=""><span>Transporter</span></a>
+					    			</div>
+									<select name="hersteller-van" style="display:none;">
+										<option value=""> -- Hersteller w&auml;hlen -- </option>
+										<option value="83504">Citroen</option>
+										<option value="85196">Fiat</option>
+										<option value="86992">Ford</option>
+										<option value="89321">Hyundai</option>
+										<option value="89420">Iveco</option>
+										<option value="91693">Kia</option>
+										<option value="91708">MAN</option>
+										<option value="91773">Mazda</option>
+										<option value="91806">Mercedes-Benz</option>
+										<option value="93653">Mitsubishi</option>
+										<option value="84748">Nissan</option>
+										<option value="93764">Opel</option>
+										<option value="94484">Peugeot</option>
+										<option value="95345">Renault</option>
+										<option value="96442">Toyota</option>
+										<option value="96623">Volkswagen</option>
+									</select> 
+									<select id="hersteller" name="hersteller" class="active">
+										<option value=""> -- Hersteller w&auml;hlen -- </option>
+										<option value="128643">Abarth</option>
+										<option value="1">Alfa Romeo</option>
+										<option value="1040">Audi</option>
+										<option value="3643">BMW</option>
+										<option value="5337">Chevrolet</option>
+										<option value="5496">Chrysler</option>
+										<option value="6123">Citroen</option>
+										<option value="8460">Dacia</option>
+										<option value="8576">Daewoo</option>
+										<option value="8683">Daihatsu</option>
+										<option value="10296">Dodge</option>
+										<option value="10314">Fiat</option>
+										<option value="12885">Ford</option>
+										<option value="16754">Honda</option>
+										<option value="17485">Hyundai</option>
+										<option value="18052">Jaguar</option>
+										<option value="128647">Jeep</option>
+										<option value="18250">Kia</option>
+										<option value="18769">Lada</option>
+										<option value="18822">Lancia</option>
+										<option value="38356">Land Rover</option>
+										<option value="128648">Lexus</option>
+										<option value="19545">Mazda</option>
+										<option value="20889">Mercedes-Benz</option>
+										<option value="3368">MG Rover</option>
+										<option value="128649">MINI</option>
+										<option value="23263">Mitsubishi</option>
+										<option value="9143">Nissan</option>
+										<option value="24685">Opel</option>
+										<option value="30288">Peugeot</option>
+										<option value="33658">Porsche</option>
+										<option value="33874">Renault</option>
+										<option value="38671">Saab</option>
+										<option value="39473">Seat</option>
+										<option value="40766">Skoda</option>
+										<option value="20741">Smart</option>
+										<option value="42301">Subaru</option>
+										<option value="42790">Suzuki</option>
+										<option value="43586">Toyota</option>
+										<option value="45497">Volkswagen</option>
+										<option value="51429">Volvo</option>
+									</select> 
+								    
+									<div class="construction-container">
+										<span style="margin-top:5px; float:left;">Erstzulassung <span class="from">ab</span>:</span>
+										<div style="float:right">
+							    			<select name="vehicleConstructionYear" class="constructionYear">
+												<option value="">Jahr</option>
+											</select>
+							    			<select name="vehicleConstructionMonth" class="constructionMonth" disabled="disabled">
+												<option selected="selected" value="">Monat</option>
+											</select>
+										</div>
+									</div>
+								    <select name="baureihe"><option value=""> -- Baureihe w&auml;hlen -- </option></select>
+								    <select name="modell"><option value=""> -- Modell w&auml;hlen -- </option></select>
+								    <select name="motorisierung"><option value=""> -- Motorisierung w&auml;hlen -- </option></select>
+									<select name="fahrzeugtyp" id="car_type"><option value=""> -- Ausstattungsoptionen w&auml;hlen -- </option></select>
+									
+									<script>
+										(function() {
+											var $container = $("#vehicleSelection");
+											var settings =  {}; // here we use only the default settings.
+											
+											$container.find("select").attr('value', ''); //reset form elements
+											$container.data("vehicleSelectionObj", settings); // set the defaults in the data with name "vehicleSelectionObj" because we use the same object for preselection
+										 	$container.dependingSelects(settings); // init depending selects
+									 	})();
+									</script>
+								</div>
+							</div>
+							<div id="serviceWrapper">
+								<div id="serviceSelectionHeader">
+									<p>... Service auswählen...</p>
+								</div>
+								<div id="serviceSelectionArrow"></div>
+								<div id="serviceSelection" style="overflow:visible;">
+					    			<div class="lightbox"></div>
+									<div class="cart-info">
+										<span>
+											Ihre gewählten Services:
+										</span>
+										<ul></ul>
+									</div>
+									<div class="error" style="display:none;"></div>
+									<div class="full-text-service-search">
+										<div class="hint" style="display:block; width:100%; margin-bottom:5px;">Bitte Suchbegriff eingeben:</div>
+										<input type="text" placeholder="z.B.: Bremsbeläge" class="servicesAutocompleteSearch" name="servicesAutocompleteSearch" value="" role="textbox" aria-autocomplete="list" aria-haspopup="true" autocomplete="off">
+							
+										<div class="search-result-container">
+											<ul role="listbox" aria-activedescendant="ui-active-menuitem" style="background-color:#FFFFFF; width:auto;">
+											</ul>
+										</div>
+									</div>
+									<div class="service-link" style="width:100%">
+										oder <a href="" class="link open"> erweiterte Servicesuche </a>nutzen
+									</div>
+								</div>
+							</div>
+							
+							<div id="regionSelection" class="selection">
+				    			<div class="lightbox"></div>
+								<div class="full-text-region-search">
+									<div class="hint">
+										Werkstätten finden rund um:<br clear="all">
+										<a href="" title="Standort ändern">München, Deutschland</a>
+									</div>
+									<div class="form">
+										<input type="text" autocomplete="off" aria-haspopup="true" aria-autocomplete="list" role="textbox" value="" name="regionAutocompleteSearch" class="regionAutocompleteSearch" placeholder="PLZ, Ort, Adresse - z.B. München">
+										<img src="/_resources/img/trans.gif" class="close-icon" alt="schließen">
+									</div>
+									<div class="search-result-container region">
+										<ul style="background-color:#FFFFFF; width:auto;" aria-activedescendant="ui-active-menuitem" role="listbox"></ul>
+									</div>
+								</div>
+							</div>
+							
+							<div id="buttonWrapper">
+								<div class="error"></div>
+								<button id="cta" type="button">
+									... und Los geht's
+								</button>
+							</div>
+							<div id="equipmentWrapper">
+								<div id="equipmentSelectionHeader" class="selectionHeader">
+									<p>Ihre Ausstattung</p>
+								</div>
+								<div id="equipmentSelectionArrow" class="selectionArrow"></div>
+								<div id="equipmentSelection" class="equipmentSelection selection">
+									<div>
+										<p>Um die notwendigen Arbeiten und Preise exakt bestimmen zu können, benötigen wir Ihre Zusatzausstattung falls vorhanden.</p>
+										<ul></ul>
+									</div>
+									
+									<div class="error"></div>
+									<button class="cta-blue" type="button">
+										Angebote finden
+									</button>
+									<a class="back" href="">Zurück</a>
+									<br clear="both">
+								</div>
+							</div>
+						</form>
+					</div>
+				</div>
+				<!--
+				 configurator - end
+				-->			
+				
+				
+				<!--
+				 Result list - start
+				-->
+				<div id="filter-container">
+					<div>
+						<div class="google-link">
+							<a class="link open" href="">Kartenansicht öffnen</a>
+							<a class="link close" href="">Kartenansicht schließen</a>
+						</div>
+						<div class="service-link">
+							<a href="" class="link open">Serviceauswahl&nbsp;ändern</a>
+						</div>
+						<div id="filter-inner-container">
+							<div id="filter-link">
+								<a href="" class="link open">Suche&nbsp;verfeinern</a>
+								<a href="" class="link close">Filter&nbsp;schließen</a>
+							</div>
+							<br clear="all">
+							<div id="filter-contents">
+								<div class="distance filter-container">
+									<span>Entfernung</span>
+									<ul></ul>
+								</div>
+								<div class="location-type filter-container">
+									<span>Art der Werkstatt</span>
+									<ul></ul>
+								</div>
+								<div class="part-quality filter-container">
+									<span>Teilequalität</span>
+									<ul></ul>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+				
+				<!--<div id="google-maps-container">
+					<div id="google-maps-inner-container">
+						<div class="lightbox"><p>Suche Angebote...</p></div>
+						<div class="google-maps" id="google-maps"></div>
+						<div style="position:absolute; top:323px; left:717px; z-index:1"><button class="more-offers">Alle Angebote</button></div>
+					</div>
+				</div>-->
+				
+				<div id="result-list-container" class="result-list-container">
+					<div id="result-list-inner-container" class="result-list-inner-container" style="margin-top: 0px">
+						<div id="result-list">
+							<div class="list-item-line" style="margin:0px; width: 100%;"></div>
+							<div class="header-item" style="background-color: #F4F4F4; overflow:hidden; padding-top:10px">
+								<div class="distance">&nbsp;</div>
+								<!--<div class="header-item-line"></div>-->
+								<div class="image"><p>Werkstatt</p></div>
+								<div class="garage">&nbsp;</div>
+								<div class="header-item-line"></div>
+								<div class="garage-form"><p>Art der Werkstatt</p></div>
+								<div class="header-item-line"></div>
+								<div class="garage-guild-membership"><p>Innung</p></div>
+								<div class="header-item-line"></div>
+								<div class="garage-testing-organisation"><p>Prüf-<br>organisation</p></div>
+								<div class="header-item-line"></div>
+								<div class="parts-quality"><p>Teile-<br>qualität</p></div>
+								<div class="header-item-line"></div>
+								<!--<div class="price">
+									<p>
+										Komplettpreis mit<br><span class="blue">Fair</span><span class="orange">Preis</span> Garantie
+									</p>
+								</div>
+								<div class="header-item-line"></div>
+								<div class="badge">&nbsp;</div>-->
+								<div class="button">
+									<form>
+										<select name="sorting">
+											<option value="0" orderBy="null" ascending="true" selected="selected">Angebote sortieren nach:</option>
+											<!--<option value="1" orderBy="price" ascending="true">Bester Preis</option>-->
+											<option value="3" orderBy="radius" ascending="true">Entfernung</option>
+											<option value="6" orderBy="userRating" ascending="false">Beste Bewertung</option>
+										</select>
+									</form>
+								</div>
+							</div>
+							<div class="list-item-line" style="margin:0px; width: 100%; margin-bottom:5px;"></div>
+							
+							<div id="list-items"></div>
+							<div class="list-item-line last-line"></div>
+							
+							<div id="no-offers-found" style="display: none;">
+								<p>Leider liegen uns keine Angebote für Ihre Suche vor.</p>
+							</div>
+							
+							<div id="wait-layer">
+								<p>Angebotsliste wird erstellt. Bitte warten...</p>
+								<div class="blockMsg"></div>
+							</div>
+							
+							<div>
+								<button class="more-offers">Alle Angebote</button>
+							</div>
+						</div>
+					</div>
+				</div>
+				
+				<div style="display:none" id="template">
+					<div class="list-item-line"></div>
+					<div class="list-item">
+						<div class="distance"><p><span></span></p></div>
+						<div class="image">
+							<img src="" alt="">
+						</div>
+						<div class="garage">
+							<div class="rating-stars-bg">
+								<div style="">&nbsp;</div>
+							</div>
+							<div class="rating-count"></div>
+							<p></p>
+						</div>
+						<div class="garage-form"></div>
+						<div class="garage-guild-membership"></div>
+						<div class="garage-testing-organisation"></div>
+						<div class="parts-quality">
+							<img title="" src="" alt="">
+						</div>
+						<!--<div class="price">
+							<span class="old-price"><span></span><img src="/_resources/img/line-through-double.png" alt=""></span>
+							<span class="price"><span></span></span>
+							<span class="price-hint"></span>
+							<img width="130" height="50" class="price-tag" src="/_resources/img/price-tag-11.png" alt="">
+						</div>
+						<div class="badge">
+							<img title="" class="" src="/_resources/img/trans.gif" alt="">
+						</div>-->
+						<div class="button">
+							<button type="button" class="cta"></button>
+							<p></p>
+						</div>
+					</div>
+				</div>
+				
+				<div style="display:none" id="template-recommendation">
+					<div class="recommendation-list-item">
+						<div class="recommendation-head">
+							<img src="/_resources/img/trans.gif" class="fg" alt="">
+						</div>
+						<div class="list-item">
+							<div class="distance"><p><span></span></p></div>
+							<div class="image">
+								<img src="" alt="">
+							</div>
+							<div class="garage">
+								<div class="rating-stars-bg">
+									<div style="">&nbsp;</div>
+								</div>
+								<div class="rating-count"></div>
+								<p></p>
+							</div>
+							<div class="garage-form"></div>
+							<div class="garage-guild-membership"></div>
+							<div class="garage-testing-organisation"></div>
+							<div class="parts-quality">
+								<img title="" src="" alt="">
+							</div>
+							<!--<div class="price">
+								<span class="old-price"><span></span><img src="/_resources/img/line-through-double.png" alt=""></span>
+								<span class="price"><span></span></span>
+								<span class="price-hint"></span>
+								<img width="130" height="50" class="price-tag" src="/_resources/img/price-tag-11.png" alt="">
+							</div>
+							<div class="badge">
+								<img title="" class="" src="/_resources/img/trans.gif" alt="">
+							</div>-->
+							<div class="button">
+								<button type="button" class="cta"></button>
+								<p></p>
+							</div>
+						</div>
+					</div>
+				</div>
+				
+				<div style="display:none" id="template-same-provider">
+					<div class="list-item-line-same-provider"></div>
+					<div class="list-item same-provider">
+						<div class="distance"></div>
+						<div class="image"></div>
+						<div class="garage"></div>
+						<div class="garage-form" style="visibility:hidden"></div>
+						<div class="garage-guild-membership" style="visibility:hidden"></div>
+						<div class="garage-testing-organisation" style="visibility:hidden"></div>
+						<div class="parts-quality">
+							<img title="" src="" alt="">
+						</div>
+						<!--<div class="price">
+							<span class="old-price"><span></span><img src="/_resources/img/line-through-double.png" alt=""></span>
+							<span class="price"><span></span></span>
+							<span class="price-hint"></span>
+							<img width="130" height="50" class="price-tag" src="/_resources/img/price-tag-12.png" alt="">
+						</div>
+						<div class="badge">
+							<img title="" class="" src="/_resources/img/trans.gif" alt="">
+						</div>-->
+						<div class="button">
+							<button type="button" class="cta"></button>
+							<p></p>
+						</div>
+					</div>
+				</div>
+				
+				<div id="template-garage-details" style="display:none;">
+					<div class="row garage">
+						<div class="label">
+							<span>Ihre Wunschwerkstatt</span>
+						</div>
+						<div class="value">
+							<span></span>
+							<div class="rating-stars-bg">
+								<div></div>
+							</div>
+							<br clear="both">
+							<p></p>
+						</div>
+					</div>
+					<div class="row opening-times">
+						<div class="label">
+							<span>Öffnungszeiten</span>
+						</div>
+						<div class="value">
+							<table cellspacing="0" cellpadding="0"></table>
+						</div>
+					</div>
+					<div class="row phone">
+						<div class="label">
+							<span>Telefonnummer</span>
+						</div>
+						<div class="value">
+							<p></p>
+						</div>
+					</div>
+					<div class="row phone24">
+						<div class="label">
+							<span>24h Notfall-Hotline</span>
+						</div>
+						<div class="value">
+							<p></p>
+						</div>
+					</div>
+					<div class="row website">
+						<div class="label">
+							<span>Website</span>
+						</div>
+						<div class="value">
+							<p></p>
+						</div>
+					</div>
+					<div class="row organisations">
+						<div class="label">
+							<span>Prüforganisationen</span>
+						</div>
+						<div class="value">
+							<p></p>
+						</div>
+					</div>
+					<div class="row user-voting">
+						<div class="label">
+							<span>Benutzerbewertung</span>
+						</div>
+						<div class="value"></div>
+					</div>
+					<div class="row gallery">
+						<div class="label">
+							<span>Werkstattbilder</span>
+						</div>
+						<div class="value"></div>
+					</div>
+					<div class="row infos">
+						<div class="label">
+							<span>Weitere Informationen</span>
+						</div>
+						<div class="value">
+							<p></p>
+						</div>
+					</div>
+							
+					<br clear="all">
+				</div>
+				<!--
+				 Result list - end
+				-->
+				
+				<div id="template-offer-comparison" style="display:none;">
+					<div class="offer">
+						<div class="row garage">
+							<div class="value">
+								<span></span>
+								<div class="rating-stars-bg">
+									<div></div>
+								</div>
+								<br clear="both">
+								<p></p>
+							</div>
+						</div>
+						<div class="row organisations">
+							<div class="value">
+								<p></p>
+							</div>
+						</div>
+						<div class="row price package">
+							<div class="value">
+								<ul></ul>
+							</div>
+							<div class="price-sum">&nbsp;</div>
+						</div>
+						<div class="row price parts">
+							<div class="value">
+								<ul></ul>
+							</div>
+							<div class="price-sum">&nbsp;</div>
+						</div>
+						<div class="row price fluids">
+							<div class="value">
+								<ul></ul>
+							</div>
+							<div class="price-sum">&nbsp;</div>
+						</div>
+						<div class="row price fixedServices">
+							<div class="value">
+								<ul></ul>
+							</div>
+							<div class="price-sum">&nbsp;</div>
+						</div>
+						<div class="row price work">
+							<div class="value">
+								<ul></ul>
+							</div>
+							<div class="price-sum">&nbsp;</div>
+						</div>
+						<div class="row price small-parts">
+							<div class="value">&nbsp;</div>
+							<div class="price-sum">&nbsp;</div>
+						</div>
+						<div class="row price netto small-row">
+							<div class="value">&nbsp;</div>
+							<div class="price-sum">&nbsp;</div>
+						</div>
+						<div class="row price brutto small-row">
+							<div class="value">&nbsp;</div>
+							<div class="price-sum">&nbsp;</div>
+						</div>
+						<div class="row price discount small-row">
+							<div class="label">
+								<span>abzügl. FairGarage Rabatt</span>
+							</div>
+							<div class="value">&nbsp;</div>
+							<div class="price-sum">&nbsp;</div>
+						</div>
+						<div class="row price campaign small-row">
+							<div class="label">
+								<span>Aktionspreis</span>
+							</div>
+							<div class="value">&nbsp;</div>
+							<div class="price-sum">&nbsp;</div>
+						</div>
+						<div class="row price regular small-row">
+							<div class="label">
+								<span>VORHER</span>
+							</div>
+							<div class="value">&nbsp;</div>
+							<div class="price-sum">
+								<img src="/_resources/img/line-through-double.png" alt="">
+								<span></span>
+							</div>
+						</div>
+								
+						<br clear="all">
+					</div>
+				</div>
+				
+				<!--
+				detail - start
+			-->
+			<div class="booking-wrapper standard">
+				<div class="detail-content-navigation" id="detail-content-navigation">
+					<div navi="entry-booking" class="entry first">
+						<a href="" class="entry-booking-link"><p>Termin vereinbaren</p></a>
+					</div>
+					<div class="entry first" navi="entry-garage">
+						<a href="" class="entry-garage-link"><p>Werkstatt</p></a>
+					</div>
+					<div class="entry" navi="entry-bmw">
+						<a href="" class="entry-bmw-link"><p>BMW Treue Service</p></a>
+					</div>
+				</div>
+				
+				<div class="details-container" id="details-container">
+					
+					<div class="detail-entries">
+						
+						<div class="text-bg bg-white entry entry-booking">
+							<form name="booking">
+								<div class="row comparison">
+									<a class="link-orange-blue show-offer-comparison" href="">Zum Vergleich</a>
+									<div class="show-offer-comparison-container">
+										<div class="comparison-success">
+											<div class="close"></div>
+											Das Angebot wurde zum Vergleich hinzugefügt.<br>
+											<span></span>
+											<button class="cta show-offer-comparison" type="button">Zum Vergleich</button>
+										</div>
+										<a class="link-orange-blue add-offer-to-comparison" href="">Angebot vergleichen</a>
+									</div>
+								</div>
+								<div class="row">
+									<div class="label">
+										<span>Ihre Services</span>
+									</div>
+									<div class="value cart">
+										<ul></ul>
+										<a href="" class="toggle-details link-orange-blue closed">Details</a>
+									</div>
+									<div class="details">
+										<div class="row price package">
+											<div class="label">
+												<span>Komplettpreisangebot<span>&nbsp;</span></span>
+											</div>
+											<div class="value">
+												<ul></ul>
+											</div>
+											<div class="price-sum">&nbsp;</div>
+										</div>
+										<div class="row price parts">
+											<div class="label">
+												<span>Teilepreis<span>&nbsp;</span></span>
+											</div>
+											<div class="value">
+												<ul></ul>
+											</div>
+											<div class="price-sum">&nbsp;</div>
+										</div>
+										<div class="row price fluids">
+											<div class="label">
+												<span>Flüssigkeiten</span>
+											</div>
+											<div class="value">
+												<ul></ul>
+											</div>
+											<div class="price-sum">&nbsp;</div>
+										</div>
+										<div class="row price fixedServices">
+											<div class="label">
+												<span>Pauschalpreise</span>
+											</div>
+											<div class="value">
+												<ul></ul>
+											</div>
+											<div class="price-sum">&nbsp;</div>
+										</div>
+										<div class="row price work">
+											<div class="label">
+												<span>Arbeitspreis</span>
+											</div>
+											<div class="value">
+												<ul></ul>
+											</div>
+											<div class="price-sum">&nbsp;</div>
+										</div>
+										<div class="row price small-parts">
+											<div class="label">
+												<span>Kleinteilezuschlag</span>
+											</div>
+											<div class="value">&nbsp;</div>
+											<div class="price-sum">&nbsp;</div>
+										</div>
+										<div class="row price additional-services">
+											<div class="label">
+												<span>Zusatzleistungen</span>
+											</div>
+											<div class="value">
+												<ul></ul>
+											</div>
+											<div class="price-sum">&nbsp;</div>
+										</div>
+										<div class="row price netto small-row">
+											<div class="label">
+												<span>Nettopreis</span>
+											</div>
+											<div class="value">&nbsp;</div>
+											<div class="price-sum">&nbsp;</div>
+										</div>
+										<div class="row price tare small-row">
+											<div class="label">
+												<span>+ 19% MwSt.</span>
+											</div>
+											<div class="value">&nbsp;</div>
+											<div class="price-sum">&nbsp;</div>
+										</div>
+										<div class="row price brutto small-row">
+											<div class="label">
+												<span>Bruttopreis</span>
+											</div>
+											<div class="value">&nbsp;</div>
+											<div class="price-sum">&nbsp;</div>
+										</div>
+										<div class="row price discount small-row">
+											<div class="label">
+												<span>abzügl. FairGarage Rabatt</span>
+											</div>
+											<div class="value">&nbsp;</div>
+											<div class="price-sum">&nbsp;</div>
+										</div>
+										<div class="row price campaign small-row">
+											<div class="label">
+												<span>Aktionspreis</span>
+											</div>
+											<div class="value">&nbsp;</div>
+											<div class="price-sum">&nbsp;</div>
+										</div>
+										<div class="row price regular small-row">
+											<div class="label">
+												<span>VORHER</span>
+											</div>
+											<div class="value">&nbsp;</div>
+											<div class="price-sum">
+												<img src="/_resources/img/line-through-double.png" alt="">
+												<span></span>
+											</div>
+										</div>
+									</div>
+								</div>
+								<div class="row user-vehicle">
+									<div class="label">
+										<span>Ihr Fahrzeug</span>
+									</div>
+									<div class="value">
+										<span></span>
+									</div>
+								</div>
+								<div class="row garage">
+									<div class="label">
+										<span>Ihre Wunschwerkstatt</span>
+									</div>
+									<div class="value">
+										<span></span>
+										<div class="rating-stars-bg">
+											<div></div>
+										</div>
+										<br clear="both">
+										<p></p>
+									</div>
+								</div>
+								<div class="row date">
+									<div class="label">
+										<span>Ihre Terminwahl</span>
+									</div>
+									<div class="value">
+										<select name="date"></select>
+										<span class="error-date">Ihr gewählter Termin ist leider nicht mehr verfügbar.<br>Bitte wählen Sie einen anderen.</span>
+										<span class="bmw-date-hint">Ihr BMW Service-Berater wird sich, nach Absenden des Formulars, umgehend für die konkrete Terminabstimmung mit Ihnen in Verbindung setzen.</span>
+									</div>
+								</div>
+								<div class="row form">
+									<div class="label">
+										<span>Ihre Kontaktdaten</span>
+									</div>
+									<br clear="all">
+									<div class="value form">
+										<div class="leftCol">
+											<div class="givenname">
+												<input type="text" name="givenname" maxlength="100" value="" class="mandatory" placeholder="Vorname*">
+											</div>
+											<div class="surname">
+												<input type="text" name="surname" maxlength="100" value="" class="mandatory" placeholder="Nachname*">
+											</div>
+											<br clear="both">
+											<div>
+												<input type="text" name="emailAddress" value="" maxlength="100" class="mandatory" placeholder="E-Mail-Adresse*">
+											</div>
+											<div>
+												<input type="text" name="phone" maxlength="30" value="" class="mandatory" placeholder="Telefon*">
+											</div>
+											<div class="givenname">
+												<input type="text" name="mileageKm" maxlength="15" value="" class="mandatory" placeholder="Kilometerstand*">
+											</div>
+											<div class="surname">
+												<input type="text" name="vehicleMark" maxlength="10" value="" class="mandatory" placeholder="Kennzeichen*">
+											</div>
+											<div class="password-hint">
+												<span>Sie sind bereits registiert. Bitte geben Sie Ihr Passwort ein.</span>
+											</div>
+											<div class="password-field">
+												<input type="password" name="password" value="" class="mandatory" maxlength="100" placeholder="Passwort*">
+											</div>
+										</div>
+										<div class="rightCol">
+											<div>
+												<textarea name="comment" value="" maxlength="900" class="large" placeholder="Wichtige Informationen für die Werkstatt (max. 900 Zeichen)"></textarea>
+											</div>
+										</div>
+										<br clear="all">
+										<span class="agb small">Mit dem Absenden akzeptiere ich die <a href="" class="agb">AGBs</a>.</span>
+										<span class="mandatory-hint small">* notwendige Angaben</span>
+									</div>
+								</div>
+								<div class="row additional-services">
+									<div class="label">
+										<span>Optionale Zusatzleistungen</span>
+									</div>
+									<div class="value">
+										<ul></ul>
+									</div>
+									<div class="price-sum">&nbsp;</div>
+								</div>
+								<div class="row final-price">
+									<div class="label">
+										<span>Ihr besonderer Preis</span><p class="small" style="line-height:20px;">&nbsp;(inkl. 19% MwSt.)</p>
+										<br clear="all">
+										<div>
+											<span class="error-message">Es ist ein Fehler aufgetreten. Bitte versuchen Sie es gleich noch einmal, falls Sie keine Bestätigungs-Mail erhalten haben. Sollte das Problem weiter bestehen, kopieren Sie bitte die URL aus der Adresszeile Ihres Browsers und schicken Sie sie uns per E-Mail an support@fairgarage.de unter Angabe Ihrer Kontaktdaten + Wunschtermin. Dann können wir für Sie den Termin vereinbaren. Gerne können Sie uns auch per Telefon kontaktieren: 089- 885657-059.</span>
+											<span class="error">Bitte überprüfen Sie Ihre Angaben in den rot markierten Feldern. Ihre Terminanfrage wurde noch nicht an die Werkstatt übermittelt.</span>
+										</div>
+										<ul>
+											<li>Alle Leistungen inklusive.</li>
+											<li>Dieses besondere Angebot gilt nur für diesen Termin.</li>
+											<li>Zahlung fällig erst nach Reparatur und direkt bei Ihrer Werkstatt.</li>
+										</ul>
+									</div>
+									<div class="value">
+										<span>&nbsp;</span>
+										<img class="best-price" src="/_resources/img/trans.gif" alt="Bestpreis">
+										<div class="button">
+											<button class="cta" type="button">
+												Jetzt Termin<br>reservieren
+											</button>
+										</div>
+									</div>
+								</div>
+							</form>
+							
+							<div class="row cancel-booking">
+								<form name="cancel-booking">
+									<div class="label">
+										<span>Termin stornieren</span>
+									</div>
+									<div class="value form">
+										<div class="error common-error-message">
+											Ihre Angaben sind leider nicht korrekt oder unvollständig. Überprüfen Sie bitte die rot markierten Felder. Die mit einem * markierten Felder sind Pflichtangaben.
+										</div>
+										<span style="font-size:14px;">Grund für Stornierung*</span>
+										<select name="reasons-cancellation" class="mandatory">
+											<option>Habe keine Zeit den Termin wahrzunehmen</option>
+											<option>Werkstatt hatte keine Zeit für mich</option>
+											<option>Werkstatt war geschlossen</option>
+											<option>Höherer Preis wegen Fehlkalkulation FairGarage</option>
+											<option>Höherer Preis wegen erhöhtem Leistungsumfang</option>
+											<option>Werkstatt kann die Reparatur nicht durchführen</option>
+											<option>Werkstatt kann die Reparatur nicht pünktlich durchführen</option>
+											<option>Auftrag bei einer anderen Werkstatt gebucht (Doppelbuchung)</option>
+											<option>Andere Gründe für Stornierung</option>
+										</select>
+										<div style="float:left; width:200px; margin-top:23px;">
+											<textarea placeholder="Andere Gründe (max. 1000 Zeichen)*" maxlength="1000" value="" name="comment-cancellation" class="mandatory"></textarea>
+										</div>
+										<button class="cta-large orange cancel-booking" type="button">
+											Termin stornieren
+										</button>
+										<span class="mandatory-hint small">* notwendige Angaben</span>
+									</div>
+								</form>
+							</div>
+										
+							<br clear="all">
+						</div>
+						
+						<div class="text-bg bg-white entry entry-garage">
+							<div class="row garage">
+								<div class="label">
+									<span>Ihre Wunschwerkstatt</span>
+								</div>
+								<div class="value">
+									<span></span>
+									<div class="rating-stars-bg">
+										<div></div>
+									</div>
+									<br clear="both">
+									<p></p>
+								</div>
+							</div>
+							<div class="row opening-times">
+								<div class="label">
+									<span>Öffnungszeiten</span>
+								</div>
+								<div class="value">
+									<table cellspacing="0" cellpadding="0"></table>
+								</div>
+							</div>
+							<div class="row phone">
+								<div class="label">
+									<span>Telefonnummer</span>
+								</div>
+								<div class="value">
+									<p></p>
+								</div>
+							</div>
+							<div class="row phone24">
+								<div class="label">
+									<span>24h Notfall-Hotline</span>
+								</div>
+								<div class="value">
+									<p></p>
+								</div>
+							</div>
+							<div class="row website">
+								<div class="label">
+									<span>Website</span>
+								</div>
+								<div class="value">
+									<p></p>
+								</div>
+							</div>
+							<div class="row organisations">
+								<div class="label">
+									<span>Prüforganisationen</span>
+								</div>
+								<div class="value">
+									<p></p>
+								</div>
+							</div>
+							<div class="row user-voting">
+								<div class="label">
+									<span>Benutzerbewertung</span>
+								</div>
+								<div class="value"></div>
+							</div>
+							<div class="row gallery">
+								<div class="label">
+									<span>Werkstattbilder</span>
+								</div>
+								<div class="value"></div>
+							</div>
+							<div class="row infos">
+								<div class="label">
+									<span>Weitere Informationen</span>
+								</div>
+								<div class="value">
+									<p></p>
+								</div>
+							</div>
+									
+							<br clear="all">
+						</div>
+						
+						<div class="text-bg bg-white entry entry-bmw">
+							<!--img src="/_resources/img/bmw/bmw-main-headline.gif" class="main-headline" alt="BMW Treue Service">-->
+							<!--<img src="/_resources/img/bmw/bmw-subheadline.gif" class="subheadline" style="margin-bottom:7px;" alt="BMW Treue Service">-->
+							<img src="/_resources/img/bmw/BMW_Treue_Service_Herbst_Meldung.jpg" width="100%" style="margin-bottom:10px;" alt="BMW Treue Service">
+							<b>
+								BMW Treue Service.<br/>
+								Komplettpreisangebote für ältere BMW Automobile.
+							</b>
+							<p>
+							</p>
+							<p>
+								Wir sorgen dafür, dass Ihr BMW dauerhaft fit bleibt und seinen Wert erhält.
+							</p>
+							<p>
+								Der BMW Treue Service bietet Ihnen attraktive Service- und Reparaturangebote, maßgeschneidert für die
+								Bedürfnisse Ihres BMW. Die Angebote reichen vom fachgerechten Austausch der Bremsflüssigkeit bis zur
+								umfangreichen Fahrzeuginspektion.
+							</p>
+							<div class="bmw-treue-versprechen">
+								<p>Unser BMW Treue Service für Sie:</p>
+								<ul style="margin-left:14px; width:169px; padding-right:20px; float:left;">
+									<li>Hervorragende Qualität durch Original BMW&nbsp;Teile.</li>
+									<li>Sicherheit und Werterhalt.</li>
+									<li>Persönliche Betreuung.</li>
+								</ul>
+								<ul style="">
+									<li>Faire und transparente Preise.</li>
+									<li>Kostenlose Serviceberatung.</li>
+									<li>Gratis Fahrzeugreinigung.</li>
+								</ul>
+							</div>
+							
+							<!-- start treue service offer -->
+							<!--<a href="" class="treue-service-headline 407535"><span class="subheadline">Austausch Bremsscheiben und -beläge.</span></a>
+							<div class="treue-service-wrapper 407535">
+								<p>
+									Ihr BMW Service Partner tauscht die vorderen Bremsscheiben und -beläge gegen perfekt auf Ihr Fahrzeug abgestimmte Original BMW Komponenten. Ihr optimales Zusammenspiel garantiert eine exzellente Bremsleistung und höchste Sicherheit in jeder Situation. Ihre spezielle Zusammensetzung macht Original BMW Bremsscheiben und -beläge besonders langlebig.
+								</p>
+								<p>
+									
+								</p>
+								<div class="service">
+									<img src="/_resources/img/bmw/BMW-TS-Bremse.jpg" alt="BMW Bremsscheiben">
+									<p>
+										Im Angebot enthalten:
+									</p>
+									<ul>
+										<li>Austausch der vorderen Bremsscheiben und -beläge.</li>
+										<li>Spezielle Bremsbelagmischung für hohe Leistung.</li>
+										<li>Spezifische Abstimmung auf das Fahrzeugmodell.</li>
+									</ul>
+								</div>
+							</div>-->
+							<!-- end treue service offer -->
+							
+							<!-- start treue service offer -->
+							<!--<a href="" class="treue-service-headline 407536"><span class="subheadline">Austausch Bremsscheiben und -beläge.</span></a>
+							<div class="treue-service-wrapper 407536">
+								<p>
+									Ihr BMW Service Partner tauscht die vorderen Bremsscheiben und -beläge gegen perfekt auf Ihr Fahrzeug abgestimmte Original BMW Komponenten. Ihr optimales Zusammenspiel garantiert eine exzellente Bremsleistung und höchste Sicherheit in jeder Situation. Ihre spezielle Zusammensetzung macht Original BMW Bremsscheiben und -beläge besonders langlebig.
+								</p>
+								<p>
+									
+								</p>
+								<div class="service">
+									<img src="/_resources/img/bmw/BMW-TS-Bremse.jpg" alt="BMW Bremsscheiben">
+									<p>
+										Im Angebot enthalten:
+									</p>
+									<ul>
+										<li>Austausch der hinteren Bremsscheiben und -beläge.</li>
+										<li>Spezielle Bremsbelagmischung für hohe Leistung.</li>
+										<li>Spezifische Abstimmung auf das Fahrzeugmodell.</li>
+									</ul>
+								</div>
+							</div>
+							-->
+							<!-- end treue service offer -->
+							
+							<!-- start treue service offer -->
+							<a href="" class="treue-service-headline 422634"><span class="subheadline">Klimaservice.</span></a>
+							<div class="treue-service-wrapper 422634">
+								<p>
+									Pünktlich zum Beginn der warmen Jahreszeit empfehlen wir den BMW Klimaservice. Unsere BMW Service Mitarbeiter überprüfen gründlich, ob Ihre Klimaanlage einwandfrei funktioniert. Falls erforderlich, wird das Kältemittel ergänzt. Der BMW Klimaservice sorgt dafür, dass Sie auch an heißen Tagen stets einen kühlen Kopf bewahren und entspannter fahren.
+								</p>
+								<p>
+									
+								</p>
+								<div class="service">
+									<img src="/_resources/img/bmw/bmw-teaser-klimasservice.jpg" alt="BMW Klimaservice">
+									<p>
+										Im Angebot enthalten:
+									</p>
+									<ul>
+										<li>Absaugung und Befüllung der Klimaanlage.</li>
+										<li>Überprüfung des Systemdrucks.</li>
+										<li>Umfassender Funktions-Check.</li>
+									</ul>
+								</div>
+								<br clear="all"/>
+								<p>
+									Alle genannten Servicearbeiten werden von erfahrenen BMW Service Mitarbeitern durchgeführt.
+								</p>
+							</div>
+							<!-- end treue service offer -->
+							
+							<!-- start treue service offer -->
+							<a href="" class="treue-service-headline 450267"><span class="subheadline">Kostenloser Vorabcheck.</span></a>
+							<div class="treue-service-wrapper 450267">
+								<p>
+									Mit unserem Vorabcheck wird Ihr Fahrzeug perfekt auf die anstehenden gesetzlich vorgeschriebenen
+									Untersuchungen vorbereitet. Wir machen Sie auf eventuelle Mängel aufmerksam und beheben diese nach
+									Bedarf und nach Rücksprache mit Ihnen unter Einsatz modernster Reparaturmethoden und Verwendung von
+									Original BMW Teilen, bevor es zur eigentlichen Prüfung geht. Unsere Partner von DEKRA oder dem TÜV
+									führen dann die Haupt- bzw. Abgasuntersuchung direkt in unserem Haus durch. So genießen Sie bequemen
+									Service aus einer Hand, haben mehr Zeit für alles andere und sparen sich eine eventuelle Wiedervorführung
+									beim Prüfer.								
+								</p>
+								<p>
+									
+								</p>
+								<div class="service">
+									<img src="/_resources/img/bmw/bmw-teaser-vorabcheck.jpg" alt="BMW Vorabcheck" style="width:180px;height:101px;">
+									<p>
+										Im Angebot enthalten:
+									</p>
+									<ul>
+										<li>Vorbereitung zur Hauptuntersuchung (HU gem. § 29 StVZO durch amtlich anerkannte Prüfstelle).</li>
+										<li>Überprüfung des Fahrzeugs durch BMW Spezialisten.</li>
+										<li>Kontrolle aller prüfungsrelevanten Punkte.</li>
+									</ul>
+								</div>
+								<br clear="all"/>
+								<p>
+									Alle genannten Servicearbeiten werden von erfahrenen BMW Service Mitarbeitern durchgeführt.
+								</p>
+							</div>
+							<!-- end treue service offer -->
+							
+							<!-- start treue service offer -->
+							<!--<a href="" class="treue-service-headline 422632"><span class="subheadline">Austausch Wischerblätter vorne.</span></a>
+							<div class="treue-service-wrapper 422632">
+								<p>
+									Ihr BMW Service Partner tauscht die Wischerblätter Ihres BMW gegen hochwertige, perfekt auf die Windschutzscheibe Ihres BMW angepasste Original BMW Wischerblätter. Die perfekte Passform und Neigung minimieren störende Wischergeräusche und garantieren optimale Performance auch bei hohen Geschwindigkeiten und widrigen Bedingungen. So profitieren Sie von freier Sicht und höchstem Fahrkomfort bei jedem Wetter – auch nach über 300 Stunden Einsatzzeit.
+								</p>
+								<p>
+									
+								</p>
+								<div class="service">
+									<img src="/_resources/img/bmw/bmw-teaser-wischerblaetter-vorne.jpg" alt="BMW Wischerblätter">
+									<p>
+										Im Angebot enthalten:
+									</p>
+									<ul>
+										<li>Original BMW Wischerblätter inkl. Einbau.</li>
+										<li>Optimale Reinigung, auch bei hoher Geschwindigkeit.</li>
+										<li>Freie Sicht auch nach über 300 Std. Einsatzzeit.</li>
+									</ul>
+								</div>
+							</div>
+							-->
+							<!-- end treue service offer -->
+							
+							<!-- start treue service offer -->
+							<a href="" class="treue-service-headline 422652"><span class="subheadline">Bremsflüssigkeit ersetzen.</span></a>
+							<div class="treue-service-wrapper 422652">
+								<p>
+									Ihr BMW Service Partner tauscht die Bremsflüssigkeit Ihres BMW gegen Original BMW Bremsflüssigkeit. Im
+									Zusammenspiel mit Original BMW Bremsscheiben und -belägen garantiert diese exzellente Bremsleistungen
+									in jeder Fahrsituation und bei allen Witterungsbedingungen. Zusätzlich schützt die Original BMW
+									Bremsflüssigkeit alle Bestandteile der Bremsen vor Korrosion, damit Sie auch in Zukunft die Freude am
+									Fahren unbeschwert genießen können.
+								</p>
+								<p>
+									
+								</p>
+								<div class="service">
+									<img src="/_resources/img/bmw/bmw-teaser-bremsfluessigkeit.jpg" alt="BMW Bremsflüssigkeit">
+									<p>
+										Im Angebot enthalten:
+									</p>
+									<ul>
+										<li>Austausch durch Original BMW Bremsflüssigkeit.</li>
+										<li>Erhöhte Sicherheit für weitere 2 Jahre.</li>
+										<li>Konstante Bremsleistung und Schutz der Bremsanlage.</li>
+									</ul>
+								</div>
+								<br clear="all"/>
+								<p>
+									Alle genannten Servicearbeiten werden von erfahrenen BMW Service Mitarbeitern durchgeführt.
+								</p>
+							</div>
+							<!-- end treue service offer -->
+							
+							<!-- start treue service offer -->
+							<a href="" class="treue-service-headline 407535"><span class="subheadline">Austausch der Bremsbeläge vorne.</span></a>
+							<div class="treue-service-wrapper 407535">
+								<p>
+									Ihr BMW Service Partner tauscht die vorderen Bremsbeläge Ihres BMW gegen perfekt auf Ihr Fahrzeug
+									abgestimmte Original BMW Komponenten. Diese garantieren im Zusammenspiel mit Original BMW
+									Bremsscheiben eine exzellente Bremsleistung in jeder Situation. Ihre spezielle Zusammensetzung macht
+									Original BMW Bremsbeläge besonders langlebig.
+								</p>
+								<p>
+									
+								</p>
+								<div class="service">
+									<img src="/_resources/img/bmw/bmw-teaser-bremsbelaege-vorne.jpg" alt="BMW Bremsbeläge vorne">
+									<p>
+										Im Angebot enthalten:
+									</p>
+									<ul>
+										<li>Spezielle Bremsbelagmischung für hohe Leistung.</li>
+										<li>Optimales Zusammenspiel der Komponenten.</li>
+										<li>Spezifische Abstimmung auf das Fahrzeugmodell.</li>
+									</ul>
+								</div>
+								<br clear="all"/>
+								<p>
+									Alle genannten Servicearbeiten werden von erfahrenen BMW Service Mitarbeitern durchgeführt.
+								</p>
+							</div>
+							<!-- end treue service offer -->
+							
+							<!-- start treue service offer -->
+							<a href="" class="treue-service-headline 407536"><span class="subheadline">Austausch der Bremsbeläge hinten.</span></a>
+							<div class="treue-service-wrapper 407536">
+								<p>
+									Ihr BMW Service Partner tauscht die hinteren Bremsbeläge Ihres BMW gegen perfekt auf Ihr Fahrzeug
+									abgestimmte Original BMW Komponenten. Diese garantieren im Zusammenspiel mit Original BMW
+									Bremsscheiben eine exzellente Bremsleistung in jeder Situation. Ihre spezielle Zusammensetzung macht
+									Original BMW Bremsbeläge besonders langlebig.
+								</p>
+								<p>
+									
+								</p>
+								<div class="service">
+									<img src="/_resources/img/bmw/bmw-teaser-bremsbelaege-hinten.jpg" alt="BMW Bremsbeläge hinten">
+									<p>
+										Im Angebot enthalten:
+									</p>
+									<ul>
+										<li>Spezielle Bremsbelagmischung für hohe Leistung.</li>
+										<li>Optimales Zusammenspiel der Komponenten.</li>
+										<li>Spezifische Abstimmung auf das Fahrzeugmodell.</li>
+									</ul>
+								</div>
+								<br clear="all"/>
+								<p>
+									Alle genannten Servicearbeiten werden von erfahrenen BMW Service Mitarbeitern durchgeführt.
+								</p>
+							</div>
+							<!-- end treue service offer -->
+							
+							<!-- start treue service offer -->
+							<a href="" class="treue-service-headline 412916"><span class="subheadline">Wechsel des Mikrofilters.</span></a>
+							<div class="treue-service-wrapper 412916">
+								<p>
+									Ihr BMW Service Partner tauscht den Mikrofilter Ihres BMW. Selbstverständlich kommt auch hier ein
+									hochwertiger Original BMW Mikrofilter zum Einsatz. Dieser reinigt die Luft im Innenraum Ihres BMW und
+									bietet durch das mechanisch/elektrostatische Filtersystem optimalen Schutz vor schädlichen Stoffen in der
+									Luft. Die hochwertigen, wasserabweisenden Materialien vermeiden zudem die Bildung von Pilzen, Keimen
+									und Bakterien. Die nachweislich reinere Luft wirkt sich direkt auf Ihr Wohlbefinden aus, lässt Allergiker frei
+									durchatmen und trägt so aktiv zur Ihrer Fahrsicherheit bei. Insbesondere Allergikern ist es empfohlen, den
+									Mikrofilter häufiger zu tauschen.
+								</p>
+								<p>
+									
+								</p>
+								<div class="service">
+									<img src="/_resources/img/bmw/bmw-teaser-mikrofilter.jpg" alt="BMW Mikrofilter" style="width:180px;height:101px;">
+									<p>
+										Im Angebot enthalten:
+									</p>
+									<ul>
+										<li>Fachgerechter Austausch des Mikrofilters.</li>
+										<li>Verbessertes Raumklima.</li>
+										<li>Aktive Sicherheit durch Wohlbefinden im Fahrzeug.</li>
+									</ul>
+								</div>
+								<br clear="all"/>
+								<p>
+									Die optimale Ergänzung zum Klimaservice.<br/>
+									Alle genannten Servicearbeiten werden von erfahrenen BMW Service Mitarbeitern durchgeführt.
+								</p>
+							</div>
+							<!-- end treue service offer -->
+							
+							<!-- start treue service offer -->
+							<a href="" class="treue-service-headline 450274"><span class="subheadline">Scheibenreparatur.</span></a>
+							<div class="treue-service-wrapper 450274">
+								<p>
+									Kleinere Glasschäden in der Scheibe sind beinahe die Regel, wenn man viel unterwegs ist. Sie sind ärgerlich
+									– und können gefährlich werden. Doch unsere Erfahrung zeigt: Bis zu 70 Prozent aller Glasschäden sind ohne
+									großen Aufwand reparabel. Einfach, schnell und kostengünstig. Speziell geschulte BMW Service Experten
+									nehmen jeden Glasschaden genau unter die Lupe und beseitigen ihn schnell und zuverlässig mit der BMW
+									Scheibenreparatur in gewohnter BMW Qualität.
+								</p>
+								<p>
+									
+								</p>
+								<div class="service">
+									<img src="/_resources/img/bmw/bmw-teaser-scheiben.jpg" alt="BMW Scheibenreparatur" style="width:180px;height:101px;">
+									<p>
+										Im Angebot enthalten:
+									</p>
+									<ul>
+										<li>Intelligente Reparatur in gewohnter BMW Qualität.</li>
+										<li>Beseitigung kleinerer Steinschlagschäden auf der Windschutzscheibe außerhalb des Fahrersichtfeldes.</li>
+										<li>Kostenlos bei bestehender Kaskoversicherung*</li>
+									</ul>
+								</div>
+								<br clear="all"/>
+								<p>
+									Alle genannten Servicearbeiten werden von erfahrenen BMW Service Mitarbeitern durchgeführt.
+								</p>
+								<i>
+									* Kostenübernahme der Steinschlagreparatur durch Ihre Teilkaskoversicherung (i.d.R. ohne Anrechnung auf
+									Ihre Selbstbeteiligung). Ein Austausch der Scheibe erfolgt nur, wenn es unbedingt erforderlich ist. In einem
+									solchen Fall unterbreiten wir Ihnen gerne ein individuelles Angebot.
+								</i>
+							</div>
+							<!-- end treue service offer -->
+
+							
+							<!-- start treue service offer -->
+							<!--a href="" class="treue-service-headline 407531 179973"><span class="subheadline">Batteriewechsel.</span></a>
+							<div class="treue-service-wrapper 407531 179973">
+								<p>
+									Ihr BMW Service Betrieb tauscht die Batterie Ihres BMW gegen eine leistungsstarke, langlebige Original BMW Batterie. Die optimale Kombination aus hervorragender Leistungsstärke und hoher Widerstandsfähigkeit garantiert Ihnen eine zuverlässige Energieversorgung selbst bei sehr niedrigen oder hohen Temperaturen. Und das zu einem äußerst attraktiven Preis.
+								</p>
+								<p>
+									
+								</p>
+								<div class="service">
+									<img src="/_resources/img/bmw/bmw-teaser-autobatterie.jpg" alt="BMW Batterie">
+									<p>
+										Im Angebot enthalten:
+									</p>
+									<ul>
+										<li>Austausch der Batterie gegen eine Original BMW Batterie.</li>
+										<li>Sehr gute Kaltstartleistung bei niedrigen Temperaturen.</li>
+										<li>Umweltgerechte Entsorgung der alten Batterie.</li>
+									</ul>
+								</div>
+							</div>
+							<!-- end treue service offer -->
+							
+							<!-- start treue service offer -->
+							<!--a href="" class="treue-service-headline 450264"><span class="subheadline">Batteriewechsel.</span></a>
+							<div class="treue-service-wrapper 450264">
+								<p>
+									Ihr BMW Service Betrieb tauscht die Batterie Ihres BMW gegen eine leistungsstarke, langlebige Original BMW Batterie. Die optimale Kombination aus hervorragender Leistungsstärke und hoher Widerstandsfähigkeit garantiert Ihnen eine zuverlässige Energieversorgung selbst bei sehr niedrigen oder hohen Temperaturen. Und das zu einem äußerst attraktiven Preis.
+								</p>
+								<p>
+									
+								</p>
+								<div class="service">
+									<img src="/_resources/img/bmw/bmw-teaser-autobatterie.jpg" alt="BMW Batterie">
+									<p>
+										Im Angebot enthalten:
+									</p>
+									<ul>
+										<li>Austausch der Batterie gegen eine Original BMW 70 Ah Batterie.</li>
+										<li>Sehr gute Kaltstartleistung bei niedrigen Temperaturen.</li>
+										<li>Umweltgerechte Entsorgung der alten Batterie.</li>
+									</ul>
+								</div>
+							</div>
+							<!-- end treue service offer -->
+							
+							<!-- start treue service offer -->
+							<!--a href="" class="treue-service-headline 450265"><span class="subheadline">Batteriewechsel.</span></a>
+							<div class="treue-service-wrapper 450265">
+								<p>
+									Ihr BMW Service Betrieb tauscht die Batterie Ihres BMW gegen eine leistungsstarke, langlebige Original BMW Batterie. Die optimale Kombination aus hervorragender Leistungsstärke und hoher Widerstandsfähigkeit garantiert Ihnen eine zuverlässige Energieversorgung selbst bei sehr niedrigen oder hohen Temperaturen. Und das zu einem äußerst attraktiven Preis.
+								</p>
+								<p>
+									
+								</p>
+								<div class="service">
+									<img src="/_resources/img/bmw/bmw-teaser-autobatterie.jpg" alt="BMW Batterie">
+									<p>
+										Im Angebot enthalten:
+									</p>
+									<ul>
+										<li>Austausch der Batterie gegen eine Original BMW 80 Ah Batterie.</li>
+										<li>Sehr gute Kaltstartleistung bei niedrigen Temperaturen.</li>
+										<li>Umweltgerechte Entsorgung der alten Batterie.</li>
+									</ul>
+								</div>
+							</div>
+							<!-- end treue service offer -->
+							
+							<!-- start treue service offer -->
+							<!--a href="" class="treue-service-headline 450266"><span class="subheadline">Batteriewechsel.</span></a>
+							<div class="treue-service-wrapper 450266">
+								<p>
+									Ihr BMW Service Betrieb tauscht die Batterie Ihres BMW gegen eine leistungsstarke, langlebige Original BMW Batterie. Die optimale Kombination aus hervorragender Leistungsstärke und hoher Widerstandsfähigkeit garantiert Ihnen eine zuverlässige Energieversorgung selbst bei sehr niedrigen oder hohen Temperaturen. Und das zu einem äußerst attraktiven Preis.
+								</p>
+								<p>
+									
+								</p>
+								<div class="service">
+									<img src="/_resources/img/bmw/bmw-teaser-autobatterie.jpg" alt="BMW Batterie">
+									<p>
+										Im Angebot enthalten:
+									</p>
+									<ul>
+										<li>Austausch der Batterie gegen eine Original BMW 90 Ah Batterie.</li>
+										<li>Sehr gute Kaltstartleistung bei niedrigen Temperaturen.</li>
+										<li>Umweltgerechte Entsorgung der alten Batterie.</li>
+									</ul>
+								</div>
+							</div>
+							<!-- end treue service offer -->
+						</div>
+						
+					</div><!-- // detail-entries -->
+				</div><!-- // detail-container -->
+			</div><!-- // booking-wrapper -->
+			
+			<div class="booking-wrapper standard">	
+				<div class="booking-customer-feedback">
+					<div class="selectionHeader">
+						<p>
+							<span>Mit besten Empfehlungen</span>
+						</p>
+					</div>
+					<div class="selectionArrow"></div>
+					<div class="content">
+						<ul class="customer-feedback"></ul>
+					</div>
+				</div>
+				<br clear="all">
+			</div><!-- // booking-wrapper -->
+			
+			<!--
+				confirm - start
+			-->
+			<div id="thanx-container">
+				<div class="entry">
+					<p>
+						<b>Vielen Dank!</b><br><br>
+						Ihre Daten wurden erfolgreich an die Werkstatt übermittelt.<br>
+						Sie erhalten in Kürze eine Bestätigungsmail.
+						<br><br>
+						Um weiterhin ein optimales Angebot für Sie bereitzustellen, bitten wir Sie eine Bewertung des Werkstatt-Termins vorzunehmen.<br>
+						Sie erhalten nach Ihrem Termin eine E-Mail mit einem entsprechenden Link von uns.<br><br>
+						Vielen Dank, dass Sie FairGarage genutzt haben.<br><br>
+						<strong>Ihr KFZ-Service-Marktplatz im Internet</strong>
+					</p>
+				</div>
+			</div>
+			<!--
+				confirm - end
+			-->
+		
+			<!--
+				agbs - start
+			-->
+			<div id="agb-lightbox">
+				<div id="agb-container">
+					<a href="" class="close">Schließen X</a>
+					<div id="agb">
+						<div class="content">
+							<h1> Allgemeine Geschäftsbedingungen für die Nutzung des Endkundenbereichs (AGB-EB) </h1>
+							<p> (Stand: Juni 2012) </p>
+							<h2> 1. Geltungsbereich </h2>
+							<p>Diese Allgemeinen Geschäftsbedingungen  (nachfolgend &bdquo;AGB-EB&ldquo;) der United Vehicles GmbH, Plinganserstraße 150/Haus 7,  81369 München (im Folgenden &quot;United Vehicles&quot;) gelten für Ihre Anfragen,  Buchungen und Registrierungen auf FairGarage und die Nutzung der auf FairGarage  angebotenen Leistungen.</p>
+							<h2> 2. <strong>Leistungsumfang</strong></h2>
+							<p>a) United Vehicles bietet Ihnen mit  FairGarage die Möglichkeit, aktuelle Angebote zu Verschleiß-, Instandsetzungs-,  Wartungs- und Inspektionsdienstleistungen (nachfolgend &bdquo;Dienstleistungen&ldquo;) bei den  angeschlossenen Werkstätten anzufragen oder direkt zu buchen.</p>
+							<p> b) Die Nutzung von FairGarage ist für  Sie grundsätzlich kostenlos. United Vehicles bietet in eigener Verantwortung keinerlei  Kfz-Dienstleistungen an. United Vehicles ist auch nicht Vertreter der angeschlossenen  Werkstätten, sondern ausschließlich technischer Dienstleister.</p>
+							<p>c) Die Angebote werden auf Basis der  von den angeschlossenen Werkstätten tagesaktuell hinterlegten Preis-Parameter  (Stundensätze und Teileaufschläge) und den Originalvorgaben der  Fahrzeughersteller kalkuliert. Für die Kalkulation werden unter anderem die von  der Deutsche Automobil Treuhand GmbH (nachfolgend &bdquo;DAT&ldquo;) bereitgestellten Daten  und Informationssysteme genutzt.</p>
+							<p>d) Sämtliche Angaben zur Werkstatt  sowie deren Angebote beruhen auf Eingaben der Werkstatt. Dies betrifft unter  anderem auch die auf FairGarage dargestellte Klassifizierung der Werkstätten  nach Vertrags-, Ketten-, Konzept- oder Freie Werkstatt, welche lediglich auf der  Selbsteinschätzung der Werkstätten beruhen.</p>
+							<p>e) United Vehicles behält sich das  Recht vor, Dienste oder Teile davon jederzeit zu modifizieren, einzustellen  oder gegen andere Dienste auszutauschen, sofern den Endkunden dies zumutbar  ist. Ein Anspruch auf Beibehaltung bestimmter Dienste oder Teile davon  (insbesondere einzelner Funktionalitäten) besteht nicht.</p>
+							<p>f) Die empfohlene und eindeutige Identifikation  eines Fahrzeuges mittels Fahrzeug-Identifizierungsnummer ist je Endkunde und  Kalendermonat auf fünf (5) verschiedene Fahrzeug-Identifizierungsnummern beschränkt.</p>
+							<p>&nbsp;</p>
+							<h2> 3. <strong>Buchungen</strong></h2>
+							<p>a) Angebote im Buchungsformat werden nur für die  Werkstätten kalkuliert, wenn die für den jeweiligen Termin von der Werkstatt  hinterlegten Kapazitäten ausreichen, um die Dienstleistung in der Regel noch am  selben Tag zu erbringen.</p>
+							<p>b) Buchungen werden in Ihrem Auftrag an die Werkstatt weitergeleitet.  Der Dienstvertrag über die gebuchte Leistung kommt unmittelbar zwischen Ihnen  undder Werkstatt zustande. Den  gebuchten Endpreis zahlen Sie direkt Vorort. Ihre Buchung ist auch ohne Buchungsbestätigung  gültig. Die Buchungsbestätigung erscheint auf dem Bildschirm und kann  ausgedruckt werden.</p>
+							<p>c) Mit einer Buchung reservieren Sie einen  Werkstatttermin. Die Reservierung wird an dem betreffenden Tag bis zwei Stunden  nach Öffnung der Werkstatt aufrechterhalten. Sollten Sie innerhalb dieser Zeit  nicht erscheinen, wird die Buchung zurückgenommen. Ein Anspruch auf das Angebot  und die Leistung besteht danach nicht mehr.</p>
+							<p>d) Können Sie die Reservierung nicht wahrnehmen, setzen  Sie sich mit der Werkstatt in Verbindung und lassen Sie sich von dieser einen  neuen Termin über das FairGarage-System bestätigen. Möchten Sie Ihre Buchung kostenlos  stornieren, so ist Ihnen dies bis einen Werktag (24 Stunden) vor dem reservierten  Termin über das FairGarage-System möglich.</p>
+							<p>e) Eine Stornierung der Buchung kann ausschließlich  durch Sie erfolgen. Anpassungen Ihrer Buchung, d.h. Ergänzungen und/oder  Änderungen bezüglich Fahrzeug, Dienstleistung und/oder Termin, kann wiederum ausschließlich  durch die Werkstatt vorgenommen werden. Um Missverständnisse zu vermeiden,  sollten Stornierungen und Anpassungen über das  FairGarage-System erfolgen. Ihnen können nur so Stornierungen und Anpassungen Ihrer  Buchung verbindlich bestätigt werden.</p>
+							<p>f) Der Weiterverkauf von Buchungen ist untersagt. Auch  die Abtretung oder der Verkauf der sich aus einer Buchung ergebenden Ansprüche  ist nicht zulässig. Die Werkstatt ist in diesen Fällen berechtigt die Buchung  zu stornieren. United Vehicles behält sich vor, Zugangsdaten bei Verstoß zu  sperren.</p>
+							<p>g) Um Missbrauch der kostenlosen  Buchung über FairGarage vorzubeugen, behält sich United Vehicles das Recht vor,  eine Buchung im Einzelfall zu stornieren, wenn eine Rückfrage unter der von dem  Endkunden angegebenen Telefonnummer nicht möglich ist. In diesen Fällen besteht  kein Anspruch auf Erbringung der gebuchten Leistung. Gleiches gilt, wenn unter  der von dem Endkunden angegebenen E-Mail-Adresse in der Vergangenheit gehäuft  Buchungen vorgenommen wurden, bei denen der Endkunde nicht erschienen ist oder  aber eine Rückfrage auf diesem Wege ohne Erfolg geblieben ist.</p>
+							<p>h) Sämtliche sich aus dem Dienstvertrag zwischen Ihnen  und der Werkstatt ergebenden Ansprüche und Verpflichtungen bestehen zwischen  Ihnen und der Werkstatt. United Vehicles handelt ausschließlich als Ihr  Erklärungsbote und nicht in eigenem Namen.</p>
+							<h2> 4. <strong>Kundengarantie</strong></h2>
+							<p>a) Die &bdquo;Annahme-Garantie&ldquo; verpflichtet  die Werkstatt dazu, Ihre Buchung zu akzeptieren, d.h. Ihr Fahrzeug zum  vereinbarten Termin anzunehmen und die gebuchte Leistung in der Regel noch am  selben Tag zu erbringen. Mehrkosten die Ihnen durch Überbuchung der Werkstatt  entstehen sind von dieser zu erstatten.</p>
+							<p>b) Die &bdquo;FairPreis-Garantie&ldquo; verpflichtet die Werkstatt  dazu, Ihnen bei unverändertem Buchungsumfang ausschließlich den vereinbarten  Endpreis zu berechnen. Eine Anpassung Ihrer Buchung durch die Werkstatt, d.h. Ergänzungen  und/oder Änderungen bezüglich Fahrzeug, Dienstleistung und/oder Termin, ist ausschließlich  nach Rücksprache mit Ihnen und innerhalb des FairGarage-Systems gestattet. So  ist sichergestellt, dass die Neukalkulation der Buchung auf Basis der  Preis-Parameter erfolgt, die zum Zeitpunkt Ihrer ursprünglichen Buchung  gegolten haben. </p>
+							<p>c) Bei Verstößen der Werkstatt gegen  die verpflichtende Kundengarantie bitten wir um Mitteilung.</p>
+							<h2> 5. <strong>Kleinanzeigen</strong></h2>
+							<p>a) Neben der Möglichkeit Angebote direkt zu buchen,  ermöglicht es das Kleinanzeigenformat der Werkstatt, ihre Angebote wie im  Kleinanzeigenteil einer Tageszeitung zu bewerben. Das Kleinanzeigenformat dient  ausschließlich als Werbefläche.</p>
+							<p>b) Sie können sich bei einer Kleinanzeige unverbindlich  mit der Werkstatt in Verbindung setzen. Die Kundengarantie findet beim Kleinanzeigenformat  keine Anwendung. Auch ein Werkstatttermin kann nicht verbindlich reserviert werden.</p>
+							<h2> 6. <strong>Gewährleistung</strong></h2>
+							<p>a) United Vehicles übernimmt keine Gewähr für die Richtigkeit,  Vollständigkeit und Aktualität der der von der Werkstatt gemachten Angaben,  Preis-Parameter und abgegebenen Erklärungen. Die rechtliche Verantwortung für  diese Inhalte liegt bei der Werkstatt.</p>
+							<p>b) United Vehicles bemüht sich einen technisch  reibungslosen und störungsfreien Ablauf von FairGarage zu ermöglichen. United  Vehicles übernimmt jedoch keine Gewähr für technische Mängel, insbesondere eine  ununterbrochene Verfügbarkeit von FairGarage einschließlich der Inhalte und der  fehlerfreien Wiedergabe der von den Werkstätten eingestellten Inhalte.</p>
+							<h2> 7. <strong>Haftung</strong></h2>
+							<p>a) Alle Angaben wurden mit größter Sorgfalt  zusammengestellt. Für etwaige Fehler bei der Datenerfassung oder  Datenübertragung kann jedoch keine Haftung übernommen werden.</p>
+							<p>b) Für Schäden, die Ihnen im Zusammenhang mit  FairGarage durch United Vehicles, Unterauftragnehmer oder deren jeweiligen  Erfüllungsgehilfen entstehen, gilt Folgendes: Bei Vorsatz oder grober  Fahrlässigkeit ist die Haftung unbeschränkt. Bei leichter Fahrlässigkeit ist  die Haftung im Falle der Verletzung von Leben, Körper oder Gesundheit ebenfalls  unbeschränkt. Bei einer leicht fahrlässigen Verletzung wesentlicher  Vertrags-pflichten ist die Haftung beschränkt auf darauf zurückzuführende Sach-  und Vermögensschäden in Höhe des vorhersehbaren, typischerweise eintretenden  Schadens. Jede weitergehende Haftung auf Schadensersatz ist – außer für  Ansprüche nach dem Produkthaftungsgesetz – ausgeschlossen. Die vorstehenden  Bestimmungen gelten auch zugunsten der Mitarbeiter von United Vehicles.</p>
+							<h2> 8. <strong>Nutzungsrechte</strong></h2>
+							<p>a) Mit dem Einstellen von Inhalten  (z.B. im Rahmen von Bewertungen, Beiträgen zu Foren, Chats oder Blogs) räumen  Sie United Vehicles jeweils das zeitlich und räumlich unbeschränkte, einfache,  unentgeltliche, übertragbare und unterlizensierbare Recht an diesen Inhalten  ein, diese online und offline zu nutzen, insbesondere diese</p>
+							<ol>
+							  <ul>
+							<li>zu  speichern, zu vervielfältigen, zu verbreiten, öffentlich zugänglich zu machen;</li>
+							<li>zu  bearbeiten und zu ändern sowie die so bearbeiteten oder geänderten Inhalte zu  vervielfältigen, zu verbreiten oder öffentlich zugänglich zu machen;</li>
+							<li>Nutzungsrechte  – auch entgeltlich – an den Inhalten gegenüber Dritten einzuräumen,  insbesondere zum Abrufen, Anzeigen, Herunterladen oder Ausdrucken der Inhalte;  und </li>
+							<li>in beliebige andere Datenbanken einzuspeisen,  dort zu speichern, zu verbreiten, öffentlich zugänglich zu machen und/oder  FairGarage extern einzubinden (&bdquo;White Labeling&ldquo;), und für die Einbindung in  ausländische Webseiten und Softwareapplikationen zu übersetzen.</li>
+							  </ul>
+							</ol>
+							<p>b) Die Rechteeinräumung umfasst unter anderem die  Befugnis von United Vehicles, die Inhalte im In- und Ausland in körperlicher  und unkörperlicher Form – entgeltlich oder unentgeltlich – zu nutzen,  öffentlich wiederzugeben, zu vervielfältigen, zu verbreiten, in digitaler oder  analoger Form auf Bild-, Daten- und Tonträger aller Art aufzunehmen und diese  ihrerseits zu vervielfältigen und zu verbreiten. Die Rechteeinräumung umfasst  insbesondere die Befugnis, die Inhalte interaktiv auf elektronischem Weg auf  allen derzeit bekannten Übertragungswegen wie Kabel, Satellit, allen  Funkübertragungs-systemen jeder Art in allen Standards nutzbar zu machen. Sie  sind für die von Ihnen eingestellten Inhalte voll verantwortlich. United  Vehicles übernimmt keine Überprüfung der Inhalte auf Vollständigkeit,  Rechtmäßigkeit, Richtigkeit, Aktualität, Qualität und Eignung für einen  bestimmten Zweck.</p>
+							<p>c) Sie erklären und gewährleisten, dass alle an United  Vehicles gelieferten oder eingestellten Inhalte, frei von Rechten Dritter sind,  die eine uneingeschränkte Nutzung durch United Vehicles nach vorstehendem  Absatz ausschließen oder beschränken.</p>
+							<p>d) United Vehicles behält sich das Recht vor, das  Einstellen von Inhalten abzulehnen und/oder bereits eingestellte Inhalte ohne  vorherige Ankündigung zu bearbeiten, zu sperren oder zu entfernen, sofern das  Einstellen der Inhalte oder die eingestellten Inhalte selbst rechtswidrig sind.</p>
+							<h2> 9. <strong>FairGarage-Inhalte</strong></h2>
+							<p>a) Die auf oder über FairGarage zugänglich gemachten  Informationen, Daten und Datensammlungen (&bdquo;Inhalte&ldquo;) sind ggf.  urheberrechtlich, kennzeichenrechtlich oder wettbewerbsrechtlich geschützt. Die  Inhalte dürfen nur entsprechend diesen AGB-EB, den Bedingungen der Lizenzgeber,  sowie im Rahmen einer auf FairGarage vorgegebenen Funktionalität genutzt  werden. </p>
+							<p>b) Die Nutzung von FairGarage und der  Inhalte ist nur zur individuellen Abfrage von Angeboten gestattet.  Automatisierte Abfragen sind nicht gestattet. Wir weisen darauf hin, dass unser  Datenmaterial urheberrechtlich geschützt ist und deshalb eine Vervielfältigung  untersagt ist. Insbesondere untersagt ist die Nutzung unseres Datenmaterials zum  Zwecke der Weitervermittlung.</p>
+							<p>c) Sie  sind nicht berechtigt, die im Rahmen von FairGarage verfügbaren Inhalte ganz  oder teilweise zu vervielfältigen, zu bearbeiten, zu verändern, zu übersetzen,  auf anderen Internetseiten oder in anderen Medien öffentlich zugänglich zu  machen, zu verbreiten und/oder an Dritte unterzulizensieren, es sei denn es  handelt sich um ihre eigenen Angaben. Jede darüber hinausgehende Nutzung stellt  einen Missbrauch dar und wird von United Vehicles zivilrechtlich und ggf. auch  strafrechtlich geahndet. </p>
+							<h2> 10. <strong>Datenschutz</strong></h2>
+							<p>United Vehicles hält die gesetzlichen Bestimmungen zum  Datenschutz ein. United Vehicles verarbeitet und nutzt die von Endkunden  erhobenen personenbezogenen Daten nur, sofern dessen Einwilligung vorliegt oder  eine Rechtsvorschrift die Verarbeitung oder Nutzung erlaubt. Es werden nur  solche Daten verarbeitet oder genutzt, die für die Erbringung der Leistungen  von United Vehicles erforderlich sind oder Daten, deren Nutzung gesetzlich  zulässig ist. Einzelheiten entnehmen Sie bitte der <em>Datenschutzerklärung</em>.</p>
+							<h2> 11. <strong>Schlussbestimmungen</strong></h2>
+							<p>a) Es gilt deutsches Recht. Erfüllungsort ist München. Gegenüber  Kaufleuten oder Personen, die keinen allgemeinen deutschen Gerichtsstand haben,  wird als Gerichtsstand München vereinbart. Anderenfalls gilt der gesetzliche  Gerichtsstand.</p>
+							<p>b) Auf  dieser Website enthaltene Verknüpfungen mit Websites (Links) anderer  Unternehmen werden lediglich im Interesse der Endkunden bereitgestellt. Wenn  Sie auf solch eine Verknüpfung klicken, verlassen Sie die FairGarage Webseite.  Auf die Inhalte der Websites anderer Unternehmen haben wir keinen Einfluss.  Deshalb können wir für diese Inhalte auch keine Gewähr übernehmen. Bei bekannt  werden von Rechtsverletzungen werden wir derartige Links umgehend entfernen. </p>
+							<br><h2> Widerrufsbelehrung </h2>
+							<p> Widerrufsrecht: Sie können Ihre Vertragserklärung innerhalb von 14 Tagen ohne Angabe von Gründen in Textform (z. B. Brief, Fax, E-Mail) widerrufen. Die Frist beginnt nach Erhalt dieser Belehrung in Textform jedoch nicht vor Vertragsschluss und auch nicht vor Erfüllung unserer Informationspflichten gemäß Artikel 246 § 2 in Verbindung mit § 1 Absatz 1 und 2 EGBGB sowie unserer Pflichten gemäß § 312g Absatz 1 Satz 1 BGB in Verbindung mit Artikel 246 § 3 EGBGB. Zur Wahrung der Widerrufsfrist genügt die rechtzeitige Absendung des Widerrufs. Der Widerruf ist zu richten an:</p>
+							<p> United Vehicles GmbH, Plinganserstraße 150/Haus 7, 81369 München oder per Fax +49 89 885 657-199 oder per E-Mail an support@fairgarage.de.</p>
+							<p> Im Falle eines wirksamen Widerrufs sind die beiderseits empfangenen Leistungen zurück zu gewähren und ggf. gezogene Nutzungen (z.B. Zinsen) herauszugeben. Können Sie uns die empfangene Leistung sowie Nutzungen (z.B. Gebrauchsvorteile) nicht oder teilweise nicht oder nur in verschlechtertem Zustand zurückgewähren beziehungsweise herausgeben, müssen Sie uns insoweit Wertersatz leisten. Dies kann dazu führen, dass Sie die vertraglichen Zahlungsverpflichtungen für den Zeitraum bis zum Widerruf gleichwohl erfüllen müssen. Verpflichtungen zur Erstattung von Zahlungen müssen innerhalb von 30 Tagen erfüllt werden. Die Frist beginnt für Sie mit der Absendung Ihrer Widerrufserklärung, für uns mit deren Empfang. </p>
+							<p>Besondere Hinweise: Ihr Widerrufsrecht erlischt vorzeitig, wenn der Vertrag von beiden Seiten auf Ihren ausdrücklichen Wunsch vollständig erfüllt ist, bevor Sie Ihr Widerrufsrecht ausgeübt haben.</p>
+						</div>
+					</div>
+				</div>
+			</div>
+			<!--
+				agbs - end
+			-->
+			
+			<!--
+				detail - end
+			-->
+				
+				<br clear="all">
+			</div>
+		</div>
+		
+		<div id="footer-wrapper">
+			<div class="content-wrapper">
+								<div id="footer" class="clearfix">
+					<div class="column" id="footer_column_0"> 
+						<strong>Über das Produkt</strong>
+						<ul class="links">
+							<!--<li>
+								<a class="start" href="http://www.youtube.com/user/FairGarage/videos">Videokanal auf YouTube</a>
+							</li>-->
+							<li>
+								<a class="start" href="/presse.html">Pressebereich</a>
+							</li>
+							<li>
+								<a class="start" href="/agb.html">Nutzungsbedingungen</a>
+							</li>
+							<li>
+								<a class="start" href="/datenschutz.html">Datenschutzerklärung</a>
+							</li>
+						</ul>
+					</div>
+					<div class="column" id="footer_column_1">
+						<strong>Werkstätten</strong>
+						<ul class="links">
+							<li>
+								<a class="start" href="/Werkstaetten/baden-wuerttemberg/index.html">Baden-Württemberg</a>
+							</li>
+							<li>
+								<a class="start" href="/Werkstaetten/berlin/index.html">Berlin</a>
+							</li>
+							<!--<li>
+								<a class="start" href="/Werkstaetten/bremen/index.html">Bremen</a>
+							</li>-->
+							<li>
+								<a class="start" href="/Werkstaetten/nordrhein-westfalen/index.html">Nordrhein Westfalen</a>
+							</li>
+							<li>
+								<a class="start" href="/Werkstaetten/hessen/index.html">Hessen</a>
+							</li>
+							<!--<li
+								<a class="start" href="/Werkstaetten/bayern/schwaben/">Wertingen</a>
+							</li>-->
+							<li>
+								<a class="start" href="/Werkstaetten/bayern/muenchen/index.html">München</a>
+							</li>
+							<li>
+								<a class="start" href="/Werkstaetten/bayern/rosenheim/index.html">Rosenheim</a>
+							</li>
+							<li>
+								<a class="start" href="/Werkstaetten/bayern/niederbayern/index.html">Niederbayern</a>
+							</li>
+							<li>
+								<a class="start" href="/Werkstaetten/bayern/oberbayern/index.html">Oberbayern</a>
+							</li>
+							<li>
+								<a class="start" href="/Werkstaetten/bayern/schwaben/index.html">Schwaben</a>
+							</li>
+							<li>
+								<a class="start" href="/Werkstaetten/autoreparatur/index.html">Autoreparatur</a>
+							</li>
+							<li>
+								<a class="start" href="/Werkstaetten/kfz-werkstatt/index.html">KFZ-Werkstatt</a>
+							</li>
+							<li>
+								<a class="start" href="/werkstatt-finden.html">Werkstattsuche</a>
+							</li>
+						</ul>
+						<div class="dat-logo-container"></div>
+					</div>
+					<div class="column" id="footer_column_2"> 
+						<strong>Unsere Top Marken</strong>
+						<ul class="links">
+							<li>
+								<a class="start" href="/Marken/alfa_romeo/index.html">Alfa Romeo</a>
+							</li>
+							<li>
+								<a class="start" href="/Marken/audi/index.html">Audi</a>
+							</li>
+							<li>
+								<a class="start" href="/Marken/bmw/index.html">BMW</a>
+							</li>
+							<li>
+								<a class="start" href="/Marken/chrysler/index.html">Chrysler</a>
+							</li>
+							<li>
+								<a class="start" href="/Marken/citroen/index.html">Citroen</a>
+							</li>
+							<li>
+								<a class="start" href="/Marken/fiat/index.html">FIAT</a>
+							</li>
+							<li>
+								<a class="start" href="/Marken/ford/index.html">Ford</a>
+							</li>
+							<li>
+								<a class="start" href="/Marken/honda/index.html">Honda</a>
+							</li>
+							<li>
+								<a class="start" href="/Marken/hyundai/index.html">Hyundai</a>
+							</li>
+							<li>
+								<a class="start" href="/Marken/jeep/index.html">Jeep</a>
+							</li>
+							<li>
+								<a class="start" href="/Marken/lexus/index.html">Lexus</a>
+							</li>
+							<li>
+								<a class="start" href="/Marken/mazda/index.html">Mazda</a>
+							</li>
+							<li>
+								<a class="start" href="/Marken/mercedes/index.html">Mercedes</a>
+							</li>
+							<li>
+								<a class="start" href="/Marken/mini/index.html">MINI</a>
+							</li>
+							<li>
+								<a class="start" href="/Marken/mitsubishi/index.html">Mitsubishi</a>
+							</li>
+							<li>
+								<a class="start" href="/Marken/opel/index.html">Opel</a>
+							</li>
+							<li>
+								<a class="start" href="/Marken/peugeot/index.html">Peugeot</a>
+							</li>
+							<li>
+								<a class="start" href="/Marken/porsche/index.html">Porsche</a>
+							</li>
+							<li>
+								<a class="start" href="/Marken/renault/index.html">Renault</a>
+							</li>
+							<li>
+								<a class="start" href="/Marken/seat/index.html">Seat</a>
+							</li>
+							<li>
+								<a class="start" href="/Marken/skoda/index.html">Skoda</a>
+							</li>
+							<li>
+								<a class="start" href="/Marken/smart/index.html">Smart</a>
+							</li>
+							<li>
+								<a class="start" href="/Marken/toyota/index.html">Toyota</a>
+							</li>
+							<li>
+								<a class="start" href="/Marken/volvo/index.html">Volvo</a>
+							</li>
+							<li>
+								<a class="start" href="/Marken/vw/index.html">VW</a>
+							</li>
+						</ul>
+						<div class="dat-logo-container"></div>
+					</div>
+					<div class="column" id="footer_column_3">
+						<strong>Unsere Top Services</strong>
+						<ul class="links">
+							<li>
+								<a class="start" href="/anlasser-wechseln.html">Anlasser wechseln</a>
+							</li>
+							<li>
+								<a class="start" href="/auspuff-wechseln.html">Auspuff wechseln</a>
+							</li>
+							<li>
+								<a class="start" href="/aussenspiegel-wechseln.html">Außenspiegel wechseln</a>
+							</li>
+							<li>
+								<a class="start" href="/autobatterie-wechseln.html">Autobatterie wechseln</a>
+							</li>
+							<li>
+								<a class="start" href="/bmw-treue-service.html">BMW Treue Service</a>
+							</li>
+							<li>
+								<a class="start" href="/bremsen-wechseln.html">Bremsen wechseln</a>
+							</li>
+							<li>
+								<a class="start" href="/bremsen-wechseln.html">Bremsbeläge wechseln</a>
+							</li>
+							<li>
+								<a class="start" href="/bremsen-wechseln.html">Bremsscheiben wechseln</a>
+							</li>
+							<li>
+								<a class="start" href="/frontscheibe-wechseln.html">Frontscheibe wechseln</a>
+							</li>
+							<li>
+								<a class="start" href="/getriebe-wechseln.html">Getriebe wechseln</a>
+							</li>
+							<li>
+								<a class="start" href="/inspektion.html">Inspektion buchen</a>
+							</li>
+							<li>
+								<a class="start" href="/keilriemen-wechseln.html">Keilriemen wechseln</a>
+							</li>
+							<li>
+								<a class="start" href="/klimakompressor-wechseln.html">Klimakompressor wechseln</a>
+							</li>
+							<li>
+								<a class="start" href="/kupplung-wechseln.html">Kupplung wechseln</a>
+							</li>
+							<li>
+								<a class="start" href="/kuehler-wechseln.html">Kühler wechseln</a>
+							</li>
+							<li>
+								<a class="start" href="/lichtcheck.html">Lichtcheck</a>
+							</li>
+							<li>
+								<a class="start" href="/lichtmaschine-wechseln.html">Lichtmaschine wechseln</a>
+							</li>
+							<li>
+								<a class="start" href="/nebelscheinwerfer-wechseln.html">Nebelscheinwerfer wechseln</a>
+							</li>
+							<li>
+								<a class="start" href="/oelfilter-wechseln.html">Ölfilter wechseln</a>
+							</li>
+							<li>
+								<a class="start" href="/oelwanne-wechseln.html">Ölwanne wechseln</a>
+							</li>
+							<li>
+								<a class="start" href="/radlager-wechseln.html">Radlager wechseln</a>
+							</li>
+							<li>
+								<a class="start" href="/reifen-montieren.html">Reifen montieren</a>
+							</li>
+							<li>
+								<a class="start" href="/scheinwerfer-wechseln.html">Scheinwerfer wechseln</a>
+							</li>
+							<li>
+								<a class="start" href="/stossdaempfer-wechseln.html">Stoßdämpfer wechseln</a>
+							</li>
+							<li>
+								<a class="start" href="/turbolader-wechseln.html">Turbolader wechseln</a>
+							</li>
+							<li>
+								<a class="start" href="/wasserpumpe-wechseln.html">Wasserpumpe wechseln</a>
+							</li>
+							<li>
+								<a class="start" href="/zahnriemen-wechseln.html">Zahnriemenwechsel</a>
+							</li>
+							<li>
+								<a class="start" href="/zuendkerzen-wechseln.html">Zündkerzen wechseln</a>
+							</li>
+							<li>
+								<a class="start" href="/zylinderkopf-wechseln.html">Zylinderkopf wechseln</a>
+							</li>
+							<li>
+								<a class="start" href="/zylinderkopfdichtung-wechseln.html">Zylinderkopfdichtung wechseln</a>
+							</li>
+							<!--<li>
+								<a class="start" href="/kfz-service.html">Weitere Services auswählen</a>
+							</li>-->
+						</ul>
+						<div class="dat-logo-container"></div>
+					</div>
+		
+					<div class="column"  id="footer_column_lastone">
+						<strong>Betreiber</strong>
+						FAIRGARAGE ist ein Produkt der UNITED VEHICLES GmbH Plinganserstr. 150 Haus 7<br>
+						81369 München<br>
+						info(at)unitedvehicles.de<br>
+						<a class="start" href="http://www.unitedvehicles.de" target="_blank" rel="nofollow">
+							www.unitedvehicles.de
+						</a><br/>
+						<a class="start" href="/impressum.html" rel="nofollow">Impressum</a>
+						<br/><br/>
+						<span style="color: #FF4F18; font-weight: bold;background:url(/_resources/img/hotline_orange.png) no-repeat 0 3px;padding-left:15px;">Hotline 089- 885657-059<br/>
+						Mo. - Fr. 9:30 - 18:00 Uhr</span>
+						<br/><br/>
+						<a class="start" href="http://www.facebook.com/pages/FairGarage/231766593504671" target="_blank"  rel="nofollow">Facebook Profil</a>
+						<br/>
+						<a class="start" href="http://twitter.com/fairgarage" target="_blank"  rel="nofollow">Twitter Profil</a>
+						<br/>
+						<a class="start" href="https://plus.google.com/101221918897138582478?prsrc=3" target="_blank"  rel="nofollow">Google+ Profil</a>
+						<br/><br/>
+						<a href="http://www.facebook.com/pages/FairGarage/231766593504671" target="_blank"  rel="nofollow"><img src="/_images/facebook.gif" class="social-icon" alt=""></a>
+						<a href="http://twitter.com/fairgarage" target="_blank"  rel="nofollow"><img src="/_images/twitter.gif" class="social-icon" alt=""></a>
+						<a href="https://plus.google.com/101221918897138582478?prsrc=3" target="_blank"  rel="nofollow"><img src="/_images/gplus-32.png" class="social-icon" alt=""></a>
+						<a href="https://www.certipedia.com/quality_marks/0000037229" target="_blank"><img src="/_resources/img/tuev-large.png" alt="TÜV" style="display:block; width:180px;"></a>
+					</div>
+				</div>
+				<br clear="all">
+			</div>
+		</div>
+		
+		<div id="overlays">
+			<div class="content-wrapper">
+				<div class="offer-comparison-container">
+					<div class="close">
+						<a class="link close" href="">Angebotsvergleich schließen</a>
+					</div>
+					<div class="offer-comparison-container-bg">
+						<div class="headline">Ihr Angebotsvergleich.</div>
+						<div class="no-offers-to-compare">
+							<p class="copytext">Sie haben keine Angebote zum Vergleich ausgewählt.</p>
+						</div>
+						<div class="wait-layer">
+							<div class="blockMsg" style="background-position: -170px -170px;"></div>
+						</div>
+						<div class="offer">
+							<div class="row garage-name">
+								<div class="value label">
+									Werkstatt
+								</div>
+							</div>
+							<div class="row garage-rating">
+								<div class="value label">
+									Bewertung
+								</div>
+							</div>
+							<div class="row distance">
+								<div class="value label">
+									<p>Entfernung</p>
+								</div>
+							</div>
+							<div class="row garage-form">
+								<div class="value label">
+									<p>Art der Werkstatt</p>
+								</div>
+							</div>
+							<div class="row organisations">
+								<div class="value label">
+									<p>Prüforganisationen</p>
+								</div>
+							</div>
+							<div class="row guild-membership">
+								<div class="value label">
+									<p>Innung</p>
+								</div>
+							</div>
+							<div class="row parts-quality">
+								<div class="value label">
+									Teilequalität
+								</div>
+							</div>
+							<div class="row final-price">
+								<div class="value label">
+									Preis (brutto) 
+								</div>
+							</div>
+							<!--<div class="row cart">
+								<div class="value label">
+									Service(s)
+								</div>
+							</div>-->
+							<div class="row offer-link">
+								<div class="value label">&nbsp;</div>
+							</div>
+							<!--<div class="row price package">
+								<div class="value label">
+									Komplettpreisangebot 
+								</div>
+							</div>
+							<div class="row price parts">
+								<div class="value label">
+									Teilepreis 
+								</div>
+							</div>
+							<div class="row price fluids">
+								<div class="value label">
+									Flüssigkeiten
+								</div>
+							</div>
+							<div class="row price fixedServices">
+								<div class="value label">
+									Pauschalpreise
+								</div>
+							</div>
+							<div class="row price work">
+								<div class="value label">
+									Arbeitspreis
+								</div>
+							</div>
+							<div class="row price small-parts">
+								<div class="value label">
+									Kleinteilezuschlag
+								</div>
+							</div>
+							<div class="row price netto">
+								<div class="value label">
+									Netto
+								</div>
+							</div>
+							<div class="row price brutto">
+								<div class="value label">
+									Brutto
+								</div>
+							</div>
+							<div class="row price discount">
+								<div class="value label">
+									<span>FairGarage Rabatt</span>
+								</div>
+							</div>
+							<div class="row price campaign small-row">
+								<div class="value label">
+									<span>Aktionspreis</span>
+								</div>
+							</div>
+							<div class="row price regular small-row">
+								<div class="value label">
+									<span>VORHER</span>
+								</div>
+							</div>-->
+						</div>
+					</div>
+				</div>
+				<div id="location-info-container">
+					<div class="close">
+						<a href="" class="link close">Werkstattdetails schließen</a>
+					</div>
+					<div class="location-info"><div class="text-bg bg-white entry entry-garage"></div></div>
+				</div>
+		
+				<div id="service-layer-container">
+					<div id="service-link">
+						<a class="link close" href="">Serviceauswahl schließen<br><span style="font-weight:normal; float:right; font-size:12px">und Änderungen verwerfen</span></a>
+					</div>
+					<div id="service-layer">
+						<div class="modal-layer"></div>
+						<div class="modal-layer-text"><p></p><div class="blockMsg"></div></div>
+						<div class="full-text-service-search">
+							<div class="hint" style="display:block; width:100%; margin-bottom:5px; color:#fff; font-weight:bold; font-size:16px; line-height:20px;">Bitte Suchbegriff eingeben:</div>
+							<input type="text" placeholder="z.B.: Bremsbeläge" class="servicesAutocompleteSearch" name="servicesAutocompleteSearch" value="" role="textbox" aria-autocomplete="list" aria-haspopup="true" autocomplete="off">
+							
+							<div class="search-result-container">
+								<ul role="listbox" aria-activedescendant="ui-active-menuitem" style="background-color:#FFFFFF; width:auto;">
+								</ul>
+							</div>
+						</div>
+						<div id="cart-info">
+							<div class="headline"><span>Ihre gewählten Services</span></div>
+							<div class="container">
+								<!--<p>Folgende Services werden bei der Kalkulation der Angebote berücksichtigt:</p>-->
+								<p class="no-entries">Keinen Service ausgewählt.</p>
+								<ul></ul>
+								<div class="line"></div>
+								<div class="button">
+									<button type="button" class="cta">
+										Angebote ansehen
+									</button>
+								</div>
+							</div>
+						</div>
+						<br clear="all">
+						
+						<div class="content-navigation" style="display: block;">
+							<div navi="top-services" class="entry first active" style="width:205px;">
+								<a href=""><p>Meist gesuchte Services</p></a>
+							</div>
+							<div navi="service-catalog" class="entry" style="width:205px;">
+								<a href=""><p>Servicekatalog</p></a>
+							</div>
+						</div>
+					
+						<div id="top-services">
+				<div class="modal-layer"></div>
+				<!--<ul></ul>-->
+				
+				<div class="container">
+					
+					<div>
+						<img src="/_resources/img/top-services/top-service-auspuff.jpg" alt="Auspuff wechseln">
+						<span>Auspuff</span>
+						<ul>
+							<li value="407518">Auspuff komplett wechseln</li>
+							<li value="407529">End-/Hauptschall-<br>dämpfer wechseln</li>
+							<li  value="407530" class="">Vor-/Mittelschalldämpfer wechseln</li>
+						</ul>
+					</div>
+					
+					<div>
+						<img src="/_resources/img/top-services/top-service-bremsen.jpg" alt="Bremsen wechseln">
+						<span>Bremsen</span>
+						<ul>
+							<li value="407532">Bremsservice komplett</li>
+							<li value="407533">Bremsservice vorne</li>
+							<li value="407534">Bremsservice hinten</li>
+							<li value="407535">Bremsbeläge vorne</li>
+							<li value="407536">Bremsbeläge hinten</li>
+						</ul>
+					</div>
+					
+					<div>
+						<img src="/_resources/img/top-services/top-service-radlager.jpg" alt="Radlager wechseln">
+						<span>Radlager</span>
+						<ul>
+							<li value="407544">- vorne rechts wechseln</li>
+							<li value="407543">- vorne links wechseln</li>
+							<li value="407546">- hinten rechts wechseln</li>
+							<li value="407545">- hinten links wechseln</li>
+						</ul>
+					</div>
+					
+					<div>
+						<img src="/_resources/img/top-services/top-service-stossdaempfer.jpg" alt="Stoßdämpfer wechseln">
+						<span>Stossdämpfer</span>
+						<ul>
+							<li value="407553">- komplett wechseln</li>
+							<li value="407551">- vorne wechseln</li>
+							<li value="407552">- hinten wechseln</li>
+						</ul>
+					</div>
+					
+					<div>
+						<img src="/_resources/img/top-services/top-service-getriebe.jpg" alt="Getriebe wechseln">
+						<span>Getriebe</span>
+						<ul>
+							<li value="412820">Getriebe wechseln (Austauschteil)</li>
+							<li value="409869">Getriebe wechseln (Neuteil)</li>
+						</ul>
+					</div>
+					
+					<div>
+						<img src="/_resources/img/top-services/top-service-turbolader.jpg" alt="Turbolader wechseln">
+						<span>Turbolader</span>
+						<ul>
+							<li value="412825">Turbolader wechseln (Austauschteil)</li>
+							<li value="407554">Turbolader wechseln (Neuteil)</li>
+						</ul>
+					</div>
+					
+					<div>
+						<img src="/_resources/img/top-services/top-service-nebelscheinwerfer.jpg" alt="Nebelscheinwerfer wechseln">
+						<span>Nebelscheinwerfer</span>
+						<ul>
+							<li value="409872">- vorne rechts wechseln</li>
+							<li value="409871">- vorne links wechseln</li>
+						</ul>
+					</div>
+					
+					<div>
+						<img src="/_resources/img/top-services/top-service-scheinwerfer.jpg" alt="Scheinwerfer wechseln">
+						<span>Scheinwerfer</span>
+						<ul>
+							<li value="407549">- vorne rechts wechseln</li>
+							<li value="407548">- vorne links wechseln</li>
+						</ul>
+					</div>
+					
+					<div class="small">
+						<img src="/_resources/img/top-services/top-service-anlasser.jpg" alt="Anlasser wechseln">
+						<span>Anlasser</span>
+						<ul>
+							<li value="409868">Anlasser wechseln</li>
+						</ul>
+					</div>
+					
+					<div class="small">
+						<img src="/_resources/img/top-services/top-service-autobatterie.jpg" alt="Autobatterie wechseln">
+						<span>Autobatterie</span>
+						<ul>
+							<li value="407531">Autobatterie wechseln</li>
+						</ul>
+					</div>
+					
+					<div class="small">
+						<img src="/_resources/img/top-services/top-service-frontscheibe.jpg" alt="Frontscheibe wechseln">
+						<span>Frontscheibe</span>
+						<ul>
+							<li value="407537">Frontscheibe wechseln</li>
+						</ul>
+					</div>
+					
+					<div class="small">
+						<img src="/_resources/img/top-services/top-service-keilriemen.jpg" alt="Keilriemen wechseln">
+						<span>Keilriemen</span>
+						<ul>
+							<li value="407538">Keilriemen wechseln</li>
+						</ul>
+					</div>
+					
+					<div class="small">
+						<img src="/_resources/img/top-services/top-service-klimakompressor.jpg" alt="Klimakompressor wechseln">
+						<span>Klimakompressor</span>
+						<ul>
+							<li value="407539">Klimakompressor wechseln</li>
+						</ul>
+					</div>
+					
+					<div class="small">
+						<img src="/_resources/img/top-services/top-service-kuehler.jpg" alt="Kühler wechseln">
+						<span>Kühler</span>
+						<ul>
+							<li value="407541">Kühler wechseln</li>
+						</ul>
+					</div>
+					
+					<div class="small">
+						<img src="/_resources/img/top-services/top-service-kupplung.jpg" alt="Kupplung wechseln">
+						<span>Kupplung</span>
+						<ul>
+							<li value="407540">Kupplung wechseln</li>
+						</ul>
+					</div>
+					
+					<div class="small">
+						<img src="/_resources/img/top-services/top-service-lichtmaschine.jpg" alt="Lichtmaschine wechseln">
+						<span>Lichtmaschine</span>
+						<ul>
+							<li value="407542">Lichtmaschine wechseln</li>
+						</ul>
+					</div>
+					
+					<div class="small">
+						<img src="/_resources/img/top-services/top-service-wasserpumpe.jpg" alt="Wasserpumpe wechseln">
+						<span>Wasserpumpe</span>
+						<ul>
+							<li value="407555">Wasserpumpe wechseln</li>
+						</ul>
+					</div>
+					
+					<div class="small">
+						<img src="/_resources/img/top-services/top-service-zahnriemen.jpg" alt="Zahnriemen wechseln">
+						<span>Zahnriemen</span>
+						<ul>
+							<li value="407556">Zahnriemen wechseln</li>
+						</ul>
+					</div>
+					
+					<div class="small">
+						<img src="/_resources/img/top-services/top-service-zuendkerzen.jpg" alt="Zündkerzen wechseln">
+						<span>Zündkerzen</span>
+						<ul>
+							<li value="407557">Zündkerzen wechseln</li>
+						</ul>
+					</div>
+					
+					<div class="small">
+						<img src="/_resources/img/top-services/top-service-zylinderkopfdichtung.jpg" alt="Zylinderkopfdichtung wechseln">
+						<span>Zylinderkopfdichtung</span>
+						<ul>
+							<li value="407519">Zylinderkopfdichtung wechseln</li>
+						</ul>
+					</div>
+					
+					<div class="small">
+						<img src="/_resources/img/top-services/top-service-zylinderkopf.jpg" alt="Zylinderkopf wechseln">
+						<span>Zylinderkopf</span>
+						<ul>
+							<li value="407523">Zylinderkopf wechseln</li>
+						</ul>
+					</div>
+					
+				</div>
+			</div>
+						
+						<div id="service-catalog">
+							<div class="modal-layer"></div>
+							<div class="container">
+								<div class="service-catalog-category">
+									<ul></ul>
+								</div>
+								<div class="service-catalog-category">
+									<ul></ul>
+								</div>
+								<div class="service-catalog-category">
+									<ul></ul>
+								</div>
+								<div class="service-catalog-category">
+									<ul></ul>
+								</div>
+								<div class="service-catalog-category">
+									<ul></ul>
+								</div>
+								<br clear="all">
+							</div>
+						</div>
+						
+					</div>
+				</div>
+				
+				<div class="equipmentWrapper">
+					<div class="selectionHeader">
+						<p>Ihre Ausstattung</p>
+					</div>
+					<div class="selectionArrow"></div>
+					<div class="equipmentSelection">
+						<div>
+							<p>Um die notwendigen Arbeiten und Preise exakt bestimmen zu können, benötigen wir Ihre Zusatzausstattung falls vorhanden.</p>
+							<ul></ul>
+						</div>
+						<button class="button-cta" type="button">
+							weiter zu den Angeboten
+						</button>
+					</div>
+				</div>
+			</div>
+		</div>
+		
+	</div>
+	
+	<script type="text/javascript">
+	var _gaq = _gaq || [];
+	_gaq.push(['_setAccount', 'UA-25117499-3']);
+	_gaq.push(['_gat._anonymizeIp']);
+	_gaq.push(['_setDomainName', 'demo.fairgarage.de']);
+	_gaq.push(['_trackPageview']);
+	
+	(function() {
+		var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+	    ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+		var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+	})();
+	
+</script>
+
+<script type="text/javascript">
+	$("#filter-container .google-link").hide();
+	function initMap() {}
+	function writeGoogleMapsMarker() {}
+</script>
+<script src="/_resources/js/GATracker.js" type="text/javascript"></script>
+
+<noscript>
+  <img src="https://t23.intelliad.de/tc.php?cl=3333030333236323131303&v=300&vz=pa&vv=&po=&c1=&c2=&c3=&c4=&pi=" width="1" height="1" alt="intelliAd" />
+</noscript>
+</body>
+</html>

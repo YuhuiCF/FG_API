@@ -1,0 +1,149 @@
+<!DOCTYPE HTML>
+<html>
+	<head>
+		<title>FairGarage API contexts Test</title>
+		<meta charset="utf-8">
+		<meta http-equiv="content-type" content="text/html; charset=UTF-8">
+		<script src="_js/jquery.min.js"></script>
+		<script type="text/javascript">
+            var searchParameters = window.location.search;
+            searchParameters = searchParameters.replace('?','');
+            searchParameters = searchParameters.split('&');
+            var dev = (searchParameters.indexOf('dev') < 0 ? '' : 'dev/');
+            var min = (searchParameters.indexOf('min') < 0 ? '' : '.min');
+            var help = (searchParameters.indexOf('help') < 0 ? '' : '.help');
+			document.write('\x3Cscript type="text/javascript" src="' + dev + '_js/fairgarage' + help + min + '.js">\x3C/script>');
+		</script>
+		<script src="_js/fairgarage.scripts.js"></script>
+		<script>
+			/*
+			tests.push(function(){
+				FG1.findContext({
+					webkitConfigKey: 'DAT_MYD_001',
+					ajax: {
+						complete: function(jqXHR,textStatus){
+							write('FG1 findContext complete()');
+							
+							if (textStatus == 'success') {
+								var data = JSON.parse(jqXHR.responseText);
+								//write('FG1 findWebkitConfig finds ' + data.length.toString() + ' result(s)');
+								$.each(data,function(){
+									//write(this.key);
+								});
+							}
+							
+							testNext();
+						}
+					}
+				});
+			});
+			*/
+			
+			/*
+			tests.push(function(){
+				var webkitConfigs = ['MAZDA-001','HRQZDs3u79Z','VAWEB-001','GYMmTuqLxfq','F0SKQH3QmbH','FaYUerQ8sIQ'];
+				//var webkitConfigs = ['MAZDA-001'];
+				$.each(webkitConfigs,function(){
+					var webkitConfigKey = this.toString();
+					FG1.findContext({
+						criteria: {
+							webkitConfigKey: webkitConfigKey
+						},
+						ajax: {
+							complete: function(jqXHR,textStatus){
+								write('FG1 findContext for ' + webkitConfigKey + ' complete()');
+								
+								if (textStatus == 'success') {
+									var data = JSON.parse(jqXHR.responseText);
+									write('FG1 findContext finds ' + data.length.toString() + ' result(s) for ' + webkitConfigKey);
+									
+									$.each(data,function(){
+										write(this.key);
+									});
+								}
+								
+								testNext();
+							}
+						}
+					});
+				})
+			});
+			*/
+			
+			tests.push(function(){
+				FG1.findContext({
+					criteria: {
+						limit: 200
+					},
+					ajax: {
+						complete: function(jqXHR,textStatus){
+							write('FG1 findContext complete()');
+							
+							if (textStatus == 'success') {
+								var data = JSON.parse(jqXHR.responseText);
+								write('FG1 findContext finds ' + data.length.toString() + ' result(s)');
+								
+                                var counter = 0;
+								$.each(data,function(){
+									var match = true;
+                                    /*
+									$.each(this.urlConfigurations[0].hosts,function(){
+										matches = this.toString().match(/dat|spiegel|fairgarage|werkstatt-muenchen-24/g);
+										if (matches) {} else {
+											match = false;
+										}
+									});
+                                    */
+									if (this.active) {
+										//write('contextKey ' + this.key + ' as application ' + this.applicationType + ' used in hosts<br/>' + this.urlConfigurations[0].hosts);
+										//write(this.key + '\t' + this.applicationType + '\t' + this.urlConfigurations[0].hosts.join(','));
+                                        counter++;
+									} else {
+                                        write(this.key);
+                                    }
+								});
+                                write('counter: ' + counter.toString());
+							}
+							
+							testNext();
+						}
+					}
+				});
+			});
+			/*
+			tests.push(function(){
+				FG1.deleteContext({
+					ajax: {
+						success: function(data){
+							write('FG1 deleteContext success()');
+							write(data);
+						},
+						error: function(jqXHR,textStatus,errorThrown){
+							write('FG1 deleteContext error()');
+							var data = JSON.parse(jqXHR.responseText);
+							write('Error code: ' + data[0].errorCode);
+							write('Error message: ' + data[0].errorMessage);
+						},
+						complete: function(jqXHR,textStatus){
+							write('FG1 deleteContext complete()');
+							
+							if (textStatus == 'success') {
+								var data = JSON.parse(jqXHR.responseText);
+								write(data);
+							}
+							
+							console.dir(jqXHR);
+							
+							testNext();
+						}
+					}
+				});
+			});
+			*/
+			
+			testNext();
+		</script>
+	</head>
+	<body>
+	</body>
+</html>

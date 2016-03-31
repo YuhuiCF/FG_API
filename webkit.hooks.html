@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+    <head>
+        <title>Webkit test</title>
+		<meta charset="UTF-8">
+		<script src="//ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"></script>
+		<script>
+			var oldValue = '';
+			
+			var WEBKIT_HOOKS = {
+				/*
+                'navigate:search': function(){
+					hookMessage('navigate:search');
+					//$('#textContainer').show();
+					//$('#webkitContainer').removeClass('wide');
+				},
+                'navigate:results': function(){
+					hookMessage('navigate:results');
+					//$('#textContainer').hide();
+					//$('#webkitContainer').addClass('wide');
+				},
+                'navigate:offer': function(){
+					hookMessage('navigate:offer');
+					//$('#textContainer').hide();
+					//$('#webkitContainer').addClass('wide');
+				},
+				*/
+				'navigate:search': hookMessage('navigate:search'),
+				'navigate:results': hookMessage('navigate:results'),
+				'navigate:detail': hookMessage('navigate:detail'),
+				'navigate:offer': hookMessage('navigate:offer'),
+                'navigate:offer:confirmed': hookMessage('navigate:offer:confirmed'),
+                'vehicle:hsntsn:start': hookMessage('vehicle:hsntsn:start'),
+                'vehicle:hsntsn:selected': hookMessage('vehicle:hsntsn:selected'),
+                'vehicle:vin:start': hookMessage('vehicle:vin:start'),
+                'vehicle:vin:selected': hookMessage('vehicle:vin:selected'),
+                'vehicle:catalog:start': hookMessage('vehicle:catalog:start'),
+                'vehicle:catalog:category': hookMessage('vehicle:catalog:category'),
+                'vehicle:catalog:brand': hookMessage('vehicle:catalog:brand'),
+                'vehicle:catalog:consctruction-time': hookMessage('vehicle:catalog:consctruction-time'),
+                'vehicle:catalog:series': hookMessage('vehicle:catalog:series'),
+                'vehicle:catalog:model': hookMessage('vehicle:catalog:model'),
+                'vehicle:catalog:motor': hookMessage('vehicle:catalog:motor'),
+                'vehicle:catalog:selected': hookMessage('vehicle:catalog:selected'),
+                'region:selected': hookMessage('region:selected'),
+                'service:removed': hookMessage('service:removed'),
+                'service:selected': hookMessage('service:selected'),
+                'service:catalog': hookMessage('service:catalog'),
+                'service:search': hookMessage('service:search'),
+                'location:select:radius': hookMessage('location:select:radius'),
+                'location:select:workshoptype': hookMessage('location:select:workshoptype'),
+                'location:select:brand': hookMessage('location:select:brand'),
+                'location:select:emergencyhotline': hookMessage('location:select:emergencyhotline'),
+                'location:search': hookMessage('location:search')
+            };
+			
+			$(window).load(function(){
+				$('#containerWidth').val('');
+			});
+			
+			$(document).on('keyup mouseup','#containerWidth',function(){
+				var thisValue = $(this).val();
+				var setWidthTO;
+				if (!(thisValue == oldValue || thisValue == '' || thisValue == 0)) {
+					clearTimeout(setWidthTO);
+					setWidthTO = setTimeout(function(){
+						$('#webkitContainer').width(thisValue);
+						oldValue = thisValue;
+					},1000);
+				}
+			});
+			
+			/*
+            function hookMessage(message) {
+                return function() {
+                    var el = document.createElement('p');
+                    var text = 'The hook <strong>"%s"</strong> just got triggered.'.replace('%s', message);
+                    el.innerHTML = text;
+                    document.getElementById('textContainer').appendChild(el);
+                }
+            }
+			*/
+			function hookMessage(message) {
+				return function(event, data) {
+					var el = document.createElement('p');
+					var text = 'The hook <strong>"%s"</strong> just got triggered'.replace('%s', message);
+					if(data){
+						text = text+' Data: %d'.replace('%d', data);
+						console.dir(data);
+					}
+					el.innerHTML = text;
+					document.getElementById('textContainer').appendChild(el);
+				}
+			}
+
+			
+		</script>
+		
+		<style>
+			#textContainer{width:600px;float:left;}
+			#webkitContainer{width:300px;float:left;}
+			#webkitContainer.wide{width:900px;}
+		</style>
+    </head>
+    <body>
+		<div>
+			Set container width: <input id="containerWidth" type="text"></input>px
+		</div>
+		<div>
+			<div id="textContainer">
+				
+			</div>
+			<div id="webkitContainer">
+				<div class="fg-webkit" fg-webkit></div>
+				<script type="text/javascript" src="//de-qa.fairgarage.de/smp/de/de/api/contexts/FG_HOOKS/loader?locationIds=74"></script>
+			</div>
+			<br clear="all"/>
+		</div>
+    </body>
+</html>

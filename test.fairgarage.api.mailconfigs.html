@@ -1,0 +1,142 @@
+<!DOCTYPE HTML>
+<html>
+	<head>
+		<title>mailconfigs - FairGarage API Test</title>
+		<meta charset="utf-8">
+		<meta http-equiv="content-type" content="text/html; charset=UTF-8">
+		<script src="_js/jquery.min.js"></script>
+		<script type="text/javascript">
+            var searchParameters = window.location.search;
+            searchParameters = searchParameters.replace('?','');
+            searchParameters = searchParameters.split('&');
+            var dev = (searchParameters.indexOf('dev') < 0 ? '' : 'dev/');
+            var min = (searchParameters.indexOf('min') < 0 ? '' : '.min');
+            var help = (searchParameters.indexOf('help') < 0 ? '' : '.help');
+            document.write('\x3Cscript type="text/javascript" src="' + dev + '_js/fairgarage' + help + min + '.js">\x3C/script>');
+		</script>
+		<script src="_js/fairgarage.scripts.js"></script>
+		<script>
+            loginRequired = true;
+			/*
+			tests.push(function(){
+                FG1.findMailConfig({
+                    ajax: {
+                        success: function(data){
+                            $.each(data,function(){
+                                write(this);
+                            });
+                        }
+                    }
+                });
+            });
+            */
+
+            tests.push(function(){
+                write('environment should be "de-demo"');
+                
+                write('testNext()');
+            });
+
+            /*
+            tests.push(function(){
+                FG1.createMailConfig({
+                    mailConfig: {
+                        name: "Identica (Serviceannahme)",
+                        providerId: 5000173
+                    }
+                });
+            });
+            */
+
+            tests.push(function(){
+                FG1.findMailConfig({
+                    criteria: {
+                        providerId: 5000173
+                    },
+                    ajax: {
+                        success: function(data){
+                            write('FG1 findMailConfig success for providerId 5000173');
+
+                            testNext({mailConfig: data[0]});
+                            //write('testNext()');
+                        }
+                    }
+                });
+            });
+            
+            tests.push(function(obj){
+                var mailConfig = obj.mailConfig;
+                mailConfig.public = true;
+                FG1.updateMailConfig({
+                    mailConfig: {
+                        mailConfigId: mailConfigId
+                    },
+                    ajax: {
+                        success: function(data){
+                            write('FG1 updateMailConfig success');
+
+                            //testNext();
+                        }
+                    }
+                });
+            });
+
+            tests.push(function(){
+                FG1.findMailConfig({
+                    criteria: {
+                        //providerId: 5000173
+                        providerId: 1,
+                        name: "DAT"
+                    },
+                    ajax: {
+                        success: function(data){
+                            write('FG1 findMailConfig success');
+
+                            testNext({mailConfigId: data[0].id});
+                            //write('testNext()');
+                        }
+                    }
+                });
+            });
+            
+            tests.push(function(obj){
+                var mailConfigId = obj.mailConfigId;
+                FG1.findMailTemplate({
+                    criteria: {
+                        mailConfigId: mailConfigId
+                    },
+                    ajax: {
+                        success: function(data){
+                            write('FG1 findMailTemplate success');
+
+                            write('testNext()');
+                        }
+                    }
+                });
+            });
+            
+            /*
+            tests.push(function(){
+                FG1.createMailTemplate({
+                    mailTemplate: {
+                        "mailConfigId": 9,
+                        "name": "offerEmailForSendingOfferLinkToCustomer",
+                        "subject": "Ihr Identica Angebot",
+                        "textTemplate": "Sehr geehrter Identica Kunde,\n\ngerne erhalten Sie von uns ein Angebot für Ihren Wunschservice.\n\nÜber den nachfolgenden Link gelangen Sie direkt zum Angebot. Sie müssen nur noch Ihren Wunschtermin auswählen.\n\n${r\"${OFFER_DETAIL_LINK}\"}\n\nWir hoffen, unser Angebot ist für Sie interessant und wir würden uns freuen, die gewünschten Services für Sie durchführen zu dürfen.\n\nBei Rückfragen erreichen Sie uns per E-Mail oder telefonisch.\n\nMit freundlichen Grüßen,\nIhr Identica Serviceberater"
+                    },
+                    ajax: {
+                        success: function(data){
+                            write('FG1 createMailTemplate success');
+                        }
+                    }
+                });
+            });
+            */
+            
+            testNext();
+            
+		</script>
+	</head>
+	<body>
+	</body>
+</html>

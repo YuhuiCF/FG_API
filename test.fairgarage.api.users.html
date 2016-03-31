@@ -1,0 +1,119 @@
+<!DOCTYPE HTML>
+<html>
+	<head>
+		<title>FairGarage API users Test</title>
+		<meta charset="utf-8">
+		<meta http-equiv="content-type" content="text/html; charset=UTF-8">
+		<script src="_js/jquery.min.js"></script>
+		<script type="text/javascript">
+            var searchParameters = window.location.search;
+            searchParameters = searchParameters.replace('?','');
+            searchParameters = searchParameters.split('&');
+            var dev = (searchParameters.indexOf('dev') < 0 ? '' : 'dev/');
+            var min = (searchParameters.indexOf('min') < 0 ? '' : '.min');
+            var help = (searchParameters.indexOf('help') < 0 ? '' : '.help');
+            document.write('\x3Cscript type="text/javascript" src="' + dev + '_js/fairgarage' + help + min + '.js">\x3C/script>');
+		</script>
+		<script src="_js/fairgarage.scripts.js"></script>
+		<script>
+            FG1.setProperties({
+                contextKey: 'fNgmCOD2iGe9',
+                env: 'de-qa'
+            });
+            
+            var agreements;
+			tests.push(function(){
+                FG1.findAgreement({
+                    quickHandle: function(data){
+                        write('FG1 getAgreement quickHandle()');
+                        agreements = data;
+                    },
+                    ajax: {
+                        complete: function(){
+                            write('testNext();');
+                        }
+                    }
+                })
+            });
+            
+            var date = new Date().toISOString().replace(/\D/g,'');
+			
+			tests.push(function(){
+				FG1.registerUser({
+					ajax: {
+						beforeSend: function(jqXHR,data){
+							write(data);
+						}
+					},
+					registrationData: {
+					//	"privacyAccept": true,
+					//	"tosAccept": true,
+						"surname": "Xiong",
+						"givenname": "Yuhui+"+date,
+						"emailAddress": "yuhuitestt+"+date+"@gmail.com",
+						"salutation": "m",
+						"acceptedAgreements": agreements
+                        /*[
+						
+							{
+								"providerId": 1,
+								"agreementId": "548ff22065b35eca3810635c",
+								"agreementVersionId": "548ff22065b35eca3810635d",
+							},
+							{
+								"providerId": 1,
+								"agreementId": "548ff22065b35eca3810635e",
+								"agreementVersionId": "548ff22065b35eca3810635f"
+							}
+						],*/
+						/*
+						tos = {
+							providerId: data[tosIndex].providerId,
+							agreementId: data[tosIndex].agreementId,
+							agreementVersionId: data[tosIndex].id
+						};
+						privacy = {
+							providerId: data[privacyIndex].providerId,
+							agreementId: data[privacyIndex].agreementId,
+							agreementVersionId: data[privacyIndex].id
+						}
+						*/
+					//	"password": false
+					}
+				});
+			});
+/*
+					  "privacyAccept": false,
+					  "tosAccept": false,
+					  "id": 1,
+					  "surname": "a string",
+					  "authorities": [
+						{}
+					  ],
+					  "givenname": "a string",
+					  "emailAddress": "a string",
+					  "phone": "a string",
+					  "salutation": "a string",//'m' or 'f'
+					  "mobile": "a string",
+					  //"title": "a string",
+					  "acceptedAgreements": [
+						{
+						  "providerId": 1,
+						  "superseded": 1428923888140,
+						  "agreementId": "a string",
+						  "agreementVersionId": "a string"
+						}
+					  ],
+					  //"middlename": "a string",
+					  "preferredLocale": "de_DE",
+					  "password": false
+
+*/
+			
+			testNext();
+            
+		</script>
+	</head>
+	<body>
+	</body>
+</html>

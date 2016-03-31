@@ -1,0 +1,135 @@
+<!DOCTYPE HTML>
+<html>
+	<head>
+		<title>FairGarage API webkit Test</title>
+		<meta charset="utf-8">
+		<meta http-equiv="content-type" content="text/html; charset=UTF-8">
+		<script src="_js/jquery.min.js"></script>
+		<script type="text/javascript">
+            var searchParameters = window.location.search;
+            searchParameters = searchParameters.replace('?','');
+            searchParameters = searchParameters.split('&');
+            var dev = (searchParameters.indexOf('dev') < 0 ? '' : 'dev/');
+            var min = (searchParameters.indexOf('min') < 0 ? '' : '.min');
+            var help = (searchParameters.indexOf('help') < 0 ? '' : '.help');
+			document.write('\x3Cscript type="text/javascript" src="' + dev + '_js/fairgarage' + help + min + '.js">\x3C/script>');
+		</script>
+		<script src="_js/fairgarage.scripts.js"></script>
+		<script id="testApi">
+		
+		</script>
+	</head>
+	<body>
+		<!--
+		<script>
+			/*
+			tests.push(function(){
+				FG1.getWebkitConfig({
+					webkitConfigKey: 'FGMA237586UK',
+					ajax: {
+						complete: function(jqXHR,textStatus){
+							write('FG1 getWebkitConfig complete()');
+							
+							testNext();
+						}
+					}
+				});
+			});
+			*/
+			
+			tests.push(function(){
+				FG1.findWebkitConfig({
+					criteria: {
+						limit: 200,
+						offset: 0,
+						orderBy: 'key'
+					},
+					ajax: {
+						complete: function(jqXHR,textStatus){
+							if (textStatus == 'success') {
+								write('FG1 findWebkitConfig complete()');
+								var data = JSON.parse(jqXHR.responseText);
+								write('FG1 findWebkitConfig finds ' + data.length.toString() + ' result(s)');
+								
+								$.each(data,function(){
+									//try {
+										if ((this.vehicleSelectionConfig == null) || (this.vehicleSelectionConfig && this.vehicleSelectionConfig.selectionMethods == null) || (this.vehicleSelectionConfig && this.vehicleSelectionConfig.selectionMethods && this.vehicleSelectionConfig.selectionMethods.length == 0)) {
+											write(this.key);
+										}
+									//} catch(err) {
+									//}
+								});
+								
+								testNext();
+							}
+						}
+					}
+				});
+			});
+			
+			testNext();
+			
+		</script>-->
+		<script>
+			var webkitTemplateServiceViews;
+
+			tests.push(function(){
+				FG1.getWebkitConfig({
+					webkitConfigKey: 'GYohQYSHXbI',
+					ajax: {
+						success: function(data){
+							write('FG1 getWebkitConfig success()');
+							
+							webkitTemplateServiceViews = data.serviceSelectionConfig.serviceViewConfigs;
+
+							testNext();
+						}
+					}
+				});
+			});
+
+			tests.push(function(){
+				FG1.getWebkitConfig({
+					webkitConfigKey: 'MAZDA-001',//GYohQYSHXbI
+					ajax: {
+						success: function(data){
+							write('FG1 getWebkitConfig success()');
+							var missingServiceViews = [];
+							$.each(data.serviceSelectionConfig.serviceViewConfigs,function(){
+								thisMazdaServiceView = this;
+								var thisMazdaServiceViewFound = false;
+								$.each(webkitTemplateServiceViews,function(){
+									if (this.name == thisMazdaServiceView.name) {
+										thisMazdaServiceViewFound = true;
+										/*
+										var errorMessages = [];
+	                                    for (var key in thisMazdaServiceView) {
+	                                        if (thisMazdaServiceView[key] != this[key]) {// properties do not match
+	                                            errorMessages.push('the value for ' + key.toString() + ' is ' + thisMazdaServiceView[key] + ', it is expected to be ' + this[key]);
+	                                        }
+	                                    }
+	                                    if (errorMessages.length > 0) {
+	                                        writeError('For service view with name ' + thisMazdaServiceView.name + ': \n<br/>' + errorMessages.join('\n<br/>'));
+	                                    }
+	                                    */
+										return;
+									}
+								});
+								if (!thisMazdaServiceViewFound) {
+									writeError('service view with name ' + thisMazdaServiceView.name + ' not found in template');
+									missingServiceViews.push(thisMazdaServiceView);
+								}
+							});
+							
+							write(JSON.stringify(missingServiceViews));
+
+							testNext();
+						}
+					}
+				});
+			});
+
+			testNext();
+		</script>
+	</body>
+</html>

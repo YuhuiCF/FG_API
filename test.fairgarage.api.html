@@ -1,0 +1,212 @@
+<!DOCTYPE HTML>
+<html>
+	<head>
+		<title>FairGarage API Test</title>
+		<meta charset="utf-8">
+		<meta http-equiv="content-type" content="text/html; charset=UTF-8">
+		<script src="_js/jquery.min.js"></script>
+		<script type="text/javascript">
+            var searchParameters = window.location.search;
+            searchParameters = searchParameters.replace('?','');
+            searchParameters = searchParameters.split('&');
+            var dev = (searchParameters.indexOf('dev') < 0 ? '' : 'dev/');
+            var min = (searchParameters.indexOf('min') < 0 ? '' : '.min');
+            var help = (searchParameters.indexOf('help') < 0 ? '' : '.help');
+            document.write('\x3Cscript type="text/javascript" src="' + dev + '_js/fairgarage' + help + min + '.js">\x3C/script>');
+		</script>
+		<script src="_js/fairgarage.scripts.js"></script>
+        <!--<script>
+            tests.push(function(){
+                FG1.setProperties({'async':false});
+                testNext();
+            });
+
+            tests.push(function(){
+                //var categories = [1,1040,3368,3643,8576,8683,9143,10314,12885,16754,17485,18250,18822,19545,20741,20889,24685,30288,33658,33874,38356,39473,40766,42790,43586,45497,51429,128648,128649,84748,85196,86992,89321,89420,91693,91773,91806,93764,94484,95345,96442,96623];
+                var categories = [1,1040,3368,38356,39473,40766,42790,43586,45497,51429,91693,91773,91806,93764,94484,96623];
+                $.each(categories,function(){
+                    FG1.findVehicleByCatalog({
+                        categoryId: this,
+                        //constructionTime: '2008-01-01',
+                        ajax: {
+                            complete: function(jqXHR,textStatus){
+                                var data = JSON.parse(jqXHR.responseText);
+                                var outputStr = '';
+                                $.each(data.ancestors,function(){
+                                    outputStr += ' > ' + this.name;
+                                });
+                                write(outputStr);
+                            }
+                        }
+                    });
+                });
+                testNext();
+            });
+
+            tests.push(function(){
+                FG1.setProperties({'async':true});
+                testNext();
+            });
+
+        </script>-->
+		<script>
+            /*
+            tests.push(function(){
+                FG1.getWebkitConfig({
+                    //webkitConfigKey: "D7FtuL2YZ53",
+                    webkitConfigKey: "EsVHj4pyTkn",
+                    ajax: {
+                        success: function(data){
+                            var outputStr = '';
+                            $.each(data.serviceSelectionConfig.serviceViewConfigs,function(){
+                                outputStr += this.name + '<br/>';
+                            });
+                            write(outputStr);
+                        }
+                    }
+                });
+            });
+            */
+
+            /*
+            tests.push(function(){
+                FG1.findWebkitConfig({
+                    ajax: {
+                        success: function(data){
+                            $.each(data,function(){
+                                if (this.regionSelectionConfig && this.regionSelectionConfig.selectable === false && this.regionSelectionConfig.preselectedRegions.length == 0) {
+                                    var webkitConfigKey = this.key;
+                                    var webkitConfigName = this.name;
+                                    FG1.findContext({
+                                        criteria: {
+                                            webkitConfigKey: webkitConfigKey
+                                        },
+                                        ajax: {
+                                            success: function(data){
+                                                var keys = [];
+                                                $.each(data,function(){
+                                                    keys.push(this.key + '(' + this.name + ')');
+                                                });
+                                                write('webkitConfigKey: ' + webkitConfigKey + ', webkitConfigName: ' + webkitConfigName + ', contextKeys: ' + (keys.length > 0 ? keys.join(',') : 'NULL'));
+                                            }
+                                        }
+                                    });
+                                }
+                            });
+                        }
+                    }
+                });
+            });
+            */
+            /*
+            tests.push(function(){
+                FG1.findContext({
+                    criteria: {
+                        limit:1000,
+                        offset:0
+                    },
+                    ajax: {
+                        success: function(data){
+                            var outputStr = '';
+                            $.each(data,function(){
+                                if (this.agreementIds === null || this.agreementIds.length == 0) {
+                                    outputStr += '<br/>' + this.key;
+                                }
+                            });
+                            write(outputStr);
+                        }
+                    }
+                });
+            });
+            */
+
+            testNext();
+
+		</script>
+        <script>
+            /*
+                randomSelectVehicle(id)
+                findAllWebkitAndContext(limit)
+            */
+
+            var year = [],month = [];
+            for (var i = 2000; i <= 2012; i++){
+                year.push(i.toString());
+            }
+            for (var i = 1; i <= 12; i++){
+                month.push(('0'+i.toString()).slice(-2));
+            }
+            var constructionTime = year[Math.floor(Math.random()*year.length)] + '-' + month[Math.floor(Math.random()*month.length)] + '-' + '01';
+            function randomSelectVehicle(id){
+                if (typeof id == 'undefined') {
+                    id = 62303
+                }
+                FG1.findVehicleByCatalog({
+                    categoryId: id,
+                    criteria:{
+                        constructionTime: constructionTime,
+                        countryCode: 'GB',
+                        languageCode: 'en'
+                    },
+                    quickHandle: function(data){
+                        var newData = data[Math.floor(Math.random()*data.length)];
+                        if (newData.lastLevel) {
+                            write(newData);
+                        } else {
+                            write(newData);
+                            randomSelectVehicle(newData.id);
+                        }
+                    },
+                    ajax: {
+                        complete: function(jqXHR,textStatus){
+                            write('FG1 getVehicleByCatalog complete() for categoryId ' + id + ' and construction time ' + constructionTime);
+                        }
+                    }
+                });
+            }
+
+            function findAllWebkitAndContext(limit){
+                if (typeof limit == 'undefined') {
+                    limit = 200;
+                }
+                FG1.findWebkitConfig({
+                    criteria: {
+                        limit: limit
+                    },
+                    ajax: {
+                        success: function(data){
+                            write('FG1 findWebkitConfig success()');
+                            write('FG1 findWebkitConfig finds ' + data.length.toString() + ' results');
+                            $.each(data,function(){
+                                //write(this.key);
+                                var webkitConfigKey = this.key;
+
+                                FG1.findContext({
+                                    criteria: {
+                                        webkitConfigKey: webkitConfigKey
+                                    },
+                                    ajax: {
+                                        complete: function(jqXHR,textStatus){
+                                            //write('FG1 findContext complete()');
+
+                                            if (textStatus == 'success') {
+                                                var data = JSON.parse(jqXHR.responseText);
+
+                                                $.each(data,function(){
+                                                    write(webkitConfigKey + ' ' + this.key + ' ' + this.applicationType + ' ' + this.urlConfigurations[0].hosts);
+                                                });
+                                            }
+                                        }
+                                    }
+                                });
+                            });
+                        }
+                    }
+                });
+            }
+
+        </script>
+	</head>
+	<body>
+	</body>
+</html>
