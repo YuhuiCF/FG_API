@@ -1,0 +1,18 @@
+
+<script type="text/javascript">
+    var indexLinks = document.getElementsByClassName('indexLink');
+    var helpLinks = document.getElementsByClassName('helpLink');
+    var minifyLinks = document.getElementsByClassName('minifyLink');
+    var links = [indexLinks,helpLinks,minifyLinks];
+
+    for (var i = 0; i < links.length; i++){
+        for (var j = 0; j < links[i].length; j++) {
+            changeHref(links[i][j]);
+        }
+    }
+
+    function changeHref(element){
+        var oldHref = element.getAttribute('href');
+        element.setAttribute('href',oldHref + window.location.search);
+    }
+</script>

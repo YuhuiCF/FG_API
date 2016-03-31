@@ -1,0 +1,1259 @@
+<!DOCTYPE HTML>
+<html>
+	<head>
+		<title>FairGarage API vehicles Test</title>
+		<meta charset="utf-8">
+		<meta http-equiv="content-type" content="text/html; charset=UTF-8">
+		<script src="_js/jquery.min.js"></script>
+		<script type="text/javascript">
+            var searchParameters = window.location.search;
+            searchParameters = searchParameters.replace('?','');
+            searchParameters = searchParameters.split('&');
+            var dev = (searchParameters.indexOf('dev') < 0 ? '' : 'dev/');
+            var min = (searchParameters.indexOf('min') < 0 ? '' : '.min');
+            var help = (searchParameters.indexOf('help') < 0 ? '' : '.help');
+            document.write('\x3Cscript type="text/javascript" src="' + dev + '_js/fairgarage' + help + min + '.js">\x3C/script>');
+		</script>
+		<script src="_js/fairgarage.scripts.js"></script>
+		<script>
+            FG1.error = function(str){
+                console.error(str);
+                appendP('FG1 ERROR: ' + str);
+            }
+			/*
+            tests.push(function(){
+                write('START CHECKING findVehicleByCatalog');
+                write('TOCHECK: FG1 test findVehicleByCatalog with no function parameter, expect to be no error thrown from the function findVehicleByCatalog');
+                FG1.findVehicleByCatalog();
+                setTimeout(function(){
+                    testNext();
+                },2000);
+            });
+
+            tests.push(function(){
+                write('TOCHECK: FG1 test findVehicleByCatalog with semi-mandatory parameter categoryId not given, expect to be 62303');
+                FG1.findVehicleByCatalog({
+                    ajax: {
+                        beforeSend: function(jqXHR,settings){
+                            var url = settings.url;
+                            write('settings.url = ' + url);
+                            url = url.match(/catalog\/(\d)+\?/)[0];
+                            url = url.replace('catalog/','');
+                            var categoryId = url.replace('?','');
+                            if (categoryId != 62303) {
+                                writeError('categoryId is expected to be 62303, instead of ' + categoryId);
+                            }
+                        },
+                        success: function(data){
+                            write('FG1 findVehicleByCatalog without categoryId success()');
+                            testNext();
+                        }
+                    }
+                });
+            });
+            
+            tests.push(function(){
+                write('TOCHECK: FG1 test findVehicleByCatalog with categoryId "12885" for Ford, expect the returned data has key ancestors, with 2 levels, the first one being 62303, the other being 12885');
+                FG1.findVehicleByCatalog({
+                    categoryId: '12885',
+                    ajax: {
+                        beforeSend: function(jqXHR,settings){
+                            var url = settings.url;
+                            write('settings.url = ' + url);
+                            url = url.match(/catalog\/(\d)+\?/)[0];
+                            url = url.replace('catalog/','');
+                            var categoryId = url.replace('?','');
+                            if (categoryId != 12885) {
+                                writeError('categoryId is expected to be 12885, instead of ' + categoryId);
+                            }
+                        },
+                        success: function(data){
+                            write('FG1 findVehicleByCatalog for categoryId: 12885 (Ford) success()');
+
+                            if (data.ancestors.length != 2) {
+                                writeError('Length of data.ancestors is expected to be 2, instead of ' + data.ancestors.length);   
+                            }
+                            if (data.ancestors[0].id != 62303) {
+                                writeError('data.ancestors[0] should have id 62303, for Pkw, SUV, Kleinstransporter');
+                            }
+                            if (data.ancestors[1].id != 12885) {
+                                writeError('data.ancestors[1] should have id 12885, for Ford');
+                            }
+
+                            testNext();
+                        }
+                    }
+                });
+            });
+
+            tests.push(function(){
+                write('TOCHECK: FG1 test findVehicleByCatalog, from the first level to the last level, expect the contents available in quickHandle are correct');
+                var constructionTime = '2010-01-01';
+                FG1.findVehicleByCatalog({
+                    criteria: {constructionTime: constructionTime},
+                    categoryId: '3643',
+                    quickHandle: function(data){
+                        $.each(data,function(){
+                            //write(this);
+                            if (this.lastLevel) {
+                                writeError('FG1 findVehicleByCatalog for categoryId ' + categoryId + ' should not be in the lastLevel');
+                            }
+                            if (this.externalId != null) {
+                                writeError('FG1 findVehicleByCatalog for categoryId ' + categoryId + ' should have externalId null');
+                            }
+                        });
+                    },
+                    ajax: {
+                        success: function(data){
+                            write('FG1 findVehicleByCatalog for categoryId: 3643 (BMW) success()');
+
+                            var targetFound = false;
+                            var target = 5090;
+                            $.each(data.categories,function(){
+                                if (this.id == target) {
+                                    targetFound = true;
+                                }
+                            });
+                            if (!targetFound) {
+                                writeError('vehicle category ID ' + target.toString() + ' is not in the returned object');
+                                return;
+                            }
+
+                            testNext({constructionTime:constructionTime,categoryId:target});
+                        }
+                    }
+                });
+            });
+            
+            tests.push(function(obj){
+                write('TOCHECK: FG1 test findVehicleByCatalog, the data properties in quickHandle function')
+                var constructionTime = obj.constructionTime;
+                var categoryId = obj.categoryId;
+                FG1.findVehicleByCatalog({
+                    criteria: {constructionTime: constructionTime},
+                    categoryId: categoryId,
+                    quickHandle: function(data){
+                        $.each(data,function(){
+                            //write(this);
+                            if (this.id === null) {
+                                writeError('FG1 findVehicleByCatalog for categoryId ' + categoryId + ' value of id in quickHandle should not be null');
+                            }
+                            if (this.name === null) {
+                                writeError('FG1 findVehicleByCatalog for categoryId ' + categoryId + ' value of name in quickHandle should not be null');
+                            }
+                            if (this.properties.length != 0) {
+                                writeError('FG1 findVehicleByCatalog for categoryId ' + categoryId + ' should have no values in properties of quickHandle');
+                            }
+                            if (this.lastLevel === true) {
+                                writeError('FG1 findVehicleByCatalog for categoryId ' + categoryId + ' should not be in the lastLevel of quickHandle');
+                            }
+                            if (this.externalId !== null) {
+                                writeError('FG1 findVehicleByCatalog for categoryId ' + categoryId + ' should have externalId of quickHandle the value null');
+                            }
+                        });
+                    },
+                    ajax: {
+                        success: function(data){
+                            write('FG1 findVehicleByCatalog for categoryId: ' + categoryId + ' (Baureihe 6 Cabrio (E64)) success()');
+
+                            var targetFound = false;
+                            var target = 5096;
+                            $.each(data.categories,function(){
+                                if (this.id == target) {
+                                    targetFound = true;
+                                }
+                            });
+                            if (!targetFound) {
+                                writeError('vehicle category ID ' + target.toString() + ' is not in the returned object');
+                            }
+
+                            testNext({constructionTime:constructionTime,categoryId:target});
+                        }
+                    }
+                });
+            });
+            
+            tests.push(function(obj){
+                write('TOCHECK: FG1 test findVehicleByCatalog, intermediate level');
+                var constructionTime = obj.constructionTime;
+                var categoryId = obj.categoryId;
+                FG1.findVehicleByCatalog({
+                    criteria: {constructionTime: constructionTime},
+                    categoryId: categoryId,
+                    quickHandle: function(data){
+                        $.each(data,function(){
+                            //write(this);
+                            if (this.lastLevel) {
+                                writeError('FG1 findVehicleByCatalog for categoryId ' + categoryId + ' should not be in the lastLevel');
+                            }
+                            if (this.externalId != null) {
+                                writeError('FG1 findVehicleByCatalog for categoryId ' + categoryId + ' should have externalId null');
+                            }
+                        });
+                    },
+                    ajax: {
+                        success: function(data){
+                            write('FG1 findVehicleByCatalog for categoryId: ' + categoryId + ' (650 CI) success()');
+
+                            var targetFound = false;
+                            var target = 5097;
+                            $.each(data.categories,function(){
+                                if (this.id == target) {
+                                    targetFound = true;
+                                }
+                            });
+                            if (!targetFound) {
+                                writeError('vehicle category ID ' + target.toString() + ' is not in the returned object');
+                            }
+
+                            testNext({constructionTime:constructionTime,categoryId:target});
+                        }
+                    }
+                });
+            });
+            
+            tests.push(function(obj){
+                write('TOCHECK: FG1 test findVehicleByCatalog, last level');
+                var constructionTime = obj.constructionTime;
+                var categoryId = obj.categoryId;
+                FG1.findVehicleByCatalog({
+                    criteria: {constructionTime: constructionTime},
+                    categoryId: categoryId,
+                    saveVehicle: true,
+                    quickHandle: function(data){
+                        $.each(data,function(){
+                            //write(this);
+                            if (this.id === null) {
+                                writeError('FG1 findVehicleByCatalog for categoryId ' + categoryId + ' value of id in quickHandle should not be null');
+                            }
+                            if (this.name === null) {
+                                writeError('FG1 findVehicleByCatalog for categoryId ' + categoryId + ' value of name in quickHandle should not be null');
+                            }
+                            if (this.properties.length == 0) {
+                                writeError('FG1 findVehicleByCatalog for categoryId ' + categoryId + ' should have values in properties of quickHandle');
+                            } else {
+                                $.each(this.properties,function(){
+                                    if (typeof this.name == 'undefined') {
+                                        writeError('name of properties should be defined');
+                                    }
+                                    if (typeof this.value == 'undefined') {
+                                        writeError('value of properties should be defined');
+                                    }
+                                });
+                            }
+                            if (!this.lastLevel) {
+                                writeError('FG1 findVehicleByCatalog for categoryId ' + categoryId + ' should be in the lastLevel');
+                            }
+                            if (this.externalId == null) {
+                                writeError('FG1 findVehicleByCatalog for categoryId ' + categoryId + ' should not have externalId null');
+                            }
+                        });
+                    },
+                    ajax: {
+                        success: function(data){
+                            write('FG1 findVehicleByCatalog for categoryId: ' + categoryId + ' (Motor 4,8 Ltr. - 270 kW V8 KAT) success()');
+
+                            var targetFound = false;
+                            var target = 6301;
+                            $.each(data.types,function(){
+                                if (this.id == target) {
+                                    targetFound = true;
+                                }
+                            });
+                            if (!targetFound) {
+                                writeError('vehicle category ID ' + target.toString() + ' is not in the returned object');
+                            }
+
+                            if (FG1.getProperty('selectedVehicle') && FG1.getProperty('selectedVehicle').vehicle) {
+                                writeError('FG1 should not have saved the vehicle with categoryId ' + categoryId.toString());
+                            } else {// remove selectedVehicle
+                                FG1.removeProperties(['selectedVehicle']);
+                            }
+                            testNext({constructionTime:constructionTime,categoryId:target});
+                        }
+                    }
+                });
+            });
+            
+            tests.push(function(obj){
+                write('TOCHECK: FG1 should now return an error from function, as ' + obj.categoryId + ' is not a valid categoryId (lastLevel).');
+                var constructionTime = obj.constructionTime;
+                var categoryId = obj.categoryId;
+                FG1.findVehicleByCatalog({
+                    criteria: {constructionTime: constructionTime},
+                    categoryId: categoryId,
+                    saveVehicle: true,
+                    quickHandle: function(){
+                        writeError('This message should not be shown.');
+                    }
+                });
+                appendButton({action:'testNext({constructionTime:\'' + constructionTime + '\'})',text:'continue'});
+            });
+            
+            tests.push(function(obj){
+                write('TOCHECK: FG1 should not save a vehicle, although there is one found, when "saveVehicle" is not given in the function parameter');
+                var constructionTime = obj.constructionTime;
+                var categoryId = '5101';
+                FG1.findVehicleByCatalog({
+                    criteria: {constructionTime: constructionTime},
+                    categoryId: categoryId,
+                    ajax: {
+                        success: function(data){
+                            write('FG1 findVehicleByCatalog for categoryId: ' + categoryId + ' (M6 -> Motor 5,0 Ltr. - 373 kW KAT) success()');
+
+                            if (typeof FG1.getProperty('selectedVehicle') != 'undefined') {
+                                writeError('FG1 should not have saved a vehicle.');
+                            }
+
+                            testNext({constructionTime:constructionTime});
+                        }
+                    }
+                });
+            });
+            
+            tests.push(function(obj){
+                write('TOCHECK: FG1 should not save a vehicle, although there is one found, when "saveVehicle" is set to false in the function parameter');
+                var constructionTime = obj.constructionTime;
+                var categoryId = '5101';
+                FG1.findVehicleByCatalog({
+                    criteria: {constructionTime: constructionTime},
+                    categoryId: categoryId,
+                    saveVehicle: false,
+                    ajax: {
+                        success: function(data){
+                            write('FG1 findVehicleByCatalog for categoryId: ' + categoryId + ' (M6 -> Motor 5,0 Ltr. - 373 kW KAT) success()');
+
+                            if (typeof FG1.getProperty('selectedVehicle') != 'undefined') {
+                                writeError('FG1 should not have saved a vehicle.');
+                            }
+
+                            testNext({constructionTime:constructionTime});
+                        }
+                    }
+                });
+            });
+            
+            tests.push(function(obj){
+                write('TOCHECK: FG1 should save a vehicle, as there is one found, and "saveVehicle" is set to true in the function parameter, but without constructionTime, expect constructionTime to be set automatically when saved');
+                var constructionTime = obj.constructionTime;
+                var categoryId = '11671';
+                FG1.findVehicleByCatalog({
+                    //criteria: {constructionTime: constructionTime},
+                    categoryId: categoryId,
+                    saveVehicle: true,
+                    ajax: {
+                        success: function(data){
+                            write('FG1 findVehicleByCatalog for categoryId: ' + categoryId + ' (M6 -> Motor 5,0 Ltr. - 373 kW KAT) success()');
+                            //write(FG1.getProperty('selectedVehicle'));
+                            if (new Date(FG1.getProperty('selectedVehicle').constructionTime.time).toLocaleDateString() != '1.1.2004') {
+                                writeError('FG1 should have saved a vehicle with construction time 1.1.2004.');
+                            }
+
+                            testNext({constructionTime:constructionTime});
+                        }
+                    }
+                });
+            });
+
+            tests.push(function(obj){
+                write('TOCHECK: FG1 should save a vehicle, as there is one found, and "saveVehicle" is set to true in the function parameter');
+                var constructionTime = obj.constructionTime;
+                var categoryId = '5101';
+                FG1.findVehicleByCatalog({
+                    criteria: {constructionTime: constructionTime},
+                    categoryId: categoryId,
+                    saveVehicle: true,
+                    ajax: {
+                        success: function(data){
+                            write('FG1 findVehicleByCatalog for categoryId: ' + categoryId + ' (M6 -> Motor 5,0 Ltr. - 373 kW KAT) success()');
+                            //write(FG1.getProperty('selectedVehicle'));
+                            if (FG1.getProperty('selectedVehicle').vehicleType.id != 6307) {
+                                writeError('FG1 should have saved a vehicle with ID 6307.');
+                            }
+
+                            testNext({constructionTime:constructionTime});
+                        }
+                    }
+                });
+            });
+
+            tests.push(function(obj){
+                write('TOCHECK: FG1 should not overwrite the saved vehicle, as there is already one saved and a new one found, and "saveVehicle" is not set in the function parameter');
+                var constructionTime = obj.constructionTime;
+                var categoryId = '12459';
+                FG1.findVehicleByCatalog({
+                    criteria: {constructionTime: constructionTime},
+                    categoryId: categoryId,
+                    ajax: {
+                        success: function(data){
+                            write('FG1 findVehicleByCatalog for categoryId: ' + categoryId + ' (Abarth -> Motor 1,4 Ltr. - 114 kW) success()');
+                            //write(FG1.getProperty('vehicle'));
+                            if (FG1.getProperty('selectedVehicle').vehicleType.id != 6307 || FG1.getProperty('selectedVehicle').vehicleType.id == 13728) {
+                                writeError('FG1 should have saved a vehicle with ID 6307. Current saved vehicle has ID ' + FG1.getProperty('selectedVehicle').vehicleType);
+                            }
+                            testNext({constructionTime:constructionTime});
+                        }
+                    }
+                });
+            });
+
+            tests.push(function(obj){
+                write('TOCHECK: FG1 should not overwrite the saved vehicle, as there is already one saved and a new one found, and "saveVehicle" is set as false in the function parameter');
+                var constructionTime = obj.constructionTime;
+                var categoryId = '12459';
+                FG1.findVehicleByCatalog({
+                    criteria: {constructionTime: constructionTime},
+                    categoryId: categoryId,
+                    saveVehicle: false,
+                    ajax: {
+                        success: function(data){
+                            write('FG1 findVehicleByCatalog for categoryId: ' + categoryId + ' (Abarth -> Motor 1,4 Ltr. - 114 kW) success()');
+                            //write(FG1.getProperty('vehicle'));
+                            if (FG1.getProperty('selectedVehicle').vehicleType.id != 6307 || FG1.getProperty('selectedVehicle').vehicleType.id == 13728) {
+                                writeError('FG1 should have saved a vehicle with ID 6307. Current saved vehicle has ID ' + FG1.getProperty('selectedVehicle').vehicleType);
+                            }
+                            testNext({constructionTime:constructionTime});
+                        }
+                    }
+                });
+            });
+
+            tests.push(function(obj){
+                write('TOCHECK: FG1 should overwrite the saved vehicle, as there is already one saved and a new one found, and "saveVehicle" is set as true in the function parameter');
+                var constructionTime = obj.constructionTime;
+                var categoryId = '12459';
+                FG1.findVehicleByCatalog({
+                    criteria: {constructionTime: constructionTime},
+                    categoryId: categoryId,
+                    saveVehicle: true,
+                    ajax: {
+                        success: function(data){
+                            write('FG1 findVehicleByCatalog for categoryId: ' + categoryId + ' (Abarth -> Motor 1,4 Ltr. - 114 kW) success()');
+                            //write(FG1.getProperty('vehicle'));
+                            if (FG1.getProperty('selectedVehicle').vehicleType.id != 13728) {
+                                writeError('FG1 should have saved a vehicle with ID 13728. Current saved vehicle has ID ' + FG1.getProperty('selectedVehicle').vehicleType);
+                            }
+                            testNext({constructionTime:constructionTime});
+                        }
+                    }
+                });
+            });
+
+            tests.push(function(){
+                write('END CHECKING findVehicleByCatalog');
+                testNext();
+            });
+            
+            tests.push(function(){
+                write('BEGIN CHECKING findVehicleByDocument');
+                write('TOCHECK: FG1 test findVehicleByDocument with no function parameter, expect to throw an error from API');
+                FG1.findVehicleByDocument();
+                appendButton({action:'testNext()',text:'continue'});
+            });
+            
+            tests.push(function(){
+                write('TOCHECK: FG1 test findVehicleByDocument with function parameter {}, expect to throw an error from API');
+                FG1.findVehicleByDocument({});
+                appendButton({action:'testNext()',text:'continue'});
+            });
+            
+            tests.push(function(){
+                write('TOCHECK: FG1 test findVehicleByDocument with externalId: "012345", expect to find one vehicle null');
+                FG1.findVehicleByDocument({
+                    criteria: {
+                        externalId: '012345'
+                    },
+                    ajax: {
+                        success: function(data){
+                            write('FG1 findVehicleByDocument success()');
+                            if (data.length != 1 || data[0] != null) {
+                                writeError('FG1 should have found no vehicle.');
+                            }
+                            testNext();
+                        }
+                    }
+                });
+            });
+            /*
+            tests.push(function(){
+                write('TOCHECK: FG1 test findVehicleByDocument with externalId: "015900070020003" and saveVehicle: true, expect to find one vehicle and save it');
+                FG1.findVehicleByDocument({
+                    criteria: {
+                        externalId: '015900070020003'
+                    },
+                    saveVehicle: true,
+                    ajax: {
+                        success: function(data){
+                            write('FG1 findVehicleByDocument success()');
+                            if (data.length != 1 || data[0].id != 31223) {
+                                writeError('FG1 should have found a vehicle for externalId: "015900070020003".');
+                            }
+                            if (FG1.getProperty('selectedVehicle').vehicleType.id != 31223) {
+                                writeError('FG1 should have saved the vehicle with externalId: "015900070020003".');
+                            }
+                            testNext();
+                        }
+                    }
+                });
+            });
+            */
+            /*
+            tests.push(function(){
+                write('TOCHECK: FG1 test findVehicleByDocument with externalId: "012345", expect to find no vehicle, and not to change the saved vehicle');//and saveVehicle: true
+                FG1.findVehicleByDocument({
+                    criteria: {
+                        externalId: '012345'
+                    },
+                    //saveVehicle: true,
+                    ajax: {
+                        success: function(data){
+                            write('FG1 findVehicleByDocument success()');
+                            if (data.length != 1 || data[0] != null) {
+                                writeError('FG1 should have found no vehicle.');
+                            }
+                            if (FG1.getProperty('selectedVehicle').vehicleType == null) {
+                                writeError('FG1 should not have changed the saved vehicle with externalId: "012345".');
+                            }
+                            testNext();
+                        }
+                    }
+                });
+            });
+            
+            tests.push(function(){
+                write('TOCHECK: FG1 test findVehicleByDocument with hsn: "1234", expect to throw an error from API');
+                var time = (new Date()).getTime();
+                FG1.findVehicleByDocument({
+                    criteria: {
+                        hsn: '1234'
+                    },
+                    ajax: {
+                        complete: function(){
+                            write('FG1 findVehicleByDocument complete()');
+                            appendButton({action:'testNext()',text:'continue'});
+                        }
+                    }
+                });
+            });
+            
+            tests.push(function(){
+                write('TOCHECK: FG1 test findVehicleByDocument with hsn: "12345" (length is not 4), expect to throw an error from API');
+                FG1.findVehicleByDocument({
+                    criteria: {
+                        hsn: '12345'
+                    },
+                    ajax: {
+                        complete: function(){
+                            write('FG1 findVehicleByDocument complete()');
+                            appendButton({action:'testNext()',text:'continue'});
+                        }
+                    }
+                });
+            });
+            
+            tests.push(function(){
+                write('TOCHECK: FG1 test findVehicleByDocument with tsn: "123", expect to throw an error from API');
+                FG1.findVehicleByDocument({
+                    criteria: {
+                        tsn: '123'
+                    },
+                    ajax: {
+                        complete: function(){
+                            write('FG1 findVehicleByDocument complete()');
+                            appendButton({action:'testNext()',text:'continue'});
+                        }
+                    }
+                });
+            });
+            
+            tests.push(function(){
+                write('TOCHECK: FG1 test findVehicleByDocument with tsn: "1234" (length is not 3), expect to throw an error from API');
+                FG1.findVehicleByDocument({
+                    criteria: {
+                        tsn: '1234'
+                    },
+                    ajax: {
+                        complete: function(){
+                            write('FG1 findVehicleByDocument complete()');
+                            appendButton({action:'testNext()',text:'continue'});
+                        }
+                    }
+                });
+            });
+            
+            tests.push(function(){
+                write('TOCHECK: FG1 test findVehicleByDocument with hsn: "12345" (length not 4) and tsn: "12" (length not 3), expect to find no corresponding vehicle');
+                FG1.findVehicleByDocument({
+                    criteria: {
+                        hsn: '12345',
+                        tsn: '12'
+                    },
+                    ajax: {
+                        success: function(data){
+                            write('FG1 findVehicleByDocument success()');
+                            if (data.length > 0) {
+                                writeError('No vehicle should be found');
+                            }
+                            testNext();
+                        }
+                    }
+                });
+            });
+
+            tests.push(function(){
+                write('TOCHECK: FG1 test findVehicleByDocument with hsn: "1234" and tsn: "123", expect to find no corresponding vehicle');
+                FG1.findVehicleByDocument({
+                    criteria: {
+                        hsn: '1234',
+                        tsn: '123'
+                    },
+                    ajax: {
+                        success: function(data){
+                            write('FG1 findVehicleByDocument success()');
+                            if (data.length > 0) {
+                                writeError('No vehicle should be found');
+                            }
+                            testNext();
+                        }
+                    }
+                });
+            });
+
+            tests.push(function(){
+                write('TOCHECK: FG1 test findVehicleByDocument with hsn: "1234" and tsn: "123", expect to find no corresponding vehicle, and saved vehicle not changed');// and saveVehicle true
+                var prevVehicle = FG1.getProperty('selectedVehicle').vehicleType;
+                FG1.findVehicleByDocument({
+                    criteria: {
+                        hsn: '1234',
+                        tsn: '123'
+                    },
+                    //saveVehicle: true,
+                    ajax: {
+                        success: function(data){
+                            write('FG1 findVehicleByDocument success()');
+                            if (data.length > 0) {
+                                writeError('No vehicle should be found');
+                            }
+                            
+                            //if (prevVehicle.id != FG1.getProperty('selectedVehicle').vehicleType.id) {
+                            //    writeError('FG1 should not have changed the saved vehicle');
+                            //    write('previously saved vehicle:');
+                            //    write(prevVehicle);
+                            //    write('saved vehicle:');
+                            //    write(FG1.getProperty('selectedVehicle').vehicleType);
+                            //}
+                            
+                            testNext();
+                        }
+                    }
+                });
+            });
+
+            tests.push(function(){
+                write('TOCHECK: FG1 test findVehicleByDocument with hsn: "0005" and tsn: "ANI", expect to find 2 specific vehicles');
+                FG1.findVehicleByDocument({
+                    criteria: {
+                        hsn: '0005',
+                        tsn: 'ANI'
+                    },
+                    ajax: {
+                        success: function(data){
+                            write('FG1 findVehicleByDocument success()');
+                            if (data.length != 2) {
+                                writeError('2 vehicles should be found');
+                            } else {
+                                $.each(data,function(){
+                                    if (this.id != 6003 && this.id != 6004) {
+                                        writeError('found vehicle should have either ID 6003 or ID 6004');
+                                    }
+                                });
+                            }
+                            testNext();
+                        }
+                    }
+                });
+            });
+            
+            tests.push(function(){
+                write('TOCHECK: FG1 test findVehicleByDocument with hsn: "0005" and tsn: "ANI" and externalId: "015900070020003", expect to find 1 specific vehicle by externalId');
+                FG1.findVehicleByDocument({
+                    criteria: {
+                        externalId: '015900070020003',
+                        hsn: '0005',
+                        tsn: 'ANI'
+                    },
+                    ajax: {
+                        success: function(data){
+                            write('FG1 findVehicleByDocument success()');
+                            if (data.length != 1) {
+                                writeError('1 vehicle with externalId should be found');
+                            } else {
+                                $.each(data,function(){
+                                    if (this.id != 31223) {
+                                        writeError('found vehicle should have either ID 31223');
+                                    }
+                                });
+                            }
+                            testNext();
+                        }
+                    }
+                });
+            });
+
+            tests.push(function(){
+                write('END CHECKING findVehicleByDocument');
+                write('START CHECKING findVehicleByExternalId');
+                write('TOCHECK: FG1 test findVehicleByExternalId with no function parameter, expect to throw an error from the function, "externalId" should be given');
+                FG1.findVehicleByExternalId();
+                appendButton({action:'testNext()',text:'continue'});
+            });
+            
+            tests.push(function(){
+                write('TOCHECK: FG1 test findVehicleByExternalId with function parameter {}, expect to throw an error from the function, "externalId" should be given');
+                FG1.findVehicleByExternalId({});
+                appendButton({action:'testNext()',text:'continue'});
+            });
+            
+            tests.push(function(){
+                write('TOCHECK: FG1 test findVehicleByExternalId with externalId: "012345", expect to find no vehicle');
+                FG1.findVehicleByExternalId({
+                    externalId: "012345",
+                    ajax: {
+                        success: function(data){
+                            write('FG1 findVehicleByExternalId success()');
+                            if (data.length != 1 || data[0] != null) {
+                                writeError('FG1 should have found no vehicle.');
+                            }
+                            testNext();
+                        }
+                    }
+                });
+            });
+
+            tests.push(function(){
+                write('TOCHECK: FG1 test findVehicleByExternalId with externalId: "015900070020003", saveVehicle not indicated, expect to find one vehicle, and vehicle not saved');
+                var prevVehicle = FG1.getProperty('selectedVehicle').vehicleType;
+                FG1.findVehicleByExternalId({
+                    externalId: '015900070020003',
+                    ajax: {
+                        success: function(data){
+                            write('FG1 findVehicleByExternalId success()');
+                            if (data.length != 1 || data[0].id != 31223) {
+                                writeError('FG1 should have found a vehicle for externalId: "015900070020003".');
+                            }
+                            if ((prevVehicle.id != 31223 && FG1.getProperty('selectedVehicle').vehicleType.id == 31223) || (prevVehicle == null && FG1.getProperty('selectedVehicle').vehicleType.id == 31223)) {
+                                writeError('FG1 should have not saved the vehicle with externalId: "015900070020003" and id "31223".')
+                                write('previously saved vehicle:');
+                                write(prevVehicle);
+                                write('saved vehicle:');
+                                write(FG1.getProperty('selectedVehicle').vehicleType);
+                            }
+                            testNext();
+                        }
+                    }
+                });
+            });
+
+            tests.push(function(){
+                write('TOCHECK: FG1 test findVehicleByExternalId with externalId: "017900220050001", saveVehicle set as false, expect to find one vehicle, and vehicle not saved');
+                var prevVehicle = FG1.getProperty('selectedVehicle').vehicleType;
+                FG1.findVehicleByExternalId({
+                    externalId: '017900220050001',
+                    saveVehicle: false,
+                    ajax: {
+                        success: function(data){
+                            write('FG1 findVehicleByExternalId success()');
+                            if (data.length != 1 || data[0].id != 68581) {
+                                writeError('FG1 should have found a vehicle for externalId: "017900220050001".');
+                            }
+                            if ((prevVehicle.id != 68581 && FG1.getProperty('selectedVehicle').vehicleType.id == 68581) || (prevVehicle == null && FG1.getProperty('selectedVehicle').vehicleType.id == 68581)) {
+                                writeError('FG1 should have not saved the vehicle with externalId: "017900220050001" and id "68581".')
+                                write('previously saved vehicle:');
+                                write(prevVehicle);
+                                write('saved vehicle:');
+                                write(FG1.getProperty('selectedVehicle').vehicleType);
+                            }
+                            testNext();
+                        }
+                    }
+                });
+            });
+            
+            tests.push(function(){
+                write('TOCHECK: FG1 test findVehicleByExternalId with externalId: "017900220050001", saveVehicle set as true, expect to find one vehicle, and vehicle to be saved');
+                var prevVehicle = FG1.getProperty('selectedVehicle').vehicleType;
+                FG1.findVehicleByExternalId({
+                    externalId: '017900220050001',
+                    saveVehicle: true,
+                    ajax: {
+                        success: function(data){
+                            write('FG1 findVehicleByExternalId success()');
+                            if ((prevVehicle.id != 68581 && FG1.getProperty('selectedVehicle').vehicleType.id != 68581) || (prevVehicle == null && FG1.getProperty('selectedVehicle').vehicleType.id != 68581)) {
+                                writeError('FG1 should have saved the vehicle with externalId: "017900220050001" and id "68581".');
+                                write('previously saved vehicle:');
+                                write(prevVehicle);
+                                write('saved vehicle:');
+                                write(FG1.getProperty('selectedVehicle').vehicleType);
+                            }
+                            if (new Date(FG1.getProperty('selectedVehicle').constructionTime.time).toLocaleDateString() != '1.8.1999') {
+                                writeError('FG1 should have saved the vehicle with constructionTime: "938728800000".');
+                            }
+                            testNext();
+                        }
+                    }
+                });
+            });
+            
+            tests.push(function(){
+                write('TOCHECK: FG1 test findVehicleByExternalId with externalId: "123456", saveVehicle set as true, expect to find one vehicle null, and saved vehicle not changed');
+                var prevVehicle = FG1.getProperty('selectedVehicle').vehicleType;
+                FG1.findVehicleByExternalId({
+                    externalId: '123456',
+                    saveVehicle: true,
+                    ajax: {
+                        success: function(data){
+                            write('FG1 findVehicleByExternalId success()');
+                            if (prevVehicle.id != FG1.getProperty('selectedVehicle').vehicleType.id) {
+                                writeError('FG1 should have not changed the saved vehicle.')
+                                write('previously saved vehicle:');
+                                write(prevVehicle);
+                                write('saved vehicle:');
+                                write(FG1.getProperty('selectedVehicle').vehicleType);
+                            }
+                            testNext();
+                        }
+                    }
+                });
+            });
+            
+            tests.push(function(){
+                write('END CHECKING findVehicleByExternalId');
+                write('START CHECKING findVehicleByHSNTSN');
+                write('TOCHECK: FG1 test findVehicleByHSNTSN with no function parameter, expect to throw an error from the function, "hsn" and "tsn" should be given');
+                FG1.findVehicleByHSNTSN();
+                appendButton({action:'testNext()',text:'continue'});
+            });
+            
+            tests.push(function(){
+                write('TOCHECK: FG1 test findVehicleByHSNTSN with function parameter {}, expect to throw an error from the function, "hsn" and "tsn" should be given');
+                FG1.findVehicleByHSNTSN({});
+                appendButton({action:'testNext()',text:'continue'});
+            });
+            
+            tests.push(function(){
+                write('TOCHECK: FG1 test findVehicleByHSNTSN with hsn 123, expect to throw an error from the function, "tsn" should be given');
+                FG1.findVehicleByHSNTSN({
+                    hsn: '123'
+                });
+                appendButton({action:'testNext()',text:'continue'});
+            });
+            
+            tests.push(function(){
+                write('TOCHECK: FG1 test findVehicleByHSNTSN with tsn 1235, expect to throw an error from the function, "hsn" should be given');
+                FG1.findVehicleByHSNTSN({
+                    tsn: '1235'
+                });
+                appendButton({action:'testNext()',text:'continue'});
+            });
+            
+            tests.push(function(){
+                write('TOCHECK: FG1 test findVehicleByHSNTSN with hsn: 4136 and tsn: AJL and saveVehicle not indicated, expect not to save the vehicle');
+                FG1.findVehicleByHSNTSN({
+                    hsn: '4136',
+                    tsn: 'AJL',
+                    ajax: {
+                        success: function(data){
+                            write('FG1 findVehicleByHSNTSN success()');
+                            if (FG1.getProperty('selectedVehicle').vehicleType.id == 13728) {
+                                writeError('FG1 should not have saved a vehicle found with hsn: 4136 and tsn: AJL.');
+                            }
+                            testNext();
+                        }
+                    }
+                });
+            });
+            
+            tests.push(function(){
+                write('TOCHECK: FG1 test findVehicleByHSNTSN with hsn: 4136 and tsn: AJL and saveVehicle: false, expect not to save the vehicle');
+                FG1.findVehicleByHSNTSN({
+                    hsn: '4136',
+                    tsn: 'AJL',
+                    saveVehicle: false,
+                    ajax: {
+                        success: function(data){
+                            write('FG1 findVehicleByHSNTSN success()');
+                            if (FG1.getProperty('selectedVehicle').vehicleType.id == 13728) {
+                                writeError('FG1 should not have saved a vehicle found with hsn: 4136 and tsn: AJL.');
+                            }
+                            testNext();
+                        }
+                    }
+                });
+            });
+            
+            tests.push(function(){
+                write('TOCHECK: FG1 test findVehicleByHSNTSN with hsn: 4136 and tsn: AJL and saveVehicle: true, expect to save the vehicle, and construction time to be correct');
+                FG1.findVehicleByHSNTSN({
+                    hsn: '4136',
+                    tsn: 'AJL',
+                    saveVehicle: true,
+                    ajax: {
+                        success: function(data){
+                            write('FG1 findVehicleByHSNTSN success()');
+                            if (FG1.getProperty('selectedVehicle').vehicleType.id != 13728) {
+                                writeError('FG1 should have saved a vehicle found with hsn: 4136 and tsn: AJL.');
+                            }
+                            if (new Date(FG1.getProperty('selectedVehicle').constructionTime.time).toLocaleDateString() != '1.5.2008') {
+                                writeError('FG1 should have saved a vehicle with construction time 1.5.2008.');
+                            }
+                            testNext();
+                        }
+                    }
+                });
+            });
+
+            tests.push(function(){
+                write('TOCHECK: FG1 test findVehicleByHSNTSN with hsn: 4136 and tsn: 987 and saveVehicle: true, expect to find no vehicle and not change the saved vehicle');
+                var prevVehicle = FG1.getProperty('selectedVehicle').vehicleType;
+                FG1.findVehicleByHSNTSN({
+                    hsn: '4136',
+                    tsn: '987',
+                    saveVehicle: true,
+                    ajax: {
+                        success: function(data){
+                            write('FG1 findVehicleByHSNTSN success()');
+                            if (FG1.getProperty('selectedVehicle').vehicleType.id != 13728) {
+                                writeError('FG1 should not have changed the saved vehicle');
+                                write('previously saved vehicle:');
+                                write(prevVehicle);
+                                write('currently saved vehicle:');
+                                write(FG1.getProperty('selectedVehicle').vehicleType);
+                            }
+                            testNext();
+                        }
+                    }
+                });
+            });
+            
+            tests.push(function(){
+                write('END CHECKING findVehicleByHSNTSN');
+                write('BEGIN CHECKING findVehicleEquipment');
+                testNext();
+            });
+            
+            tests.push(function(){
+                write('TOCHECK: FG1 test findVehicleEquipment with no function parameter, expect to throw an error from function, and "vehicleTypeId" should be indicated');
+                FG1.findVehicleEquipment();
+                appendButton({action:'testNext()',text:'continue'});
+            });
+
+            tests.push(function(){
+                write('TOCHECK: FG1 test findVehicleEquipment with function parameter {}, expect to throw an error from function, and "vehicleTypeId" should be indicated');
+                FG1.findVehicleEquipment({});
+                appendButton({action:'testNext()',text:'continue'});
+            });
+
+            tests.push(function(){
+                write('TOCHECK: FG1 test findVehicleEquipment with vehicleTypeId: 0, vehicle does not exist, expect to throw an error from API');
+                FG1.findVehicleEquipment({
+                    vehicleTypeId: '0',
+                    ajax: {
+                        success: function(data){
+                            write('FG1 findVehicleEquipment success()');
+                            if (data.length > 0) {
+                                writeError('FG1 should have found no equipment for this vehicle')
+                            }
+                            testNext();
+                        }
+                    }
+                });
+                appendButton({action:'testNext()',text:'continue'});
+            });
+            
+            tests.push(function(){
+                write('TOCHECK: FG1 test findVehicleEquipment with vehicleTypeId: 1, expect to find no equipment');
+                FG1.findVehicleEquipment({
+                    vehicleTypeId: '1',
+                    ajax: {
+                        success: function(data){
+                            write('FG1 findVehicleEquipment success()');
+                            if (data.length > 0) {
+                                writeError('FG1 should have found no equipment for this vehicle')
+                            }
+                            testNext();
+                        }
+                    }
+                });
+            });
+            
+            tests.push(function(){
+                write('TOCHECK: FG1 test findVehicleEquipment with vehicleTypeId: 1117, expect to find some equipments');
+                FG1.findVehicleEquipment({
+                    vehicleTypeId: '1117',
+                    ajax: {
+                        success: function(data){
+                            write('FG1 findVehicleEquipment success()');
+                            if (data.length == 0) {
+                                writeError('FG1 should have found some equipments for this vehicle')
+                            }
+                            testNext();
+                        }
+                    }
+                });
+            });
+            
+            tests.push(function(){
+                write('END CHECKING findVehicleEquipment');
+                write('BEGIN CHECKING findVehicleEquipmentForService');
+                testNext();
+            });
+            
+            tests.push(function(){
+                write('TOCHECK: FG1 test findVehicleEquipmentForService with no function parameter, expect to throw an error from function, and "vehicleTypeId", "serviceId", "constructionTime" should be indicated');
+                FG1.findVehicleEquipmentForService();
+                appendButton({action:'testNext()',text:'continue'});
+            });
+
+            tests.push(function(){
+                write('TOCHECK: FG1 test findVehicleEquipmentForService with function parameter {}, expect to throw an error from function, and "vehicleTypeId", "serviceId", "constructionTime" should be indicated');
+                FG1.findVehicleEquipmentForService({});
+                appendButton({action:'testNext()',text:'continue'});
+            });
+
+            tests.push(function(){
+                write('TOCHECK: FG1 test findVehicleEquipmentForService with parameter vehicleTypeId: 1234, expect to throw an error from function, and "serviceId", "constructionTime" should be indicated');
+                FG1.findVehicleEquipmentForService({
+                    vehicleTypeId: '1234'
+                });
+                appendButton({action:'testNext()',text:'continue'});
+            });
+
+            tests.push(function(){
+                write('TOCHECK: FG1 test findVehicleEquipmentForService with parameter serviceId: 1234, expect to throw an error from function, and "vehicleTypeId", "constructionTime" should be indicated');
+                FG1.findVehicleEquipmentForService({
+                    serviceId: '1234'
+                });
+                appendButton({action:'testNext()',text:'continue'});
+            });
+
+            tests.push(function(){
+                write('TOCHECK: FG1 test findVehicleEquipmentForService with parameter constructionTime: 1234, expect to throw an error from function, and "vehicleTypeId", "serviceId" should be indicated');
+                FG1.findVehicleEquipmentForService({
+                    constructionTime: '1234'
+                });
+                appendButton({action:'testNext()',text:'continue'});
+            });
+
+            tests.push(function(){
+                write('TOCHECK: FG1 test findVehicleEquipmentForService with parameter vehicleTypeId: 1117, serviceId: 407509, constructionTime: 2008-03-01, expect to find 5 equipments');
+                FG1.findVehicleEquipmentForService({
+                    vehicleTypeId: '1117',
+                    serviceId: '407509',
+                    constructionTime: '2008-03-01',
+                    ajax: {
+                        success: function(data){
+                            write('FG1 findVehicleEquipmentForService success()');
+                            if (data.length != 0) {
+                                writeError('FG1 findVehicleEquipmentForService should have found no equipment');
+                                $.each(data,function(){
+                                    write(this);
+                                });
+                            }
+                            testNext();
+                        }
+                    }
+                });
+            });
+
+            tests.push(function(){
+                write('TOCHECK: FG1 test findVehicleEquipmentForService with parameter vehicleTypeId: 1117, serviceId: 407532, constructionTime: 2008-03-01, expect to find 5 equipments');
+                FG1.findVehicleEquipmentForService({
+                    vehicleTypeId: '1117',
+                    serviceId: '407532',
+                    constructionTime: '2008-03-01',
+                    ajax: {
+                        success: function(data){
+                            write('FG1 findVehicleEquipmentForService success()');
+                            if (data.length != 5) {
+                                writeError('FG1 findVehicleEquipmentForService should have found 5 equipments');
+                                $.each(data,function(){
+                                    write(this);
+                                });
+                            }
+                            testNext();
+                        }
+                    }
+                });
+            });
+
+            tests.push(function(){
+                write('END CHECKING findVehicleEquipmentForService');
+                write('BEGIN CHECKING getVehicleByVehicleTypeId');
+                testNext();
+            });
+            
+            tests.push(function(){
+                write('TOCHECK: FG1 test getVehicleByVehicleTypeId with no function parameter, expect to throw an error from function, and "vehicleTypeId" should be indicated');
+                FG1.getVehicleByVehicleTypeId();
+                appendButton({action:'testNext()',text:'continue'});
+            });
+
+            tests.push(function(){
+                write('TOCHECK: FG1 test getVehicleByVehicleTypeId with function parameter {}, expect to throw an error from function, and "vehicleTypeId" should be indicated');
+                FG1.getVehicleByVehicleTypeId({});
+                appendButton({action:'testNext()',text:'continue'});
+            });
+
+            tests.push(function(){
+                write('TOCHECK: FG1 test getVehicleByVehicleTypeId with vehicleTypeId 60000 and saveVehicle not indicated, expect not to save this vehicle');
+                FG1.getVehicleByVehicleTypeId({
+                    vehicleTypeId: '60000',
+                    ajax: {
+                        success: function(data){
+                            write('FG1 getVehicleByVehicleTypeId success()');
+                            if (FG1.getProperty('selectedVehicle').vehicleType && FG1.getProperty('selectedVehicle').vehicleType.id == 60000) {
+                                writeError('FG1 should not have saved the vehicle with vehicleTypeId 60000');
+                            }
+                            testNext();
+                        }
+                    }
+                });
+            });
+
+            tests.push(function(){
+                write('TOCHECK: FG1 test getVehicleByVehicleTypeId with vehicleTypeId 60000 and saveVehicle false, expect not to save this vehicle');
+                FG1.getVehicleByVehicleTypeId({
+                    vehicleTypeId: '60000',
+                    saveVehicle: false,
+                    ajax: {
+                        success: function(data){
+                            write('FG1 getVehicleByVehicleTypeId success()');
+                            if (FG1.getProperty('selectedVehicle').vehicleType && FG1.getProperty('selectedVehicle').vehicleType.id == 60000) {
+                                writeError('FG1 should not have saved the vehicle with vehicleTypeId 60000');
+                            }
+                            testNext();
+                        }
+                    }
+                });
+            });
+
+            tests.push(function(){
+                write('TOCHECK: FG1 test getVehicleByVehicleTypeId with vehicleTypeId 60001 and saveVehicle true, expect to save this vehicle');
+                FG1.getVehicleByVehicleTypeId({
+                    vehicleTypeId: '60001',
+                    saveVehicle: true,
+                    ajax: {
+                        success: function(data){
+                            write('FG1 getVehicleByVehicleTypeId success()');
+                            if (FG1.getProperty('selectedVehicle').vehicleType && FG1.getProperty('selectedVehicle').vehicleType.id != 60001) {
+                                writeError('FG1 should have saved the vehicle with vehicleTypeId 60000');
+                            }
+                            if (new Date(FG1.getProperty('selectedVehicle').constructionTime.time).toLocaleDateString() != '1.1.2005') {
+                                writeError('FG1 should have saved the vehicle with construction time 1.1.2005');   
+                            }
+                            testNext();
+                        }
+                    }
+                });
+            });
+            */
+            
+            tests.push(function(){
+                write('END CHECKING getVehicleByVehicleTypeId');
+                write('BEGIN CHECKING evaluateVehicle');
+                testNext();
+            });
+            
+            tests.push(function(){
+                write('TOCHECK: FG1 test evaluateVehicle with no function parameter, expect to throw an error from function, and "valuatedVehicle" and "datVehicleContainer" should be indicated');
+                FG1.evaluateVehicle();
+                appendButton({action:'testNext()',text:'continue'});
+            });
+
+            tests.push(function(){
+                write('TOCHECK: FG1 test evaluateVehicle with function parameter {}, expect to throw an error from function, and "valuatedVehicle" and "datVehicleContainer" should be indicated');
+                FG1.evaluateVehicle({});
+                appendButton({action:'testNext()',text:'continue'});
+            });
+
+            tests.push(function(){
+                write('TOCHECK: FG1 test evaluateVehicle with function parameter {"valuatedVehicle":{}}, expect to throw an error from function, and "datVehicleContainer" as the key of "valuatedVehicle" should be indicated');
+                FG1.evaluateVehicle({"valuatedVehicle":{}});
+                appendButton({action:'testNext()',text:'continue'});
+            });
+
+            tests.push(function(){
+                FG1.getVehicleByVehicleTypeId({
+                    vehicleTypeId: '1200',
+                    saveVehicle: true,
+                    ajax: {
+                        success: function(data){
+                            testNext();
+                        }
+                    }
+                });
+            });
+
+            tests.push(function(){
+                write('TOCHECK: FG1 test evaluateVehicle with a vehicle selected by vehicleType and other standard function parameters, but without registrationDate, expect to have a "minimum" constructionTime');
+                var vehicleType = FG1.properties.selectedVehicle.vehicleType;
+                //var registrationDate = FG1.dateToTimestamp('2003-01-01');
+                FG1.evaluateVehicle({
+                    valuatedVehicle: {
+                        datVehicleContainer: {
+                            vehicleType: vehicleType,
+                            //registrationDate: {
+                            //    time: registrationDate
+                            //},
+                            milage: 10000
+                        }
+                    },
+                    ajax: {
+                        beforeSend: function(jqXHR,settings){
+                            var data = JSON.parse(settings.data);
+                            var date = new Date(data.datVehicleContainer.registrationDate.time).toLocaleDateString(); //d.m.yyyy
+                            var year = date.split('.')[2];
+                            var month = date.split('.')[1];
+                            var constructionTimeMap = data.datVehicleContainer.vehicleType.constructionTimeMap;
+                            if (!(typeof constructionTimeMap[year-1] == 'undefined' && constructionTimeMap[year].indexOf(parseInt(month-1)) == -1 && constructionTimeMap[year].indexOf(parseInt(month)) >= 0)) {
+                                writeError('The used registrationDate is not the first month and year in constructionTimeMap');
+                            }
+                        },
+                        success: function(){
+                            testNext();
+                        }
+                    }
+                });
+            });
+
+            tests.push(function(){
+                write('TOCHECK: FG1 test evaluateVehicle with a vehicle selected by vehicleType and other standard function parameters, expect to have returned a valid vehicle value');
+                var vehicleType = FG1.properties.selectedVehicle.vehicleType;
+                var registrationDate = FG1.dateToTimestamp('2008-01-01');
+                FG1.evaluateVehicle({
+                    valuatedVehicle: {
+                        datVehicleContainer: {
+                            vehicleType: vehicleType,
+                            milage: 10000
+                        }
+                    },
+                    ajax: {
+                        success: function(data){
+                            if (typeof data.valuation == 'undefined' || typeof data.valuation.repurchasePrice == 'undefined' || !(data.valuation.repurchasePrice > 0)) {
+                                writeError('Returned vehicle data is wrong');
+                                write(data);
+                            }
+                        }
+                    }
+                });
+            });
+
+            $(document).ready(function(){
+                testNext();
+            });
+		
+		</script>
+	</head>
+	<body>
+	</body>
+</html>

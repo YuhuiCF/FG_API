@@ -1,0 +1,51 @@
+<!DOCTYPE HTML>
+<html>
+	<head>
+		<title>FairGarage API agreements Test</title>
+		<meta charset="utf-8">
+		<meta http-equiv="content-type" content="text/html; charset=UTF-8">
+		<script src="_js/jquery.min.js"></script>
+		<script type="text/javascript">
+            var searchParameters = window.location.search;
+            searchParameters = searchParameters.replace('?','');
+            searchParameters = searchParameters.split('&');
+            var dev = (searchParameters.indexOf('dev') < 0 ? '' : 'dev/');
+            var min = (searchParameters.indexOf('min') < 0 ? '' : '.min');
+            var help = (searchParameters.indexOf('help') < 0 ? '' : '.help');
+            document.write('\x3Cscript type="text/javascript" src="' + dev + '_js/fairgarage' + help + min + '.js">\x3C/script>');
+		</script>
+		<script src="_js/fairgarage.scripts.js"></script>
+		<script>
+			
+			tests.push(function(){
+                FG1.findService({
+                    criteria: {
+                        numResults: 10,
+                        vehicleTypeId: '1117',
+                        searchTerm: 'Brems'
+                    },
+                    quickHandle: function(data){
+                        write('FG1 findService quickHandle()');
+                        $.each(data,function(){
+                            write(this);
+                        });
+                        
+                        testNext();
+                    },
+                    ajax: {
+                        success: function(data){
+                            write('FG1 findService success()');
+                            
+                            testNext();
+                        }
+                    }
+                })
+            });
+            
+            testNext();
+            
+		</script>
+	</head>
+	<body>
+	</body>
+</html>

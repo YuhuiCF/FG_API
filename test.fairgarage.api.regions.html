@@ -1,0 +1,84 @@
+<!DOCTYPE HTML>
+<html>
+	<head>
+		<title>FairGarage API regions Test</title>
+		<meta charset="utf-8">
+		<meta http-equiv="content-type" content="text/html; charset=UTF-8">
+		<script src="_js/jquery.min.js"></script>
+		<script type="text/javascript">
+            var searchParameters = window.location.search;
+            searchParameters = searchParameters.replace('?','');
+            searchParameters = searchParameters.split('&');
+            var dev = (searchParameters.indexOf('dev') < 0 ? '' : 'dev/');
+            var min = (searchParameters.indexOf('min') < 0 ? '' : '.min');
+            var help = (searchParameters.indexOf('help') < 0 ? '' : '.help');
+            document.write('\x3Cscript type="text/javascript" src="' + dev + '_js/fairgarage' + help + min + '.js">\x3C/script>');
+		</script>
+		<script src="_js/fairgarage.scripts.js"></script>
+		<script>
+			
+            var searchTerms = ['Münster','Franken','Hof','Dü','Sylt','Polen','Peking','Muc'];
+            
+			tests.push(function(){
+                FG1.findRegion({
+                    criteria: {
+                        searchTerm: searchTerms[Math.floor(Math.random()*searchTerms.length)]
+                    },
+                    quickHandle: function(data){
+                        write('FG1 findRegion quickHandle()');
+                        write('FG1 findRegion quickHandle() should show the formattedName, nearbyLocationCount, and the signature');
+                        $.each(data,function(){
+                            write(this);
+                        });
+                    },
+                    ajax: {
+                        success: function(data){
+                            write('FG1 findRegion success()');
+                            testNext(data[0].signature)
+                        }
+                    }
+                })
+            });
+            
+			tests.push(function(obj){
+                write(obj);
+                FG1.getRegionBySignature({
+                    signature: obj,
+                    quickHandle: function(data){
+                        write('FG1 getRegionBySignature quickHandle()');
+                        write('FG1 getRegionBySignature quickHandle() should show the formattedName, nearbyLocationCount, and the signature');
+                        write(data);
+                    },
+                    ajax: {
+                        complete: function(){
+                            write('FG1 getRegionBySignature complete()');
+                            testNext();
+                        }
+                    }
+                })
+            });
+            
+			tests.push(function(obj){
+                write(obj);
+                FG1.getRegionOfUser({
+                    quickHandle: function(data){
+                        write('FG1 getRegionOfUser quickHandle()');
+                        write('FG1 getRegionOfUser quickHandle() should show the formattedName, nearbyLocationCount, and the signature');
+                        write(data);
+                    },
+                    ajax: {
+                        complete: function(){
+                            write('FG1 getRegionOfUser complete()');
+                            testNext();
+                        }
+                    }
+                })
+            });
+            
+            testNext();
+            
+		</script>
+	</head>
+	<body>
+	</body>
+</html>

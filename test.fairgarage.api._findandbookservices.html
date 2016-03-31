@@ -1,0 +1,160 @@
+<!DOCTYPE HTML>
+<html>
+	<head>
+		<title>find and book service - FairGarage API Test</title>
+		<meta charset="utf-8">
+		<meta http-equiv="content-type" content="text/html; charset=UTF-8">
+		<script src="_js/jquery.min.js"></script>
+		<script type="text/javascript">
+            var searchParameters = window.location.search;
+            searchParameters = searchParameters.replace('?','');
+            searchParameters = searchParameters.split('&');
+            var dev = (searchParameters.indexOf('dev') < 0 ? '' : 'dev/');
+            var min = (searchParameters.indexOf('min') < 0 ? '' : '.min');
+            var help = (searchParameters.indexOf('help') < 0 ? '' : '.help');
+			document.write('\x3Cscript type="text/javascript" src="' + dev + '_js/fairgarage' + help + min + '.js">\x3C/script>');
+		</script>
+		<script src="_js/fairgarage.scripts.js"></script>
+		<script>
+			
+			tests.push(function(){
+                randomSelectVehicle(62303,true);
+            });
+            
+            tests.push(function(obj){
+                var index;
+                $.extend(obj,{
+                    //serviceId: 407532,
+                    //vehicleTypeId: 1117,
+                    ajax: {
+                        success: function(data){
+                            write('FG1 findVehicleEquipmentForService success()');
+                            offerSearchPayload.selectedVehicle.equipmentList = [];
+                            if (data.length > 0) {
+                                index = Math.floor(Math.random()*data.length);
+                                offerSearchPayload.selectedVehicle.equipmentList.push(data[index]);
+                            }
+                        },
+                        complete: function(jqXHR,textStatus){
+                            var data = jqXHR.responseJSON;
+                            if (typeof index != 'undefined') {
+                                write('FG1 findVehicleEquipmentForService complete(), add equipment with equipmentCode ' + data[index].equipmentCode + ' and name ' + data[index].name);
+                            } else {
+                                write('FG1 findVehicleEquipmentForService complete()');
+                            }
+
+                            testNext();
+                        }
+                    }
+                });
+                FG1.findVehicleEquipmentForService(obj);
+            });
+
+            tests.push(function(){
+                var searchTerms = ['Münster','Franken','Hof','Dü','Sylt','Polen','Peking','Muc'];
+                FG1.findRegion({
+                    criteria: {
+                        searchTerm: searchTerms[Math.floor(Math.random()*searchTerms.length)]
+                    },
+                    ajax: {
+                        complete: function(jqXHR,textStatus){
+                            var data = jqXHR.responseJSON[0];
+                            write('FG1 findRegion complete(), use region ' + data.formattedName);
+                            offerSearchPayload.region = data;
+                        }
+                    }
+                });
+            });
+            
+            $(document).ready(function(){
+                testNext();
+            });
+            
+		</script>
+        <script>
+            var offerSearchPayload = {};
+            var year = [],month = [];
+            for (var i = 2000; i <= 2012; i++){
+                year.push(i.toString());
+            }
+            for (var i = 1; i <= 12; i++){
+                month.push(('0'+i.toString()).slice(-2));
+            }
+            var constructionTime = year[Math.floor(Math.random()*year.length)] + '-' + month[Math.floor(Math.random()*month.length)] + '-' + '01';
+            function randomSelectVehicle(id,doCallback){
+                if (typeof id == 'undefined') {
+                    id = 62303
+                }
+                var index = 0;
+                var isLastLevel = false;
+                FG1.findVehicleByCatalog({
+                    categoryId: id,
+                    criteria:{
+                        constructionTime: constructionTime,
+                        countryCode: 'GB',
+                        languageCode: 'en'
+                    },
+                    quickHandle: function(newData){
+                        index = Math.floor(Math.random()*newData.length);
+                        var data = newData[index];
+                        if (data.lastLevel) {
+                            write(data);
+                            isLastLevel = true;
+                        } else {
+                            write(data);
+                            randomSelectVehicle(data.id,doCallback);
+                        }
+                    },
+                    ajax: {
+                        success: function(data){
+                            if (isLastLevel) {
+                                write('FG1 getVehicleByCatalog success(), and lastLevel reached');
+                                offerSearchPayload.selectedVehicle = data.types[index];
+                            }
+                        },
+                        complete: function(jqXHR,textStatus){
+                            write('FG1 getVehicleByCatalog complete() for categoryId ' + id + ' and construction time ' + constructionTime);
+                            if (isLastLevel) {
+                                if (doCallback) {
+                                    randomSelectTopService(offerSearchPayload.selectedVehicle.id);
+                                }
+                            }
+                        }
+                    }
+                });
+            }
+
+            function randomSelectTopService(vehicleTypeId){
+                var index = 0;
+                FG1.findTopServiceForVehicle({
+                    vehicleTypeId: vehicleTypeId,
+                    criteria: {
+                        constructionTime: constructionTime,
+                        numResults: 10
+                    },
+                    ajax: {
+                        success: function(data){
+                            write('FG1 findTopServiceForVehicle success()');
+                            offerSearchPayload.selectedServiceList = [];
+                            index = Math.floor(Math.random()*data.length);
+                            offerSearchPayload.selectedServiceList.push(data[index]);
+                        },
+                        complete: function(jqXHR,textStatus){
+                            var data = jqXHR.responseJSON;
+                            write('FG1 findTopServiceForVehicle complete() for serviceId ' + data[index].id + ' (' + data[index].name + ') and construction time ' + constructionTime);
+                            if (textStatus == 'success') {
+                                testNext({
+                                    vehicleTypeId: offerSearchPayload.selectedVehicle.id,
+                                    serviceId: offerSearchPayload.selectedServiceList[0].id,
+                                    constructionTime: constructionTime
+                                });
+                            }
+                        }
+                    }
+                });
+            }
+        </script>
+	</head>
+	<body>
+	</body>
+</html>

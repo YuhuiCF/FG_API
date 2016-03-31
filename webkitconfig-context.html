@@ -1,0 +1,358 @@
+<!DOCTYPE HTML>
+<html>
+	<head>
+		<title>FairGarage webkitconfig-context</title>
+		<meta charset="utf-8">
+		<meta http-equiv="content-type" content="text/html; charset=UTF-8">
+		<script src="_js/jquery.min.js"></script>
+		<script type="text/javascript">
+			if (window.location.search == '?dev') {
+				document.write('\x3Cscript type="text/javascript" src="dev/_js/fairgarage.js">\x3C/script>');
+			} else {
+				document.write('\x3Cscript type="text/javascript" src="_js/fairgarage.js">\x3C/script>');
+			}
+		</script>
+		<script src="_js/fairgarage.scripts.js"></script>
+		<script>
+
+            loginRequired = true;
+
+			var results = [];
+            var result = function(){
+                this.webkitConfig = {};
+                this.context = {};
+            }
+            var tableHead = [];
+            var webkitConfigs = {};
+            var contexts = {};
+            var contextHasNoWebkitconfig = [];
+            var contextHasWebkitconfigWrong = [];
+            var webkitconfigHasNoContext = [];
+            var webkitconfigHasContext = [];
+            var cwMap = {};
+            var wcMap = {};
+
+            tests.push(function(){
+                write('final results are stored in results object');
+                testNext();
+            });
+
+            tests.push(function(){
+                var limit = 1000;
+                FG1.findWebkitConfig({
+                    criteria: {
+                        limit: limit
+                    },
+                    ajax: {
+                        success: function(data){
+                            write('FG1 findWebkitConfig with limit ' + limit + ' success()');
+                            var dataLength = data.length;
+                            write('FG1 findWebkitConfig finds ' + dataLength + ' webkitConfig');
+                            $.each(data,function(){
+                                if (typeof webkitConfigs[this.key] != 'undefined') {// is duplicate
+                                    console.error('webkitConfigKey ' + this.key + ' duplicate, please verify the "superseded"');
+                                } else {
+                                    webkitConfigs[this.key] = this;
+                                    wcMap[this.key] = [];
+                                }
+                            });
+                            testNext();
+                        }
+                    }
+                });
+            });
+
+            tests.push(function(obj){
+                var limit = 1000;
+                FG1.findContext({
+                    criteria: {
+                        limit: limit
+                    },
+                    ajax: {
+                        success: function(data){
+                            write('FG1 findContext with limit ' + limit + ' success()');
+                            write('FG1 findContext finds ' + data.length + ' contexts');
+
+                            $.each(data,function(){
+                                if (typeof contexts[this.key] != 'undefined') {
+                                    console.error('contextKey ' + this.key + ' duplicate, please verify the "superseded"');
+                                } else {
+                                    contexts[this.key] = this;
+                                    cwMap[this.key] = [];
+                                }
+                            });
+                            testNext();
+                        }
+                    }
+                });
+            });
+
+            tests.push(function(){
+                // create has and has-not arrays
+                for (var webkitConfigKey in webkitConfigs) {
+                    webkitconfigHasNoContext.push(webkitConfigKey);
+                }
+                for (var contextKey in contexts) {
+                    var webkitConfigKey = contexts[contextKey].webkitConfigKey;
+                    if (webkitConfigKey == null) {// has no webkitConfig associated
+                        contextHasNoWebkitconfig.push(contextKey);
+                    } else {// has webkitConfig associated
+                        if (typeof webkitConfigs[webkitConfigKey] == 'undefined') {// webkitConfigKey not exist
+                            contextHasWebkitconfigWrong.push(contextKey);
+                            console.error('webkitConfigKey ' + webkitConfigKey + 'does not exist for contextKey ' + contextKey);
+                        } else {// webkitConfigKey exist
+                            if (webkitconfigHasContext.indexOf(webkitConfigKey) < 0) {
+                                webkitconfigHasContext.push(webkitConfigKey);
+                            }
+                            wcMap[webkitConfigKey].push(contextKey);
+                            cwMap[contextKey].push(webkitConfigKey);
+                        }
+                    }
+                }
+                write('sortObj(wcMap), the webkitConfig-context map');
+                write(sortObj(wcMap));
+                write('sortObj(cwMap), the context-webkitConfig map');
+                write(sortObj(cwMap));
+                // push webkitconfigHasNoContext
+                $.each(webkitconfigHasContext,function(){
+                    var webkitConfigKey = this.toString();
+                    webkitconfigHasNoContext.splice(webkitconfigHasNoContext.indexOf(webkitConfigKey),1);
+                });
+                $.each(webkitconfigHasNoContext.sort(),function(){
+                    var webkitConfigKey = this.toString();
+                    results.push($.extend(new result(),{
+                        webkitConfig: webkitConfigs[webkitConfigKey]
+                    }));
+                });
+                // push webkitconfigHasContext
+                var tableHeadChecked = false;
+                $.each(webkitconfigHasContext.sort(),function(){
+                    var webkitConfigKey = this.toString();
+                    $.each(wcMap[webkitConfigKey].sort(),function(){
+                        var contextKey = this.toString();
+                        results.push($.extend(new result(),{
+                            webkitConfig: webkitConfigs[webkitConfigKey],
+                            context: contexts[contextKey]
+                        }));
+                        if (!tableHeadChecked) {
+                            var thisResult = results[results.length - 1];
+                            var webkitConfigHeads = [];
+                            var contextHeads = [];
+                            for (var key in thisResult.webkitConfig) {
+                                webkitConfigHeads.push('webkitConfig.' + key);
+                            }
+                            tableHead = tableHead.concat(webkitConfigHeads);
+                            for (var key in thisResult.context) {
+                                contextHeads.push('context.' + key);
+                            }
+                            tableHead = tableHead.concat(contextHeads.sort());
+                            tableHeadChecked = true;
+                        }
+                    });
+                });
+                // push contextHasNoWebkitconfig
+                $.each(contextHasNoWebkitconfig.sort(),function(){
+                    var contextKey = this.toString();
+                    results.push($.extend(new result(),{
+                        context: contexts[contextKey]
+                    }));
+                });
+                // push contextHasWebkitconfigWrong
+                $.each(contextHasWebkitconfigWrong.sort(),function(){
+                    var contextKey = this.toString();
+                    results.push($.extend(new result(),{
+                        webkitConfig: {
+                            key: cwMap[contextKey]
+                        },
+                        context: contexts[contextKey]
+                    }));
+                });
+
+                testNext();
+            });
+
+            tests.push(function(){
+                var html = '';
+
+                html += '<div class="table">';
+
+                html += '<div class="table-row table-head">';
+                $.each(tableHead,function(i){
+                    html += '<div class="table-cell col' + i + '" id="' + this.toString().replace('.','_') + '">' + this.toString().replace('.','<br/>') + '</div>';
+                });
+                html += '</div>';
+
+                $.each(results,function(j){
+                    var thisResult = this;
+                    html += '<div class="table-row" id="table-row-' + j.toString() + '">';
+                    $.each(tableHead,function(i){
+                        var keys = this.toString().split('.');
+                        html += '<div class="table-cell col' + i + '">' + treatValues(thisResult,keys[0],keys[1],i) + '</div>';
+                    });
+                    html += '</div>';
+                });
+
+                html += '</div>';
+
+                $('body').append(html);
+
+                $('.table .table-row').not('.table-head').find('.table-cell').each(function(){
+                    $(this).data({initVar:$(this).html()});
+                })
+
+                testNext();
+            });
+
+            tests.push(function(){
+                $('body > p,body > pre').hide();
+                $('.table-head > *').each(function(){
+                    $(this).width($(this).width());
+                });
+                $('.table').after($('.table-head').clone());
+                var tableHeadWithAction = $('.table').next();
+                tableHeadWithAction.addClass('fixed');
+                tableHeadWithAction.width($('.table').width());
+                tableHeadWithAction.find('.table-cell').each(function(){
+                    $(this).append('<br/><input type="text" placeholder="find ..."><br/><select><option>-- selct --</option></select>');
+                    var thisSelect = $(this).find('select');
+                    thisSelect.append('<option value="-1">hide column</option>');
+                });
+                testNext();
+            });
+
+            tests.push(function(){
+                $('.table-head.fixed .table-cell').each(function(){
+                    var thisHead = this.id;
+                });
+            });
+
+            testNext();
+
+		</script>
+        <script>
+            $(window).scroll(function(){
+                var page_y_offset = (window.pageYOffset !== undefined) ? window.pageYOffset : (document.documentElement || document.body.parentNode || document.body).scrollTop;
+                $('.table-head.fixed').css({'top':page_y_offset + 'px'});
+            });
+
+            $(document).on('change','.table-head select',function(){
+                if ($(this).val() == '-1') {
+                    var thisCol = $(this).closest('.table-cell').attr('class').match(/col\d+/)[0];
+                    $('.'+thisCol).hide();
+                }
+            });
+
+            $(document).on('keypress','.table-head input[type="text"]',function(ev){
+                var searchTerm = $(this).val();
+                if (ev.keyCode == 13) {
+                    if (searchTerm != '') {
+                        var thisCol = $(this).closest('.table-cell').attr('class').match(/col\d+/)[0];
+                        var checkInherit = false;
+                        var searchTermReg = new RegExp(searchTerm,'i');
+                        console.log(searchTermReg);
+                        $('.'+thisCol+':visible').each(function(){
+                            var thisText = $(this).text();
+                            if (thisText.match(searchTermReg)) {
+                                checkInherit = true;
+                            } else {
+                                var thisRow = $(this).closest('.table-row');
+                                if (!thisRow.hasClass('table-head')) {
+                                    if (thisText != 'inherit' || !checkInherit) {
+                                        thisRow.hide();
+                                        checkInherit = false;
+                                    }
+                                }
+                            }
+                        });
+                    } else {
+                        $('.table-row').show();
+                    }
+                    var firstVisibleRow = $('.table-row:visible').not('.table-head').filter(':eq(0)');
+                    $('.table-head.fixed > *').each(function(i){
+                        $(this).width(firstVisibleRow.find('.table-cell:eq('+i.toString()+')').width());
+                    });
+                    if (firstVisibleRow.length > 0) {
+                        $('.table-head.fixed').width($('.table').width());
+                    }
+                }
+            });
+
+            $(document).on('click','.table-row',function(){
+                if (!$(this).hasClass('table-head')) {
+                    if ($(this).hasClass('bg-grey')) {
+                        $(this).removeClass('bg-grey');
+                    } else {
+                        $(this).addClass('bg-grey');
+                    }
+                }
+            });
+
+            function compareWebkitConfigKeys(a,b) {
+                if (a.webkitConfig.key < b.webkitConfig.key) {return -1;}
+                if (a.webkitConfig.key > b.webkitConfig.key) {return 1;}
+                compareContextKeys(a,b);
+                return 0;
+            }
+
+            function compareContextKeys(a,b) {
+                if (a.context.key < b.context.key) {return -1;}
+                if (a.context.key > b.context.key) {return 1;}
+                return 0;
+            }
+
+            function compareKeys(a,b) {
+                if (a.key < b.key) {return -1;}
+                if (a.key > b.key) {return 1;}
+                return 0;
+            }
+
+            var treatedWebkitConfigIds = [];
+            var modifyRow = false;
+            function treatValues(thisResult,k0,k1,i){
+                val = thisResult[k0][k1];
+                if (i == 0) {
+                    if (treatedWebkitConfigIds.indexOf(val) < 0 || val == null) {
+                        treatedWebkitConfigIds.push(val);
+                        modifyRow = false;
+                    } else {
+                        modifyRow = true;
+                    }
+                }
+                if (modifyRow && k0 == 'webkitConfig' && k1 != 'key') {
+                    return 'inherit';
+                } else {
+                    if (typeof val == 'object') {
+                        return '<pre>' + JSON.stringify(val,null,2) + '</pre>';
+                    } else {
+                        return val;
+                    }
+                }
+            }
+
+            function sortObj(obj){
+                var keys = [];
+                for (var key in obj) {
+                    keys.push(key);
+                }
+                var outputObj = {};
+                $.each(keys.sort(),function(){
+                    outputObj[this.toString()] = obj[this.toString()];
+                });
+                return outputObj;
+            }
+        </script>
+        <style>
+            .table{display:table;font-family:monospace}
+            .table-row{display:table-row;}
+            .table-head{font-weight:bold;height:100px;}
+            .table-head.fixed{position:absolute;top:10px;background:#fff;width:1000000px;}
+            .table-cell{display:table-cell;padding:5px 10px;}
+            .table-head.fixed .table-cell{display:inline-block;position:relative;}
+            .table-head.fixed input[type="text"],
+            .table-head.fixed select{width:100%;}
+            .bg-grey{background:#eee;}
+        </style>
+	</head>
+	<body>
+	</body>
+</html>

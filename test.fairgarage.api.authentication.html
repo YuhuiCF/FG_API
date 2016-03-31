@@ -1,0 +1,54 @@
+<!DOCTYPE HTML>
+<html>
+	<head>
+		<title>FairGarage API authentication Test</title>
+		<meta charset="utf-8">
+		<meta http-equiv="content-type" content="text/html; charset=UTF-8">
+		<script src="_js/jquery.min.js"></script>
+		<script type="text/javascript">
+            var searchParameters = window.location.search;
+            searchParameters = searchParameters.replace('?','');
+            searchParameters = searchParameters.split('&');
+            var dev = (searchParameters.indexOf('dev') < 0 ? '' : 'dev/');
+            var min = (searchParameters.indexOf('min') < 0 ? '' : '.min');
+            var help = (searchParameters.indexOf('help') < 0 ? '' : '.help');
+            document.write('\x3Cscript type="text/javascript" src="' + dev + '_js/fairgarage' + help + min + '.js">\x3C/script>');
+		</script>
+		<script src="_js/fairgarage.scripts.js"></script>
+		<script>
+			
+			FG2 = new fg({
+				contextKey: 'fNgmCOD2iGe9',
+				env: 'de-qa'
+			});
+			
+			FG2.login({
+				loginData: {
+					username: 'yuhuitestt+20150423145851346@gmail.com',
+					password: 'abc123'
+				},
+				newAgreements: function(data){
+					write('FG2 login newAgreements()');
+					write('FG2 login newAgreements() should show the 2 agreements');
+					console.dir(data);
+                    
+					$('body').append('<button>Login again</button>');
+					$(document).on('click','button',function(){
+						write('click on button');
+						FG2.loginAgain();
+					});
+				},
+                ajax: {
+                    complete:function(){
+                        write('FG2 login complete()');
+                    }
+                }
+			});
+			
+			testNext();
+			
+		</script>
+	</head>
+	<body>
+	</body>
+</html>

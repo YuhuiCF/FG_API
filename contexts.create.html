@@ -1,0 +1,559 @@
+<!DOCTYPE HTML>
+<html>
+	<head>
+		<title>Create Contexts</title>
+		<meta charset="utf-8">
+		<meta http-equiv="content-type" content="text/html; charset=UTF-8">
+		<script src="_js/jquery.min.js"></script>
+		<script type="text/javascript">
+			if (window.location.search == '?dev') {
+				document.write('\x3Cscript type="text/javascript" src="dev/_js/fairgarage.js">\x3C/script>');
+			} else {
+				document.write('\x3Cscript type="text/javascript" src="_js/fairgarage.js">\x3C/script>');
+			}
+		</script>
+        <script src="_js/fairgarage.scripts.js"></script>
+		<script>
+			/*
+				TODO:
+				* DONE: check environment: www, (de)-demo, de-qa
+				* DONE: Login
+				* DONE: single actions
+				* combined actions
+			*/
+
+            loginRequired = true;
+
+            testNext();
+
+			var FGContextKey = 'BIhYGSk-DlrnijwhGHI-FwoS4etKfqi';
+			var contextKey, webkitConfigKey;
+
+			var env = window.location.hostname.split('.')[0];
+			//FG = new fg({contextKey:FGContextKey,env:env});
+            FG = FG1;
+			//var apiBase = '//' + env + '.fairgarage.de/smp/api/';
+			var $messages, category, type;
+			var jsons = {};
+			var agreementIds = [];
+
+			$(document).ready(function(){
+				$messages = $('#messages');
+
+				checkAndLogin();
+
+				$('#actionsContainer select:eq(0)').prop('selectedIndex',0);
+			});
+
+			$(document).on('change','#actionsContainer select',function(){
+				category = $(this).val().split('.')[0];
+				type = $(this).val().split('.')[1];
+
+				switch (type) {
+					case 'POST':
+						switch (category) {
+							case 'webkitConfigKey':
+								eval('jsons.' + category + '=' + $('#template .' + category + ' pre').html().replace(/(\r\n|\n|\r)/gm,'') + '');
+								break;
+							case 'contextKey':
+								eval('jsons.' + category + '=' + $('#template .' + category + ' pre').html().replace(/(\r\n|\n|\r)/gm,'') + '');
+								if (category == 'contextKey') {
+									eval('jsons.' + category + '.agreementIds=agreementIds');
+								}
+								var webkitConfigKey = $('#webkitConfigKey').val();
+								if (webkitConfigKey != '') {
+									eval('jsons.' + category + '.webkitConfigKey=webkitConfigKey');
+								}
+								break;
+							default:
+								break;
+						}
+
+						$('textarea:eq(0)').val(JSON.stringify(jsons[category],null,4));
+
+						break;
+					case 'GET':
+						$('textarea:eq(0)').val('');
+						if ($('#'+category).val() != '') {
+							$('#submit').trigger('click');
+						} else {
+							alert('Please enter your ' + category + ' and Go');
+						}
+						break;
+					case 'PUT':
+						if ($('textarea:eq(0)').val() != '' && $('#'+category).val() != '') {
+							//var jsonsTemp = jsons[category];
+							//delete jsonsTemp.id;
+							//$('textarea:eq(0)').val(JSON.stringify(jsonsTemp,null,4))
+						} else {
+							alert('Payload or ' + category + ' is missing');
+						}
+						break;
+					default:
+						$('textarea:eq(0)').val('');
+						break;
+				}
+				$('#actionsContainer option[value*="PUT"]').prop('disabled',true);
+
+			});
+
+			$(document).on('blur','textarea',function(){
+				if ($(this).val() == '') {
+					$(this).removeClass('redBorder');
+					return;
+				}
+				try {
+					$(this).val(JSON.stringify(JSON.parse($(this).val().replace(/(\r\n|\n|\r)/gm,'')),null,4));
+					$(this).removeClass('redBorder');
+				} catch (err) {
+					$(this).addClass('redBorder');
+				}
+			});
+
+			$(document).on('click','#submit',function(){
+				if (type == 'GET' && category == 'webkitConfigKey') {
+					FG.getWebkitConfig({
+						webkitConfigKey: $('#'+category).val(),
+						ajax: {
+							complete: function(jqXHR,textStatus){
+								if (textStatus == 'success') {
+									var data = JSON.parse(jqXHR.responseText);
+									$('textarea:eq(0)').val(JSON.stringify(data,null,4));
+									$('#webkitConfigKey').val(data.key);
+									jsons[category] = data;
+									$('#actionsContainer option[value="webkitConfigKey.PUT"]').prop('disabled',false);
+								}
+							}
+						}
+					});
+					return;
+				}
+				if (type == 'GET' && category == 'contextKey') {
+					FG.getContext({
+						contextKey: $('#'+category).val(),
+						ajax: {
+							complete: function(jqXHR,textStatus){
+								if (textStatus == 'success') {
+									var data = JSON.parse(jqXHR.responseText);
+									$('textarea:eq(0)').val(JSON.stringify(data,null,4));
+									$('#contextKey').val(data.key);
+									jsons[category] = data;
+									$('#actionsContainer option[value="contextKey.PUT"]').prop('disabled',false);
+								}
+							}
+						}
+					});
+					return;
+				}
+				if (type == 'POST' && category == 'webkitConfigKey') {
+					var webkitConfig = JSON.parse($('textarea:eq(0)').val().replace(/(\r\n|\n|\r)/gm,''));
+					FG.createWebkitConfig({
+						webkitConfig: webkitConfig,
+						ajax: {
+							complete: function(jqXHR,textStatus){
+								if (textStatus == 'success') {
+									var data = JSON.parse(jqXHR.responseText);
+									$('textarea:eq(0)').val(JSON.stringify(data,null,4));
+									$('#webkitConfigKey').val(data.key);
+								}
+							}
+						}
+					});
+					return;
+				}
+				if (type == 'POST' && category == 'contextKey') {
+					var contextConfig = JSON.parse($('textarea:eq(0)').val().replace(/(\r\n|\n|\r)/gm,''));
+					FG.createContext({
+						context: contextConfig,
+						ajax: {
+							complete: function(jqXHR,textStatus){
+								if (textStatus == 'success') {
+									var data = JSON.parse(jqXHR.responseText);
+									$('textarea:eq(0)').val(JSON.stringify(data,null,4));
+									$('#contextKey').val(data.key);
+								}
+							}
+						}
+					});
+					return;
+				}
+                if (type == 'PUT' && category == 'webkitConfigKey') {
+                    var webkitConfig = JSON.parse($('textarea:eq(0)').val().replace(/(\r\n|\n|\r)/gm,''));
+                    FG.updateWebkitConfig({
+                        webkitConfig: webkitConfig,
+                        ajax: {
+                            beforeSend: function(jqXHR,settings){
+                                console.dir(settings);
+                            },
+                            complete: function(jqXHR,textStatus){
+                                if (textStatus == 'success') {
+                                    var data = JSON.parse(jqXHR.responseText);
+                                    $('textarea:eq(0)').val(JSON.stringify(data,null,4));
+                                    $('#webkitConfigKey').val(data.key);
+                                    $('#actionsContainer option[value="webkitConfigKey.PUT"]').prop('disabled',true);
+                                }
+                            }
+                        }
+                    });
+                    return;
+                }
+                if (type == 'PUT' && category == 'contextKey') {
+                    var contextConfig = JSON.parse($('textarea:eq(0)').val().replace(/(\r\n|\n|\r)/gm,''));
+                    FG.updateContext({
+                        context: contextConfig,
+                        ajax: {
+                            beforeSend: function(jqXHR,settings){
+                                console.dir(settings);
+                            },
+                            complete: function(jqXHR,textStatus){
+                                if (textStatus == 'success') {
+                                    var data = JSON.parse(jqXHR.responseText);
+                                    $('textarea:eq(0)').val(JSON.stringify(data,null,4));
+                                    $('#contextKey').val(data.key);
+                                    $('#actionsContainer option[value="contextKey.PUT"]').prop('disabled',true);
+                                }
+                            }
+                        }
+                    });
+                    return;
+                }
+				if (type == 'DELETE' && category == 'webkitConfigKey') {
+					var webkitConfigKey = $('#webkitConfigKey').val();
+                    if (webkitConfigKey != '') {
+    					FG.deleteWebkitConfig({
+    						webkitConfigKey: webkitConfigKey,
+    						ajax: {
+    							complete: function(jqXHR,textStatus){
+    								if (textStatus == 'success') {
+    									var data = JSON.parse(jqXHR.responseText);
+    									$('textarea:eq(0)').val(JSON.stringify(data,null,4));
+    								}
+    							}
+    						}
+    					});
+                    }
+					return;
+				}
+				if (type == 'DELETE' && category == 'contextKey') {
+					var contextKey = $('#contextKey').val();
+                    if (contextKey != '') {
+    					FG.deleteContext({
+    						contextKey: contextKey,
+    						ajax: {
+                                complete: function(jqXHR,textStatus){
+    								if (textStatus == 'success') {
+    									var data = JSON.parse(jqXHR.responseText);
+    									$('textarea:eq(0)').val(JSON.stringify(data,null,4));
+    								}
+    							}
+    						}
+    					});
+                    }
+					return;
+				}
+			});
+
+			function checkAndLogin(){
+				FG.checkLoginStatus({
+					ajax: {
+						complete: function(jqXHR,textStatus){
+							if (textStatus == 'success') {
+								var data = JSON.parse(jqXHR.responseText);
+								if (data.id != 1) {
+									$messages.html('Please login in portal');
+									$('#submit').addClass('redBorder');
+								} else {
+									$messages.html('Welcome ' + data.givenname);
+									$.each(data.acceptedAgreements,function(){
+										agreementIds.push(this.agreementId);
+									});
+									$('#submit').removeClass('redBorder');
+								}
+							}
+						}
+					}
+				});
+			}
+		</script>
+		<style>
+			textarea{width:100%;min-height:300px;}
+			input{font-family:monospace;}
+
+			#template{display:none;}
+			.alwaysHide{display:none;}
+			.redBorder{border:solid 1px red;}
+		</style>
+	</head>
+	<body>
+		<div id="messages"></div>
+		<div id="actionsContainer">
+			<select>
+				<option>Select an action</option>
+				<option value="webkitConfigKey.POST">Create webkitConfig</option>
+				<option value="webkitConfigKey.GET">Get webkitConfig</option>
+				<option value="webkitConfigKey.DELETE">Delete webkitConfig</option>
+                <option disabled value="webkitConfigKey.PUT">Update webkitConfig</option>
+				<option value="contextKey.POST">Create context</option>
+				<option value="contextKey.GET">Get context</option>
+				<option value="contextKey.DELETE">Delete context</option>
+                <option disabled value="contextKey.PUT">Update context</option>
+			</select>
+		</div>
+		<div>
+			<div>
+				<label>webkitConfigKey</label>: <input id="webkitConfigKey" type="text">
+			</div>
+			<div>
+				<label>contextKey</label>: <input id="contextKey" type="text">
+			</div>
+			<div>
+				<textarea></textarea>
+			</div>
+		</div>
+		<div>
+			<button id="submit">Go</button>
+		</div>
+		<div>
+			<textarea>{"Brouillon": "Brouillon"}</textarea>
+		</div>
+		<div id="template">
+			<div class="webkitConfigKey">
+<!--<pre>
+{
+    "providerId": 1,
+    "locationId": null,
+    "superseded": null,
+    "webkitSearchConfig": {
+        "vehicleViewConfig": null,
+        "defaultServiceViewConfigName": null,
+        "regionViewConfig": null,
+        "advanced": {
+            "CSS": {
+                "theme": "fg-webkit"
+            },
+            "REGION_SECTION_V": {
+                "preselectedRegionSignatures": [
+                    "45813b51f79b225aee020457ec2e1b99-b85b81a159c28165ae7a26dc96c5bf39"
+                ],
+				selectable: false
+            },
+            "VEHICLE_SELECTION": {
+                "selectionMethod": [
+                    "catalog",
+                    "hsn",
+					"vin"
+                ],
+				"hideIfOnlyOneChoice": [
+				  "brand"
+				]
+            }
+        },
+        "serviceViewConfigs": [
+            {
+                "name": "ANLASSER",
+                "templateName": "ListServiceView",
+                "introduction": "Anlasser",
+                "multiple": false,
+                "preSelectedServiceCategory": null,
+                "preSelectedServices": [
+                    {
+                        "id": 409868,
+                        "name": null,
+                        "displayPosition": "TOP"
+                    },
+                    {
+                        "id": 412819,
+                        "name": null,
+                        "displayPosition": "TOP"
+                    }
+                ]
+            },
+            {
+                "name": "BATTERIE",
+                "templateName": null,
+                "introduction": null,
+                "multiple": false,
+                "preSelectedServiceCategory": null,
+                "preSelectedServices": [
+                    {
+                        "id": 407531,
+                        "name": null,
+                        "displayPosition": null
+                    }
+                ]
+            },
+			{
+				"name": "BREMSEN",
+				"templateName": "GridServiceView",
+				"introduction": "Bremsen",
+				"multiple": false,
+				"preSelectedServiceCategory": null,
+				"preSelectedServices": [
+					{
+						"id": 407532,
+						"name": null,
+						"displayPosition": "TOP"
+					},
+					{
+						"id": 407535,
+						"name": null,
+						"displayPosition": "LEFT"
+					},
+					{
+						"id": 407533,
+						"name": null,
+						"displayPosition": "LEFT"
+					},
+					{
+						"id": 407536,
+						"name": null,
+						"displayPosition": "RIGHT"
+					},
+					{
+						"id": 407534,
+						"name": null,
+						"displayPosition": "RIGHT"
+					}
+				]
+			},
+			  {
+				"name": "INSPEKTION",
+				"templateName": null,
+				"introduction": "Inspektion",
+				"multiple": false,
+				"preSelectedServiceCategory": {
+				  "id": 991,
+				  "name": "Inspektion"
+				},
+				"preSelectedServices": []
+			  },
+			{
+				"name": "RADLAGER",
+				"templateName": "4SectionServiceView",
+				"introduction": "Radlager",
+				"multiple": true,
+				"preSelectedServiceCategory": null,
+				"preSelectedServices": [
+				  {
+					"id": 407546,
+					"name": "hinten rechts",
+					"displayPosition": "TOP_RIGHT"
+				  },
+				  {
+					"id": 407545,
+					"name": "hinten links",
+					"displayPosition": "BOTTOM_RIGHT"
+				  },
+				  {
+					"id": 407543,
+					"name": "vorne links",
+					"displayPosition": "BOTTOM_LEFT"
+				  },
+				  {
+					"id": 407544,
+					"name": "vorne rechts",
+					"displayPosition": "TOP_LEFT"
+				  }
+				]
+			}
+        ]
+    },
+    "mydealdershipConfig": {
+        "imageViewConfig": {
+            "imageFormat": {
+                "XS": "64X64_PNG",
+                "S": "188X144_PNG",
+                "M": "600X450_PNG",
+                "L": "800X600_PNG",
+                "THUMBNAIL": "134X100_PNG"
+            }
+        }
+    }
+}
+
+</pre>
+-->
+<pre>
+{
+    "locationId": 1,
+    "name": "",
+    "description": "",
+    "countryCode": "DE",
+    "languageCode": "de",
+    "pub": false,
+    "template": false,
+    "webkitconfigTemplateKey": null,
+    "webkitconfigTemplateVersion": -1,
+    "vehicleSelectionConfig": {
+        "selectionMethods": [
+            "CATALOG",
+            "HSN_TSN"
+        ],
+        "hideIfOnlyOneChoice": [],
+        "preSelected": {
+            "constructionTime": null,
+            "vehicleTypeId": null,
+            "ecode": null,
+            "vin": null,
+            "fza": null,
+            "hst": null,
+            "ht": null,
+            "ut": null
+        }
+    },
+    "serviceSelectionConfig": {
+        "defaultServiceViewConfigName": null,
+        "serviceViewConfigs": []
+    },
+    "regionSelectionConfig": {
+        "selectable": true,
+        "defaultRegionSignature": null,
+        "preselectedRegions": [
+            {
+                "regionName": null,
+                "signature": "45813b51f79b225aee020457ec2e1b99-b85b81a159c28165ae7a26dc96c5bf39"
+            }
+        ]
+    },
+    "resultListConfig": {
+        "displayAttributes": [],
+        "sortingOptions": []
+    },
+    "cssConfig": {
+        "theme": "fg-webkit"
+    },
+    "monitoringStatus": "INACTIVE",
+    "googleAnalyticsIds": []
+}
+</pre>
+			</div>
+			<div class="contextKey">
+<pre>
+{
+    "locationId": 1,
+    "name": "",
+    "active": true,
+    "webkitConfigKey": "BL00ELQgIkh",
+    "mailConfigId": null,
+    "applicationType": "MYDEALERSHIP/WEBKIT/OSA",
+    "serviceCategoryIds": null,
+    "vehicleCategoryIds": [],
+    "agreementIds": [],
+    "properties": null,
+    "channelId": null,
+    "partQualityList": null,
+    "urlConfigurations": [
+        {
+            "hosts": [
+                "*.fairgarage.de"
+            ],
+            "urls": []
+        }
+    ],
+    "countryCode": "DE"
+}
+</pre>
+			</div>
+		</div>
+	</body>
+</html>

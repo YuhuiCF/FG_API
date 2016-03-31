@@ -1,0 +1,127 @@
+<!DOCTYPE HTML>
+<html>
+	<head>
+		<title>FairGarage API agreements Test</title>
+		<meta charset="utf-8">
+		<meta http-equiv="content-type" content="text/html; charset=UTF-8">
+		<script src="_js/jquery.min.js"></script>
+		<script type="text/javascript">
+            var searchParameters = window.location.search;
+            searchParameters = searchParameters.replace('?','');
+            searchParameters = searchParameters.split('&');
+            var dev = (searchParameters.indexOf('dev') < 0 ? '' : 'dev/');
+            var min = (searchParameters.indexOf('min') < 0 ? '' : '.min');
+            var help = (searchParameters.indexOf('help') < 0 ? '' : '.help');
+			document.write('\x3Cscript type="text/javascript" src="' + dev + '_js/fairgarage' + help + min + '.js">\x3C/script>');
+		</script>
+		<script src="_js/fairgarage.scripts.js"></script>
+		<script>
+			
+            tests.push(function(){
+                write('TOCHECK: FG1 test findAgreement with no function parameter, expect to be no error thrown from the function findAgreement');
+                FG1.findAgreement();
+                setTimeout(function(){
+                    testNext();
+                },2000);
+            });
+
+            tests.push(function(){
+                write('TOCHECK: FG1 test findAgreement with criteria isPublik:false');
+                FG1.findAgreement({
+                    criteria: {// could be overwritten by ajax.data
+                        isPublik: false
+                    },
+                    ajax: {
+                        success: function(data){
+                            write('FG1 getAgreement success()');
+
+                            var dataLength = data.length;
+                            if (dataLength != 0) {
+                                writeError('FG1 expects to get 0 agreements, instead of ' + dataLength);
+                            }
+
+                            testNext();
+                        }
+                    }
+                })
+            });
+
+			tests.push(function(){
+                write('TOCHECK: FG1 test findAgreement with no specific criteria, the standard case, and check \n<br/> whether the urlParam of the API URL is expected \n<br/> whether the found agreements are the expected ones');
+                FG1.findAgreement({
+                    criteria: {// could be overwritten by ajax.data
+                        //isPublik: false
+                    },
+                    quickHandle: function(data){
+                        write('FG1 getAgreement quickHandle()');
+
+                        var dataLength = data.length;
+                        if (dataLength != 2) {
+                            writeError('FG1 expects to get 2 agreements, instead of ' + dataLength);
+                        }
+
+                        var expectedAgreements = [
+                            {
+                                "providerId": 1,
+                                "agreementId": "548ff22065b35eca3810635c",
+                                "agreementVersionId": "54bdc994e4b079102eabbe93"//
+                            },
+                            {
+                                "providerId": 1,
+                                "agreementId": "548ff22065b35eca3810635e",
+                                "agreementVersionId": "54c73d19e4b0d7d1831740d0"
+                            }
+                        ];
+
+                        $.each(expectedAgreements,function(){
+                            //write(this);
+                            var thisExpectedAgreements = this;
+
+                            // check whether the data is in expectedAgreements by agreementId and compare
+                            var expectedAgreementFound = false;
+                            $.each(data,function(){
+                                // find by agreementId
+                                if (this.agreementId == thisExpectedAgreements.agreementId) {
+                                    expectedAgreementFound = true;
+                                    var errorMessages = [];
+                                    for (var key in thisExpectedAgreements) {
+                                        if (thisExpectedAgreements[key] != this[key]) {// properties do not match
+                                            errorMessages.push('the value for ' + key.toString() + ' is ' + thisExpectedAgreements[key] + ', it is expected to be ' + this[key]);
+                                        }
+                                    }
+                                    if (errorMessages.length > 0) {
+                                        writeError('For agreement with ID ' + thisExpectedAgreements.agreementId + ': \n<br/>' + errorMessages.join('\n<br/>'));
+                                    }
+                                    return;
+                                }
+                            });
+
+                            if (!expectedAgreementFound) {
+                                writeError('Agreement with ID ' + thisExpectedAgreements.agreementId + ' not found in expectAgreements.');
+                            }
+                        });
+                    },
+                    ajax: {
+                        beforeSend: function(jqXHR,settings){
+                            write('FG1 getAgreement api.beforeSend()');
+
+                            if (getParamVal('contextKey',settings.url) != getParamVal('context',settings.url)) {
+                                writeError('contextKey and context in API URL should be the same');
+                            }
+                        },
+                        success: function(data){
+                            write('FG1 getAgreement success(), this message should come after quickHandle');
+                        }
+                    }
+                })
+            });
+            
+            $(document).ready(function(){
+                testNext();
+            });
+            
+		</script>
+	</head>
+	<body>
+	</body>
+</html>
