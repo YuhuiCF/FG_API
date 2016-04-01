@@ -14,7 +14,7 @@
             var query = [];
             $('#query input').each(function(){
                 if ($(this).is(':checked')) {
-                    query.push(this.id);
+                    query.push($(this).attr('data-query'));
                 }
             });
             query = '?' + query.join('&');
@@ -25,12 +25,7 @@
         });
 
         $(document).on('change','#env input',function(){
-            var env;
-            $('#env input').each(function(){
-                if ($(this).is(':checked')) {
-                    env = this.id;
-                }
-            });
+            var env = $('#env input:checked').attr('data-env');
             $('#page-links a').each(function(){
                 $(this).attr('href',$(this).attr('href').replace(/\/\/[^\.]*\./, '//' + env + '.'));
             });
@@ -39,24 +34,23 @@
 </head>
 <body>
     <div id="env">
-        <label for="de-qa">de-qa</label><input checked id="de-qa" name="env" type="radio"><br/>
-        <label for="de-demo">de-demo</label><input id="de-demo" name="env" type="radio"><br/>
-        <label for="www">www</label><input id="www" name="env" type="radio"><br/>
+        <label>api-qa<input checked data-env="api-qa" name="env" type="radio"></label><br>
+        <label>api<input data-env="api" name="env" type="radio"></label><br>
     </div>
-    <br/>
+    <br>
     <div id="query">
-        <label for="dev">dev</label><input checked id="dev" type="checkbox"><br/>
-        <label for="min">min</label><input id="min" type="checkbox"><br/>
-        <label for="help">help</label><input id="help" type="checkbox"><br/>
+        <label>dev<input checked data-query="dev" type="checkbox"></label><br>
+        <label>min<input data-query="min" type="checkbox"></label><br>
+        <label>help<input data-query="help" type="checkbox"></label><br>
     </div>
-    <br/>
+    <br>
     <div id="page-links">
     <?php
         $path = "http://www.fairgarage.de/myTESTS/";
         $files = scandir(getcwd());
         foreach ($files as $fileName) {
             if ($fileName !== basename(__FILE__) && !is_dir($fileName)) {
-                $html = '<a data-init-href="'.$path.$fileName.'" href="'.$path.$fileName.'">'.$fileName.'</a><br/>';
+                $html = '<a data-init-href="'.$path.$fileName.'" href="'.$path.$fileName.'">'.$fileName.'</a><br>';
                 echo $html;
             }
         }
