@@ -487,7 +487,8 @@
     "vehicleSelectionConfig": {
         "selectionMethods": [
             "CATALOG",
-            "HSN_TSN"
+            "HSN_TSN",
+            "VIN"
         ],
         "hideIfOnlyOneChoice": [],
         "preSelected": {
@@ -516,11 +517,46 @@
         ]
     },
     "resultListConfig": {
-        "displayAttributes": [],
-        "sortingOptions": []
+        "locationDisplayAttributes": [
+            "DISTANCE",
+            "WORKSHOP_NAME",
+            "WORKSHOP_IMAGE",
+            "WORKSHOP_ADDRESS",
+            "WORKSHOP_PHONE",
+            "WORKSHOP_RATING",
+            "WORKSHOP_TYPE_NAME",
+            "MATCHING_BRAND_LOGO",
+            "TESTING_ORGANIZATIONS"
+        ],
+        "locationSortingOptions": [
+            "DISTANCE",
+            "WORKSHOP_TYPE"
+        ],
+        "offerDisplayAttributes": [
+            "DISTANCE",
+            "REVIEWS",
+            "PART_QUALITY",
+            "WORKSHOP_NAME",
+            "WORKSHOP_IMAGE",
+            "WORKSHOP_ADDRESS",
+            "WORKSHOP_TYPE_NAME",
+            "MATCHING_BRAND_LOGO",
+            "TESTING_ORGANIZATIONS",
+            "GUILD_MEMBERSHIP"
+        ],
+        "offerSortingOptions": [
+            "DISTANCE",
+            "PRICE",
+            "USER_RATING",
+            "RELEVANCE"
+        ]
+
     },
     "cssConfig": {
-        "theme": "fg-webkit"
+        "theme": "fg-webkit",
+        "hideSearchNavigation": true,
+        "hideLoginNavigation": true,
+        "hideRegisterNavigation": true
     },
     "monitoringStatus": "INACTIVE",
     "googleAnalyticsIds": []

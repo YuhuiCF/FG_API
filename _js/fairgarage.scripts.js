@@ -51,19 +51,17 @@ function getParamVal(name,string){
     var search = string;
     //var search = window.location.search.substring(1);
     var searchParameters = search.split('&');
-    for (var i = 0; i < searchParameters.length; i++)
-    {
+    for (var i = 0; i < searchParameters.length; i++ ){
         var parameter = searchParameters[i].split('=');
-        if (parameter[0] == parameterName && _.indexOf(result,parameter[1])===-1)
-        {
-            if(_.isUndefined(parameter[1])){
+        if (parameter[0] === name && $.inArray(parameter[1], result) === -1) {
+            if (typeof parameter[1] === 'undefined'){
                 parameter[1]=true;
             }
-            if(parameter[1]==='true'){
-                parameter[1]=true;
+            if (parameter[1] === 'true'){
+                parameter[1] = true;
             }
-            if(parameter[1]==='false'){
-                parameter[1]=false;
+            if (parameter[1] === 'false'){
+                parameter[1] = false;
             }
             result.push(parameter[1]);
         }
