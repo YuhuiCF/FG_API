@@ -104,7 +104,7 @@ $FgApiLibrary -> addFunction(array(
                             agreementVersions.push({
                                 agreementId: agreement.agreementId,
                                 locationId: agreement.locationId,
-                                agreementVersionId: agreement.id
+                                id: agreement.id
                             });
                         });
                         _.each(data.agreementVersionsUpdated,function(agreement){
@@ -116,7 +116,7 @@ $FgApiLibrary -> addFunction(array(
                             agreementVersions.push({
                                 agreementId: agreement.agreementId,
                                 locationId: agreement.locationId,
-                                agreementVersionId: agreement.id
+                                id: agreement.id
                             });
                         });
                         ".$FgApiLibrary -> varPrivate.".loginArguments.loginData.agreementVersions = agreementVersions;
