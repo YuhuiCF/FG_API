@@ -31,7 +31,7 @@ $FgApiLibrary -> addFunction(array(
     "ajaxDefaultParams" => array(
         "type" => "'POST'",
         "apiUrl" => "'bookings/' + bookedOfferKey + '/history'",
-        "urlParam" => "extend(cancellingData,{newStatus:'CANCELLED'})"
+        "urlParam" => "_.assign(cancellingData,{newStatus:'CANCELLED'})"
     )
 ));
 

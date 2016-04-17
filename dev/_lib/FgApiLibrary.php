@@ -219,22 +219,126 @@ class FgApiLibrary{
         }
 
 
-        // fake lodash library
-        var _ = {};
+        // fake lodash/underscore library
+        var _ = (function(){
 
-        /**
-          * @desc each function
-          * @param {array} array - array of items
-          * @param {function} callback - function applied to each of the item. This function takes 2 parameters:
-              * @param item - current item of the array
-              * @param index - index of current item
-        */
-        _.each = function(array, callback){
-            for (var i = 0; i < array.length; i ++) {
-                callback(array[i], i);
-            }
-        };
+            var nativeKeys = Object.keys;
+            var nativeIsArray = Array.isArray;
 
+            var ObjProto = Object.prototype;
+
+            var hasEnumBug = !{toString: null}.propertyIsEnumerable('toString');
+            var nonEnumerableProps = ['valueOf', 'isPrototypeOf', 'toString',
+                      'propertyIsEnumerable', 'hasOwnProperty', 'toLocaleString'];
+
+
+            var _ = {};
+
+            var createAssigner = function(keysFunc, undefinedOnly) {
+                return function(obj) {
+                    var length = arguments.length;
+                    if (length < 2 || obj == null) return obj;
+                    for (var index = 1; index < length; index++) {
+                        var source = arguments[index],
+                            keys = keysFunc(source),
+                            l = keys.length;
+                        for (var i = 0; i < l; i++) {
+                            var key = keys[i];
+                            if (!undefinedOnly || obj[key] === void 0) obj[key] = source[key];
+                        }
+                    }
+                    return obj;
+                };
+            };
+
+function collectNonEnumProps(obj, keys) {
+    var nonEnumIdx = nonEnumerableProps.length;
+    var constructor = obj.constructor;
+    var proto = (_.isFunction(constructor) && constructor.prototype) || ObjProto;
+
+    var prop = 'constructor';
+    if (_.has(obj, prop) && !_.contains(keys, prop)) keys.push(prop);
+
+    while (nonEnumIdx--) {
+      prop = nonEnumerableProps[nonEnumIdx];
+      if (prop in obj && obj[prop] !== proto[prop] && !_.contains(keys, prop)) {
+        keys.push(prop);
+      }
+    }
+  }
+
+_.has = function(obj, key) {
+    return obj != null && hasOwnProperty.call(obj, key);
+  };
+
+_.contains = _.includes = _.include = function(obj, item, fromIndex, guard) {
+    if (!isArrayLike(obj)) obj = _.values(obj);
+    if (typeof fromIndex != 'number' || guard) fromIndex = 0;
+    return _.indexOf(obj, item, fromIndex) >= 0;
+  };
+
+var MAX_ARRAY_INDEX = Math.pow(2, 53) - 1;
+  var getLength = property('length');
+  var isArrayLike = function(collection) {
+    var length = getLength(collection);
+    return typeof length == 'number' && length >= 0 && length <= MAX_ARRAY_INDEX;
+  };
+
+            // underscore.js
+            _.isArray = nativeIsArray || function(obj) {
+                return toString.call(obj) === '[object Array]';
+            };
+
+            // underscore.js
+            _.isObject = function(obj) {
+                var type = typeof obj;
+                return type === 'function' || type === 'object' && !!obj;
+            };
+
+            // underscore.js
+            _.clone = function(obj) {
+                if (!_.isObject(obj)) return obj;
+                return _.isArray(obj) ? obj.slice() : _.extend({}, obj);
+            };
+
+            // underscore.js
+            _.extend = createAssigner(_.allKeys);
+
+            /**
+              * @desc each function
+              * @param {array} array - array of items
+              * @param {function} callback - function applied to each of the item. This function takes 2 parameters:
+                  * @param item - current item of the array
+                  * @param index - index of current item
+            */
+            _.each = function(array, callback){
+                for (var i = 0; i < array.length; i ++) {
+                    callback(array[i], i);
+                }
+            };
+
+            // underscore.js
+              _.keys = function(obj) {
+    if (!_.isObject(obj)) return [];
+    if (nativeKeys) return nativeKeys(obj);
+    var keys = [];
+    for (var key in obj) if (_.has(obj, key)) keys.push(key);
+    if (hasEnumBug) collectNonEnumProps(obj, keys);
+    return keys;
+  };
+
+
+
+            /**
+              * @desc assign function
+              * @param {object} target - object to be assigned
+              * @param {object} sources - properties of sources would be merged in
+            */
+            _.assign = createAssigner(_.keys)
+
+            return _;
+
+        })();
 
         /**
           * @desc get first construction time of the vehicle in FairGarage date format to timestamp number
