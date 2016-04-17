@@ -30,11 +30,10 @@ $FgApiLibrary -> addFunction(array(
         "success" => "function(data){
                     if (isType(quickHandle,'function')) {
                         var newData = [];
-                        $.each(data,function(){
+                        _.each(data,function(agreement){
                             newData.push({
-                                providerId: this.providerId,
-                                agreementId: this.agreementId,
-                                agreementVersionId: this.id
+                                agreementId: agreement.agreementId,
+                                agreementVersionId: agreement.id
                             });
                         });
                         quickHandle(newData);

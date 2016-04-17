@@ -134,8 +134,8 @@ class FgApiLibrary{
           * @param {array of strings} properties - array with names of properties to be added/modified in ".$this -> outputObj.".".$this -> properties."
         */
         ".$this -> outputObj.".".$this -> functionRemoveProperties." = function(properties){
-            $.each(properties,function(){
-                delete ".$this -> outputObj.".properties[this.toString()];
+            _.each(properties,function(property){
+                delete ".$this -> outputObj.".properties[property];
             });
         };
 
@@ -154,12 +154,12 @@ class FgApiLibrary{
             var error = obj.error || function(jqXHR,textStatus,errorThrown){
                 try {
                     var errMsg = [];
-                    $.each(jqXHR.responseJSON,function(){
+                    _.each(jqXHR.responseJSON,function(response){
                         var temp;
-                        if (this.field) {
-                            temp = this.field.split('.')[1] || this.field.split('.')[0] + ' of the payload' + (this.errorMessage ? ', ' + this.errorMessage : ' error');
+                        if (response.field) {
+                            temp = response.field.split('.')[1] || response.field.split('.')[0] + ' of the payload' + (response.errorMessage ? ', ' + response.errorMessage : ' error');
                         } else {
-                            temp = this.errorMessage;
+                            temp = response.errorMessage;
                         }
                         errMsg.push(temp);
                     });
@@ -205,17 +205,6 @@ class FgApiLibrary{
         }
 
         /**
-          * @desc private each function
-          * @param {array} array - array of items
-          * @param {function} handle - function applied to each of the item. This function takes 2 parameters:
-              * @param item - current item of the array
-              * @param index - index of current item
-        */
-        function each(array, handle){
-            $.each(array,handle);
-        }
-
-        /**
           * @desc private extend function
           * @param {object} target - object to be extended
           * @param {object} object - properties of this object would be merged in
@@ -228,6 +217,24 @@ class FgApiLibrary{
                 return $.extend(deep, target, object);
             }
         }
+
+
+        // fake lodash library
+        var _ = {};
+
+        /**
+          * @desc each function
+          * @param {array} array - array of items
+          * @param {function} callback - function applied to each of the item. This function takes 2 parameters:
+              * @param item - current item of the array
+              * @param index - index of current item
+        */
+        _.each = function(array, callback){
+            for (var i = 0; i < array.length; i ++) {
+                callback(array[i], i);
+            }
+        };
+
 
         /**
           * @desc get first construction time of the vehicle in FairGarage date format to timestamp number
@@ -282,7 +289,7 @@ class FgApiLibrary{
         */
         ".$this -> outputObj.".".$this -> functionAreMandatoryParmsSet." = function(functionName,".$this -> functionParamObj.",paramConfigs){
             var missingMandatoryParams = [];
-            $.each(paramConfigs,function(i,config){
+            _.each(paramConfigs,function(config, i){
                 var paramName = config.paramName;//string
                 var paramType = config.paramType;//string
                 var parentObj = config.parentObj;//string

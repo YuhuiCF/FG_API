@@ -79,18 +79,18 @@ $FgApiLibrary -> addFunction(array(
                         if (data.types.length > 0) {
                             key = 'types';
                         }
-                        $.each(data[key],function(){
+                        _.each(data[key],function(vehicleType){
                             newData.push({
-                                lastLevel: key == 'types',
-                                id: this.id,
-                                name: this.name,
-                                externalId: (key == 'types' ? this.externalId : null),
+                                lastLevel: key === 'types',
+                                id: vehicleType.id,
+                                name: vehicleType.name,
+                                externalId: (key === 'types' ? vehicleType.externalId : null),
                                 properties: []
                             });
-                            $.each(this.properties,function(){
+                            _.each(vehicleType.properties,function(property){
                                 newData[newData.length - 1].properties.push({
-                                    name: this.type.name,
-                                    value: this.value
+                                    name: property.type.name,
+                                    value: property.value
                                 });
                             });
                         });
