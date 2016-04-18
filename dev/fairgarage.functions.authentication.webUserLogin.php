@@ -80,7 +80,7 @@ $FgApiLibrary -> addFunction(array(
                             middlename: data.user.middlename,
                             surname: data.user.surname
                         };
-                        _.each(data.user.authorities,function(authority){
+                        helper.each(data.user.authorities,function(authority){
                             newData.authorities.push(authority.authority);
                         });
                         ".$FgApiLibrary -> functionQuickHandle."(newData);
@@ -95,7 +95,7 @@ $FgApiLibrary -> addFunction(array(
                             updatedAgreements: []
                         };
                         var agreementVersions = [];
-                        _.each(data.agreementVersionsAdded,function(agreement){
+                        helper.each(data.agreementVersionsAdded,function(agreement){
                             newData.addedAgreements.push({
                                 agreementId: agreement.agreementId,
                                 title: agreement.title,
@@ -107,7 +107,7 @@ $FgApiLibrary -> addFunction(array(
                                 id: agreement.id
                             });
                         });
-                        _.each(data.agreementVersionsUpdated,function(agreement){
+                        helper.each(data.agreementVersionsUpdated,function(agreement){
                             newData.updatedAgreements.push({
                                 agreementId: agreement.agreementId,
                                 title: agreement.title,

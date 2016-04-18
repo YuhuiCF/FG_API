@@ -79,7 +79,7 @@ $FgApiLibrary -> addFunction(array(
                         if (data.types.length > 0) {
                             key = 'types';
                         }
-                        _.each(data[key],function(vehicleType){
+                        helper.each(data[key],function(vehicleType){
                             newData.push({
                                 lastLevel: key === 'types',
                                 id: vehicleType.id,
@@ -87,7 +87,7 @@ $FgApiLibrary -> addFunction(array(
                                 externalId: (key === 'types' ? vehicleType.externalId : null),
                                 properties: []
                             });
-                            _.each(vehicleType.properties,function(property){
+                            helper.each(vehicleType.properties,function(property){
                                 newData[newData.length - 1].properties.push({
                                     name: property.type.name,
                                     value: property.value

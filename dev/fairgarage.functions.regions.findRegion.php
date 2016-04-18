@@ -36,7 +36,7 @@ $FgApiLibrary -> addFunction(array(
         "success" => "function(data){
                     if (isType(".$FgApiLibrary -> functionQuickHandle.",'function')) {
                         var newData = [];
-                        _.each(data,function(region){
+                        helper.each(data,function(region){
                             newData.push({
                                 formattedName: region.formattedName,
                                 nearbyLocationCount: region.nearbyLocationCount,

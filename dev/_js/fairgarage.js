@@ -16,6 +16,163 @@
             countryCode: 'DE'
         };
 
+        // fake lodash/underscore library
+        var helper = (function(){
+
+            var optimizeCb = function(func, context, argCount) {
+                if (context === void 0) return func;
+                switch (argCount === null ? 3 : argCount) {
+                    case 1: return function(value) {
+                        return func.call(context, value);
+                    };
+                    case 2: return function(value, other) {
+                        return func.call(context, value, other);
+                    };
+                    case 3: return function(value, index, collection) {
+                        return func.call(context, value, index, collection);
+                    };
+                    case 4: return function(accumulator, value, index, collection) {
+                        return func.call(context, accumulator, value, index, collection);
+                    };
+                }
+                return function() {
+                    return func.apply(context, arguments);
+                };
+            };
+
+            var nativeKeys = Object.keys;
+            var nativeIsArray = Array.isArray;
+
+            var ObjProto = Object.prototype;
+
+            var toString = ObjProto.toString;
+
+            var hasEnumBug = !{toString: null}.propertyIsEnumerable('toString');
+            var nonEnumerableProps = [
+                'hasOwnProperty',
+                'isPrototypeOf',
+                'propertyIsEnumerable',
+                'toLocaleString',
+                'toString',
+                'valueOf'
+            ];
+
+            var createAssigner = function(keysFunc, undefinedOnly) {
+                return function(obj) {
+                    var length = arguments.length;
+                    if (length < 2 || obj === null) {return obj;}
+                    for (var index = 1; index < length; index++) {
+                        var source = arguments[index],
+                            keys = keysFunc(source),
+                            l = keys.length;
+                        for (var i = 0; i < l; i++) {
+                            var key = keys[i];
+                            if (!undefinedOnly || obj[key] === void 0) obj[key] = source[key];
+                        }
+                    }
+                    return obj;
+                };
+            };
+
+            var property = function(key) {
+                return function(obj) {
+                    return obj === null ? void 0 : obj[key];
+                };
+            };
+            var MAX_ARRAY_INDEX = Math.pow(2, 53) - 1;
+            var getLength = property('length');
+            var isArrayLike = function(collection) {
+                var length = getLength(collection);
+                return typeof length == 'number' && length >= 0 && length <= MAX_ARRAY_INDEX;
+            };
+
+            function collectNonEnumProps(obj, keys) {
+                var nonEnumIdx = nonEnumerableProps.length;
+                var constructor = obj.constructor;
+                var proto = (_.isFunction(constructor) && constructor.prototype) || ObjProto;
+
+                var prop = 'constructor';
+                if (_.has(obj, prop) && !_.contains(keys, prop)) keys.push(prop);
+
+                while (nonEnumIdx--) {
+                    prop = nonEnumerableProps[nonEnumIdx];
+                    if (prop in obj && obj[prop] !== proto[prop] && !_.contains(keys, prop)) {
+                        keys.push(prop);
+                    }
+                }
+            }
+
+            var _ = {};
+
+            _.assign = createAssigner(_.keys);
+
+            _.clone = function(obj) {
+                if (!_.isObject(obj)) return obj;
+                return _.isArray(obj) ? obj.slice() : _.extend({}, obj);
+            };
+
+            _.contains = _.includes = _.include = function(obj, item, fromIndex, guard) {
+                if (!isArrayLike(obj)) {
+                    obj = _.values(obj);
+                }
+                if (typeof fromIndex != 'number' || guard) {
+                    fromIndex = 0;
+                }
+
+                return _.indexOf(obj, item, fromIndex) >= 0;
+            };
+
+            _.each = _.forEach = function(obj, iteratee, context) {
+                iteratee = optimizeCb(iteratee, context);
+                var i, length;
+                if (isArrayLike(obj)) {
+                    for (i = 0, length = obj.length; i < length; i++) {
+                        iteratee(obj[i], i, obj);
+                    }
+                } else {
+                    var keys = _.keys(obj);
+                    for (i = 0, length = keys.length; i < length; i++) {
+                        iteratee(obj[keys[i]], keys[i], obj);
+                    }
+                }
+                return obj;
+            };
+
+            _.extend = createAssigner(_.allKeys);
+
+            _.has = function(obj, key) {
+                return obj !== null && hasOwnProperty.call(obj, key);
+            };
+
+            _.isArray = nativeIsArray || function(obj) {
+                return toString.call(obj) === '[object Array]';
+            };
+
+            if (typeof /./ != 'function' && typeof Int8Array != 'object') {
+                _.isFunction = function(obj) {
+                    return typeof obj == 'function' || false;
+                };
+            }
+
+            _.isObject = function(obj) {
+                var type = typeof obj;
+                return type === 'function' || type === 'object' && !!obj;
+            };
+
+            _.keys = function(obj) {
+                if (!_.isObject(obj)) return [];
+                if (nativeKeys) return nativeKeys(obj);
+                var keys = [];
+                for (var key in obj) if (_.has(obj, key)) keys.push(key);
+                if (hasEnumBug) collectNonEnumProps(obj, keys);
+                return keys;
+            };
+
+            return _;
+
+        })();
+
+
         /**
           * @desc set properties in self.properties
           * @param {object} newProperties - object with new properties to be added/modified
@@ -50,8 +207,8 @@
           * @param {array of strings} properties - array with names of properties to be added/modified in self.properties
         */
         self.removeProperties = function(properties){
-            $.each(properties,function(){
-                delete self.properties[this.toString()];
+            helper.each(properties,function(property){
+                delete self.properties[property];
             });
         };
 
@@ -70,12 +227,12 @@
             var error = obj.error || function(jqXHR,textStatus,errorThrown){
                 try {
                     var errMsg = [];
-                    $.each(jqXHR.responseJSON,function(){
+                    helper.each(jqXHR.responseJSON,function(response){
                         var temp;
-                        if (this.field) {
-                            temp = this.field.split('.')[1] || this.field.split('.')[0] + ' of the payload' + (this.errorMessage ? ', ' + this.errorMessage : ' error');
+                        if (response.field) {
+                            temp = response.field.split('.')[1] || response.field.split('.')[0] + ' of the payload' + (response.errorMessage ? ', ' + response.errorMessage : ' error');
                         } else {
-                            temp = this.errorMessage;
+                            temp = response.errorMessage;
                         }
                         errMsg.push(temp);
                     });
@@ -118,17 +275,6 @@
         */
         function isType(variable, expectedType){
             return typeof(variable) === expectedType;
-        }
-
-        /**
-          * @desc private each function
-          * @param {array} array - array of items
-          * @param {function} handle - function applied to each of the item. This function takes 2 parameters:
-              * @param item - current item of the array
-              * @param index - index of current item
-        */
-        function each(array, handle){
-            $.each(array,handle);
         }
 
         /**
@@ -198,7 +344,7 @@
         */
         self.areMandatoryParmsSet = function(functionName,pobj,paramConfigs){
             var missingMandatoryParams = [];
-            $.each(paramConfigs,function(i,config){
+            helper.each(paramConfigs,function(config, i){
                 var paramName = config.paramName;//string
                 var paramType = config.paramType;//string
                 var parentObj = config.parentObj;//string
@@ -263,11 +409,10 @@
                 success: function(data){
                     if (isType(quickHandle,'function')) {
                         var newData = [];
-                        $.each(data,function(){
+                        helper.each(data,function(agreement){
                             newData.push({
-                                providerId: this.providerId,
-                                agreementId: this.agreementId,
-                                agreementVersionId: this.id
+                                agreementId: agreement.agreementId,
+                                agreementVersionId: agreement.id
                             });
                         });
                         quickHandle(newData);
@@ -799,8 +944,8 @@
                             middlename: data.user.middlename,
                             surname: data.user.surname
                         };
-                        $.each(data.user.authorities,function(){
-                            newData.authorities.push(this.authority);
+                        helper.each(data.user.authorities,function(authority){
+                            newData.authorities.push(authority.authority);
                         });
                         quickHandle(newData);
                     }
@@ -808,34 +953,34 @@
                 },
                 complete: function(jqXHR,textStatus){
                     var data = jqXHR.responseJSON;
-                    if (textStatus == 'error' && (data.agreementVersionsAdded || data.agreementVersionsUpdated)) {// treat new agreements
+                    if (textStatus === 'error' && data.all) {// treat new agreements
                         var newData = {
                             addedAgreements: [],
                             updatedAgreements: []
                         };
                         var agreementVersions = [];
-                        $.each(data.agreementVersionsAdded,function(){
+                        helper.each(data.agreementVersionsAdded,function(agreement){
                             newData.addedAgreements.push({
-                                agreementId: this.agreementId,
-                                title: this.title,
-                                htmlText: this.text
+                                agreementId: agreement.agreementId,
+                                title: agreement.title,
+                                htmlText: agreement.text
                             });
                             agreementVersions.push({
-                                agreementId: this.agreementId,
-                                providerId: this.providerId,
-                                agreementVersionId: this.id
+                                agreementId: agreement.agreementId,
+                                locationId: agreement.locationId,
+                                id: agreement.id
                             });
                         });
-                        $.each(data.agreementVersionsUpdated,function(){
+                        helper.each(data.agreementVersionsUpdated,function(agreement){
                             newData.updatedAgreements.push({
-                                agreementId: this.agreementId,
-                                title: this.title,
-                                htmlText: this.text
+                                agreementId: agreement.agreementId,
+                                title: agreement.title,
+                                htmlText: agreement.text
                             });
                             agreementVersions.push({
-                                agreementId: this.agreementId,
-                                providerId: this.providerId,
-                                agreementVersionId: this.id
+                                agreementId: agreement.agreementId,
+                                locationId: agreement.locationId,
+                                id: agreement.id
                             });
                         });
                         varPrivate.loginArguments.loginData.agreementVersions = agreementVersions;
@@ -936,7 +1081,7 @@
                 type: 'POST',
                 apiUrl: 'bookings',
                 data: JSON.stringify(bookingData),
-                urlParam: extend(criteria,{status:{name:'BOOKED'}}),
+                urlParam: helper.assign(criteria,{status:{name:'BOOKED'}}),
                 functionName: functionName
             };
             self.api(extend(obj,ajax));
@@ -1193,7 +1338,7 @@
             var obj = {
                 type: 'POST',
                 apiUrl: 'bookings/' + bookedOfferKey + '/history',
-                urlParam: extend(cancellingData,{newStatus:'CANCELLED'}),
+                urlParam: helper.assign(cancellingData,{newStatus:'CANCELLED'}),
                 functionName: functionName
             };
             self.api(extend(obj,ajax));
@@ -2452,11 +2597,11 @@
                 success: function(data){
                     if (isType(quickHandle,'function')) {
                         var newData = [];
-                        $.each(data,function(){
+                        helper.each(data,function(region){
                             newData.push({
-                                formattedName: this.formattedName,
-                                nearbyLocationCount: this.nearbyLocationCount,
-                                signature: this.signature
+                                formattedName: region.formattedName,
+                                nearbyLocationCount: region.nearbyLocationCount,
+                                signature: region.signature
                             });
                         });
                         quickHandle(newData);
@@ -2589,10 +2734,10 @@
                 success: function(data){
                     if (isType(quickHandle,'function')) {
                         var newData = [];
-                        $.each(data,function(){
+                        helper.each(data,function(service){
                             newData.push({
-                                serviceId: this.id,
-                                serviceName: this.name
+                                serviceId: service.id,
+                                serviceName: service.name
                             });
                         });
                         quickHandle(newData);
@@ -3271,18 +3416,18 @@
                         if (data.types.length > 0) {
                             key = 'types';
                         }
-                        $.each(data[key],function(){
+                        helper.each(data[key],function(vehicleType){
                             newData.push({
-                                lastLevel: key == 'types',
-                                id: this.id,
-                                name: this.name,
-                                externalId: (key == 'types' ? this.externalId : null),
+                                lastLevel: key === 'types',
+                                id: vehicleType.id,
+                                name: vehicleType.name,
+                                externalId: (key === 'types' ? vehicleType.externalId : null),
                                 properties: []
                             });
-                            $.each(this.properties,function(){
+                            helper.each(vehicleType.properties,function(property){
                                 newData[newData.length - 1].properties.push({
-                                    name: this.type.name,
-                                    value: this.value
+                                    name: property.type.name,
+                                    value: property.value
                                 });
                             });
                         });

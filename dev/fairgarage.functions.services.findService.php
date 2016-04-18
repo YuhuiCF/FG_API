@@ -59,7 +59,7 @@ $FgApiLibrary -> addFunction(array(
         "success" => "function(data){
                     if (isType(".$FgApiLibrary -> functionQuickHandle.",'function')) {
                         var newData = [];
-                        _.each(data,function(service){
+                        helper.each(data,function(service){
                             newData.push({
                                 serviceId: service.id,
                                 serviceName: service.name
