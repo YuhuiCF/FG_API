@@ -9,6 +9,10 @@ function getEnvironment(){
     return window.location.hostname.split('.')[0];
 }
 
+function matchEnvironment(environment){
+    // TODO
+}
+
 function write(data){
 	if (typeof data == 'string' || typeof data == 'number' || Object.prototype.toString.call(data) == '[object Array]') {
         //if (typeof data == 'string' && data.indexOf('TOCHECK') === 0) {
