@@ -61,7 +61,7 @@
 									eval('jsons.' + category + '.agreementIds=agreementIds');
 								}
 								var webkitConfigKey = $('#webkitConfigKey').val();
-								if (webkitConfigKey != '') {
+								if (webkitConfigKey !== '') {
 									eval('jsons.' + category + '.webkitConfigKey=webkitConfigKey');
 								}
 								break;
@@ -74,14 +74,14 @@
 						break;
 					case 'GET':
 						$('textarea:eq(0)').val('');
-						if ($('#'+category).val() != '') {
+						if ($('#'+category).val() !== '') {
 							$('#submit').trigger('click');
 						} else {
 							alert('Please enter your ' + category + ' and Go');
 						}
 						break;
 					case 'PUT':
-						if ($('textarea:eq(0)').val() != '' && $('#'+category).val() != '') {
+						if ($('textarea:eq(0)').val() !== '' && $('#'+category).val() !== '') {
 							//var jsonsTemp = jsons[category];
 							//delete jsonsTemp.id;
 							//$('textarea:eq(0)').val(JSON.stringify(jsonsTemp,null,4))
@@ -98,7 +98,7 @@
 			});
 
 			$(document).on('blur','textarea',function(){
-				if ($(this).val() == '') {
+				if ($(this).val() === '') {
 					$(this).removeClass('redBorder');
 					return;
 				}
@@ -586,6 +586,7 @@
             "urls": []
         }
     ],
+    "safe": false,
     "countryCode": "DE"
 }
 </pre>
