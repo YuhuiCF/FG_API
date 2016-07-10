@@ -61,7 +61,7 @@ function getParamVal(name,string){
 }
 
 function getUrlParam(name){
-    getParamVal(name,window.location.href);
+    return getParamVal(name,window.location.href);
 }
 
 function testNext(obj){
@@ -108,7 +108,9 @@ function login(pobj){
 }
 
 (function(){
-    if ((getEnvironment().match(/master/) && getEnvironment().match(/master/).length > 0) || (getEnvironment().match(/dev/) && getEnvironment().match(/dev/).length > 0)) {// master environment and dev environment
+    if (getUrlParam('contextKey')) {
+        contextKey = getUrlParam('contextKey');
+    } else if ((getEnvironment().match(/master/) && getEnvironment().match(/master/).length > 0) || (getEnvironment().match(/dev/) && getEnvironment().match(/dev/).length > 0)) {// master environment and dev environment
         contextKey = 'BIhYGSk-DlrnijwhGHI-FwoS4etKfqi';
     } else {
         contextKey = 'AAAT9x0T52EpJXNGT502';

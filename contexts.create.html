@@ -6,7 +6,7 @@
 		<meta http-equiv="content-type" content="text/html; charset=UTF-8">
 		<script src="_js/jquery.min.js"></script>
 		<script type="text/javascript">
-			if (window.location.search == '?dev') {
+			if (window.location.search.match(/(&|\?)dev=true/)) {
 				document.write('\x3Cscript type="text/javascript" src="dev/_js/fairgarage.js">\x3C/script>');
 			} else {
 				document.write('\x3Cscript type="text/javascript" src="_js/fairgarage.js">\x3C/script>');
