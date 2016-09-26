@@ -19,6 +19,7 @@ localStorage.setItem('SMP_CONFIG', JSON.stringify(myConfig));
 */
         </script>
 		<script>
+            //var contextKey = 'MgQQKkvrHqFG';// DEV-webkit
 			//var contextKey = 'fNgmCOD2iGe9';// QA-webkit
             //var contextKey = 'eq2OSblwNE0Z';// QA-myd
 			//var contextKey = 'GfZ2XM6x28hB';// QA-osa
@@ -30,7 +31,7 @@ localStorage.setItem('SMP_CONFIG', JSON.stringify(myConfig));
 
 			//var myD = true;
 			//var myD = false;
-			var myD, osa, contextKey = '', env = getUrlParam('env') || 'api';
+			var myD, osa, contextKey = '', env = getEvironment();
 
 			var WEBKIT_HOOKS = {
 				/*
@@ -89,17 +90,17 @@ localStorage.setItem('SMP_CONFIG', JSON.stringify(myConfig));
 					}
 					el.innerHTML = text;
 					document.getElementById('textContainer').appendChild(el);
-				}
+				};
 			}
 
 			var applicationIndex;
 			$(document).ready(function(){
 				applicationIndex = getUrlParam('applicationIndex');
 				serviceview = getUrlParam('serviceview');
-				if (applicationIndex != '') {
+				if (applicationIndex !== '') {
 					$('#select-application').prop('selectedIndex',applicationIndex);
 					contextKey = getUrlParam('contextKey');
-					if (contextKey != '') {
+					if (contextKey !== '') {
 						$('#contextKeyValue').val(contextKey);
 						$('#submit').trigger('click');
 					}
@@ -133,7 +134,7 @@ localStorage.setItem('SMP_CONFIG', JSON.stringify(myConfig));
 			});
 
 			$(document).on('click','#submit',function(){
-				if ($('#contextKeyValue').val() == '') {
+				if ($('#contextKeyValue').val() === '') {
 					return;
 				}
 				contextKey = $('#contextKeyValue').val();
@@ -189,23 +190,37 @@ localStorage.setItem('SMP_CONFIG', JSON.stringify(myConfig));
 					$('#contextKeyValue,#submit').parent().show();
 					$('#contextKeyValue,#submit').show();
 				} else {
-					addApplicationScript();
+                    addApplicationScript();
 				}
 			}
+
+            function getEvironment(){
+                var hostEnv = window.location.hostname.split('.')[0];
+                if (hostEnv.indexOf('dev') >= 0) {
+                    hostEnv = 'api-dev';
+                } else if (hostEnv.indexOf('qa') >= 0) {
+                    hostEnv = 'api-qa';
+                } else {
+                    hostEnv = 'api';
+                }
+                return getUrlParam('env') || hostEnv;
+            }
 
 			function setContextKey(){
 				if (contextKey) {// contextKey is customized
 					return;
 				}
 				var contextKeyTemp;
-				if (env.indexOf('qa') >= 0) {// QA
-					if (myD) {
-						contextKeyTemp = 'eq2OSblwNE0Z';
-					} else if (osa) {
+                if (env.indexOf('qa') >= 0) {// QA
+                    if (myD) {
+                        contextKeyTemp = 'eq2OSblwNE0Z';
+                    } else if (osa) {
                         contextKeyTemp = 'GfZ2XM6x28hB';
                     } else {
-						contextKeyTemp = 'fNgmCOD2iGe9';
-					}
+                        contextKeyTemp = 'fNgmCOD2iGe9';
+                    }
+                } else if (env.indexOf('dev') >= 0) {// DEV
+					contextKeyTemp = 'MgQQKkvrHqFG';
 				} else {// LIVE
 					if (myD) {
 						contextKeyTemp = 'fODaLIDv05Lx';
@@ -236,7 +251,7 @@ localStorage.setItem('SMP_CONFIG', JSON.stringify(myConfig));
 				var regex = new RegExp( regexS );
 				var results = regex.exec( window.location.href );
 
-				if ( results == null ) {
+				if ( results === null ) {
 					return "";
 				} else {
 					return results[1];
@@ -296,7 +311,7 @@ var WEBKIT_HOOKS = {
                    }
                    */
                 }
-            }
+            };
 
             xmlhttp.open('GET', url, true);
             xmlhttp.send();
@@ -361,7 +376,7 @@ var WEBKIT_HOOKS = {
         }
 
         function getOfferOfDay(success){
-            var success = success || function(offer){
+            success = success || function(offer){
                 var actualGrossRate = offer.actualGrossRate;
                 var regularGrossRate = offer.regularGrossRate;
                 if (actualGrossRate != regularGrossRate) {
@@ -427,7 +442,8 @@ var WEBKIT_HOOKS = {
             newNode = document.createElement('div');
             newNode.id = 'fg-price-hint2';
             newNode.style = 'text-align:right;';
-            var text = document.createTextNode(hint);
+
+            text = document.createTextNode(hint);
             newNode.appendChild(text);
             getElementByAttribute('data-js','fg-booking-breakdown__total').appendChild(newNode);
         }
