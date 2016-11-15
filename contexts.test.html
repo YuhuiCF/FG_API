@@ -235,8 +235,8 @@ localStorage.setItem('SMP_CONFIG', JSON.stringify(myConfig));
             function appendServiceView(){
                 if (SMP_CONFIG.applicationConfig && SMP_CONFIG.applicationConfig.serviceSelectionConfig && SMP_CONFIG.applicationConfig.serviceSelectionConfig.serviceViewConfigs) {
                     $.each(SMP_CONFIG.applicationConfig.serviceSelectionConfig.serviceViewConfigs,function(i){
-                        //$('#select-service-view').append('<option value="?applicationIndex=' + applicationIndex + '&contextKey=' + contextKey + 'serviceview=' + this.name + '#/?ecode=010200130010001&CT=200810">' + this.name + '</option>');
-                        $('#select-service-view').append('<option value="?' + $.param({applicationIndex:applicationIndex,contextKey:contextKey,serviceview:this.name,env:env}) + '#/?ecode=010200130010001&CT=200810">' + this.name + '</option>');
+                        //$('#select-service-view').append('<option value="?' + $.param({applicationIndex:applicationIndex,contextKey:contextKey,serviceview:this.name,env:env}) + '#/?ecode=010200130010001&CT=200810">' + this.name + '</option>');
+                        $('#select-service-view').append('<option value="?' + $.param({applicationIndex:applicationIndex,contextKey:contextKey,serviceview:this.name,env:env}) + '#/?HST=020&HT=013&UT=001&CY=2009">' + this.name + '</option>');
                         if (this.name == serviceview) {
                             $('#select-service-view').prop('selectedIndex',i+1);
                         }
