@@ -6,8 +6,17 @@ var testsIndex = 0;
 var buttonsCounter = 0;
 
 function getEnvironment(){
-    return window.location.hostname.split('.')[0];
+    var hostEnv = window.location.hostname.split('.')[0];
+    if (hostEnv.indexOf('dev') >= 0) {
+        hostEnv = 'api-dev';
+    } else if (hostEnv.indexOf('qa') >= 0) {
+        hostEnv = 'api-qa';
+    } else {
+        hostEnv = 'api';
+    }
+    return getUrlParam('env') || hostEnv;
 }
+
 
 function write(data){
 	if (typeof data == 'string' || typeof data == 'number' || Object.prototype.toString.call(data) == '[object Array]') {
@@ -84,9 +93,9 @@ function login(pobj){
     if (psw && usn) {
         FG1.adminUserLogin({
             loginData: {
+                locationId: 1,
                 username: usn,
-                password: psw,
-                locationId: '5000552'
+                password: psw
             },
             newAgreements: function(data){
                 write('FG1 login newAgreements()');
@@ -128,7 +137,7 @@ tests.push(function(){
             ajax: {
                 success: function(data){
                     write('FG1 checkLoginStatus success()');
-                    if (data.id != 1) {
+                    if (data.id !== 1) {
                         write('login({env:"env",usn:"usn",psw:"psw"}). login() with parameter {env:env,usn:usn,psw:psw}. Current FG library environment: ' + FG1.properties.env);
                     } else {
                         testNext();
