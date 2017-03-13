@@ -1528,6 +1528,7 @@
             var contextKey = pobj.contextKey;
             var obj = {
                 apiUrl: 'contexts/' + contextKey,
+                urlParam: {locationId: 1},
                 functionName: functionName
             };
             self.api(extend(obj,ajax));

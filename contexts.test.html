@@ -1,11 +1,11 @@
 <!DOCTYPE HTML>
 <html>
-	<head>
-		<title>Test Contexts</title>
-		<meta charset="utf-8">
-		<meta http-equiv="content-type" content="text/html; charset=UTF-8">
-		<script src="_js/jquery.min.js"></script>
-		<script src="_js/scripts.js"></script>
+    <head>
+        <title>Test Contexts</title>
+        <meta charset="utf-8">
+        <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+        <script src="_js/jquery.min.js"></script>
+        <script src="_js/scripts.js"></script>
         <script>
 /*
 var myConfig = {
@@ -18,42 +18,43 @@ var myConfig = {
 localStorage.setItem('SMP_CONFIG', JSON.stringify(myConfig));
 */
         </script>
-		<script>
-			//var contextKey = 'fNgmCOD2iGe9';// QA-webkit
+        <script>
+            //var contextKey = 'MgQQKkvrHqFG';// DEV-webkit
+            //var contextKey = 'fNgmCOD2iGe9';// QA-webkit
             //var contextKey = 'eq2OSblwNE0Z';// QA-myd
-			//var contextKey = 'GfZ2XM6x28hB';// QA-osa
-			//var contextKey = 'fNQz1eEjugef';// DEMO-webkit
-			//var contextKey = 'eQdZHYzQRKOc';// DEMO-myd
-			//var contextKey = 'fOD1kkTgfja4';// LIVE-webkit
-			//var contextKey = 'fODaLIDv05Lx';// LIVE-myd
-			//var contextKey = 'lFkFVwHGdorM';// temp-webkit
+            //var contextKey = 'GfZ2XM6x28hB';// QA-osa
+            //var contextKey = 'fNQz1eEjugef';// DEMO-webkit
+            //var contextKey = 'eQdZHYzQRKOc';// DEMO-myd
+            //var contextKey = 'fOD1kkTgfja4';// LIVE-webkit
+            //var contextKey = 'fODaLIDv05Lx';// LIVE-myd
+            //var contextKey = 'lFkFVwHGdorM';// temp-webkit
 
-			//var myD = true;
-			//var myD = false;
-			var myD, osa, contextKey = '', env = getUrlParam('env') || 'api';
+            //var myD = true;
+            //var myD = false;
+            var myD, osa, contextKey = '', env = getEnvironment();
 
-			var WEBKIT_HOOKS = {
-				/*
+            var WEBKIT_HOOKS = {
+                /*
                 'navigate:search': function(){
-					hookMessage('navigate:search');
-					//$('#textContainer').show();
-					//$('#webkitContainer').removeClass('wide');
-				},
+                    hookMessage('navigate:search');
+                    //$('#textContainer').show();
+                    //$('#webkitContainer').removeClass('wide');
+                },
                 'navigate:results': function(){
-					hookMessage('navigate:results');
-					//$('#textContainer').hide();
-					//$('#webkitContainer').addClass('wide');
-				},
+                    hookMessage('navigate:results');
+                    //$('#textContainer').hide();
+                    //$('#webkitContainer').addClass('wide');
+                },
                 'navigate:offer': function(){
-					hookMessage('navigate:offer');
-					//$('#textContainer').hide();
-					//$('#webkitContainer').addClass('wide');
-				},
-				*/
-				'navigate:search': hookMessage('navigate:search'),
-				'navigate:results': hookMessage('navigate:results'),
-				'navigate:detail': hookMessage('navigate:detail'),
-				'navigate:offer': hookMessage('navigate:offer'),
+                    hookMessage('navigate:offer');
+                    //$('#textContainer').hide();
+                    //$('#webkitContainer').addClass('wide');
+                },
+                */
+                'navigate:search': hookMessage('navigate:search'),
+                'navigate:results': hookMessage('navigate:results'),
+                'navigate:detail': hookMessage('navigate:detail'),
+                'navigate:offer': hookMessage('navigate:offer'),
                 'navigate:offer:confirmed': hookMessage('navigate:offer:confirmed'),
                 'vehicle:hsntsn:start': hookMessage('vehicle:hsntsn:start'),
                 'vehicle:hsntsn:selected': hookMessage('vehicle:hsntsn:selected'),
@@ -79,76 +80,76 @@ localStorage.setItem('SMP_CONFIG', JSON.stringify(myConfig));
                 'location:search': hookMessage('location:search')
             };
 
-			function hookMessage(message) {
-				return function(event, data) {
-					var el = document.createElement('p');
-					var text = 'The hook <strong>"%s"</strong> just got triggered'.replace('%s', message);
-					if(data){
-						text = text+' Data: %d'.replace('%d', data);
-						console.dir(data);
-					}
-					el.innerHTML = text;
-					document.getElementById('textContainer').appendChild(el);
-				}
-			}
+            function hookMessage(message) {
+                return function(event, data) {
+                    var el = document.createElement('p');
+                    var text = 'The hook <strong>"%s"</strong> just got triggered'.replace('%s', message);
+                    if(data){
+                        text = text+' Data: %d'.replace('%d', data);
+                        console.dir(data);
+                    }
+                    el.innerHTML = text;
+                    document.getElementById('textContainer').appendChild(el);
+                };
+            }
 
-			var applicationIndex;
-			$(document).ready(function(){
-				applicationIndex = getUrlParam('applicationIndex');
-				serviceview = getUrlParam('serviceview');
-				if (applicationIndex != '') {
-					$('#select-application').prop('selectedIndex',applicationIndex);
-					contextKey = getUrlParam('contextKey');
-					if (contextKey != '') {
-						$('#contextKeyValue').val(contextKey);
-						$('#submit').trigger('click');
-					}
-				}
-				selectApplication();
-			});
+            var applicationIndex;
+            $(document).ready(function(){
+                applicationIndex = getUrlParam('applicationIndex');
+                serviceview = getUrlParam('serviceview');
+                if (applicationIndex !== '') {
+                    $('#select-application').prop('selectedIndex',applicationIndex);
+                    contextKey = getUrlParam('contextKey');
+                    if (contextKey !== '') {
+                        $('#contextKeyValue').val(contextKey);
+                        $('#submit').trigger('click');
+                    }
+                }
+                selectApplication();
+            });
 
-			$(document).on('change','#select-application',function(){
-				applicationIndex = $(this).prop('selectedIndex');
-				var query = {applicationIndex: applicationIndex};
-				window.location.href = '?' + $.param(query);
-			});
+            $(document).on('change','#select-application',function(){
+                applicationIndex = $(this).prop('selectedIndex');
+                var query = {applicationIndex: applicationIndex};
+                window.location.href = '?' + $.param(query);
+            });
 
-			$(document).on('change','#select-service-view',function(){
-				window.location.href = $(this).val();
-			});
+            $(document).on('change','#select-service-view',function(){
+                window.location.href = $(this).val();
+            });
 
-			$(document).on('dblclick',function(){
+            $(document).on('dblclick',function(){
                 var select_application = $('#select-application');
                 if (select_application.is(':visible')) {
                     select_application.parent().hide();
                 } else {
                     select_application.parent().show();
                 }
-			});
+            });
 
-			$(document).on('keypress','#contextKeyValue',function(ev){
-				if (ev.keyCode == 13) {
-					$('#submit').trigger('click');
-				}
-			});
+            $(document).on('keypress','#contextKeyValue',function(ev){
+                if (ev.keyCode == 13) {
+                    $('#submit').trigger('click');
+                }
+            });
 
-			$(document).on('click','#submit',function(){
-				if ($('#contextKeyValue').val() == '') {
-					return;
-				}
-				contextKey = $('#contextKeyValue').val();
-				addApplicationScript();
-			});
+            $(document).on('click','#submit',function(){
+                if ($('#contextKeyValue').val() === '') {
+                    return;
+                }
+                contextKey = $('#contextKeyValue').val();
+                addApplicationScript();
+            });
 
-			var loaderLoadedInterval;
+            var loaderLoadedInterval;
             function addApplicationScript(){
-				$('#select-application').parent().hide();
-				setContextKey();
-				var s = document.createElement('script');
-				s.type = 'text/javascript';
-				s.src = window.location.protocol + '//'+env+'.fairgarage.de/smp/api/contexts/'+contextKey+'/loader';
+                $('#select-application').parent().hide();
+                setContextKey();
+                var s = document.createElement('script');
+                s.type = 'text/javascript';
+                s.src = window.location.protocol + '//'+env+'.fairgarage.de/smp/api/contexts/'+contextKey+'/loader';
 
-				document.getElementsByTagName('body')[0].appendChild(s);
+                document.getElementsByTagName('body')[0].appendChild(s);
 
                 clearInterval(loaderLoadedInterval);
                 loaderLoadedInterval = setInterval(function(){
@@ -158,94 +159,108 @@ localStorage.setItem('SMP_CONFIG', JSON.stringify(myConfig));
                         //console.dir(SMP_CONFIG);
                     }
                 },100);
-			}
+            }
 
-			function selectApplication(){
-				var application = $('#select-application').val().split('.')[0];
-				var testType = $('#select-application').val().split('.')[1];
-				switch (application) {
-					case 'Webkit':
-						//$('#applicationContainer').html('\x3Cdiv fg-webkit class="fg-webkit">\x3C/div>');
-						$('#applicationContainer').html('<div fg-webkit class="fg-webkit"><div>');
-						myD = false;
+            function selectApplication(){
+                var application = $('#select-application').val().split('.')[0];
+                var testType = $('#select-application').val().split('.')[1];
+                switch (application) {
+                    case 'Webkit':
+                        //$('#applicationContainer').html('\x3Cdiv fg-webkit class="fg-webkit">\x3C/div>');
+                        $('#applicationContainer').html('<div fg-webkit class="fg-webkit"><div>');
+                        myD = false;
                         osa = false;
-						break;
+                        break;
                     case 'MyDealership':
                         //$('#applicationContainer').html('\x3Cdiv my-dealership class="myDealership">\x3C/div>');
                         $('#applicationContainer').html('<div my-dealership class="myDealership"><div>');
                         myD = true;
                         osa = false;
                         break;
-					case 'OSA':
-						//$('#applicationContainer').html('\x3Cdiv my-dealership class="myDealership">\x3C/div>');
-						$('#applicationContainer').html('<div fg-osa class="fg-osa fg-webkit"><div>');
+                    case 'OSA':
+                        //$('#applicationContainer').html('\x3Cdiv my-dealership class="myDealership">\x3C/div>');
+                        $('#applicationContainer').html('<div fg-osa class="fg-osa fg-webkit"><div>');
                         myD = false;
-						osa = true;
-						break;
-					default:
-						break;
-				}
-				if (testType == 'Customized') {
-					$('#contextKeyValue,#submit').parent().show();
-					$('#contextKeyValue,#submit').show();
-				} else {
-					addApplicationScript();
-				}
-			}
+                        osa = true;
+                        break;
+                    default:
+                        break;
+                }
+                if (testType == 'Customized') {
+                    $('#contextKeyValue,#submit').parent().show();
+                    $('#contextKeyValue,#submit').show();
+                } else {
+                    addApplicationScript();
+                }
+            }
 
-			function setContextKey(){
-				if (contextKey) {// contextKey is customized
-					return;
-				}
-				var contextKeyTemp;
-				if (env.indexOf('qa') >= 0) {// QA
-					if (myD) {
-						contextKeyTemp = 'eq2OSblwNE0Z';
-					} else if (osa) {
+            function getEnvironment(){
+                var hostEnv = window.location.hostname.split('.')[0];
+                if (hostEnv.indexOf('dev') >= 0) {
+                    hostEnv = 'api-dev';
+                } else if (hostEnv.indexOf('qa') >= 0) {
+                    hostEnv = 'api-qa';
+                } else {
+                    hostEnv = 'api';
+                }
+                return getUrlParam('env') || hostEnv;
+            }
+
+            function setContextKey(){
+                if (contextKey) {// contextKey is customized
+                    return;
+                }
+                var contextKeyTemp;
+                if (env.indexOf('qa') >= 0) {// QA
+                    if (myD) {
+                        contextKeyTemp = 'eq2OSblwNE0Z';
+                    } else if (osa) {
                         contextKeyTemp = 'GfZ2XM6x28hB';
                     } else {
-						contextKeyTemp = 'fNgmCOD2iGe9';
-					}
-				} else {// LIVE
-					if (myD) {
-						contextKeyTemp = 'fODaLIDv05Lx';
-					} else {
-						contextKeyTemp = 'fOD1kkTgfja4';
-					}
-				}
-				contextKey = contextKeyTemp;
-			}
+                        contextKeyTemp = 'fNgmCOD2iGe9';
+                    }
+                } else if (env.indexOf('dev') >= 0) {// DEV
+                    contextKeyTemp = 'MgQQKkvrHqFG';
+                } else {// LIVE
+                    if (myD) {
+                        contextKeyTemp = 'fODaLIDv05Lx';
+                    } else {
+                        contextKeyTemp = 'fOD1kkTgfja4';
+                    }
+                }
+                contextKey = contextKeyTemp;
+            }
 
             var serviceview;
             function appendServiceView(){
-            	if (SMP_CONFIG.applicationConfig && SMP_CONFIG.applicationConfig.serviceSelectionConfig && SMP_CONFIG.applicationConfig.serviceSelectionConfig.serviceViewConfigs) {
-	                $.each(SMP_CONFIG.applicationConfig.serviceSelectionConfig.serviceViewConfigs,function(i){
-	                	//$('#select-service-view').append('<option value="?applicationIndex=' + applicationIndex + '&contextKey=' + contextKey + 'serviceview=' + this.name + '#/?ecode=010200130010001&CT=200810">' + this.name + '</option>');
-	                	$('#select-service-view').append('<option value="?' + $.param({applicationIndex:applicationIndex,contextKey:contextKey,serviceview:this.name,env:env}) + '#/?ecode=010200130010001&CT=200810">' + this.name + '</option>');
-	                	if (this.name == serviceview) {
-	                		$('#select-service-view').prop('selectedIndex',i+1);
-	                	}
-	                });
-	            }
+                if (SMP_CONFIG.applicationConfig && SMP_CONFIG.applicationConfig.serviceSelectionConfig && SMP_CONFIG.applicationConfig.serviceSelectionConfig.serviceViewConfigs) {
+                    $.each(SMP_CONFIG.applicationConfig.serviceSelectionConfig.serviceViewConfigs,function(i){
+                        //$('#select-service-view').append('<option value="?' + $.param({applicationIndex:applicationIndex,contextKey:contextKey,serviceview:this.name,env:env}) + '#/?ecode=010200130010001&CT=200810">' + this.name + '</option>');
+                        $('#select-service-view').append('<option value="?' + $.param({applicationIndex:applicationIndex,contextKey:contextKey,serviceview:this.name,env:env}) + '#/?HST=020&HT=013&UT=001&CY=2009">' + this.name + '</option>');
+                        if (this.name == serviceview) {
+                            $('#select-service-view').prop('selectedIndex',i+1);
+                        }
+                    });
+                }
             }
 
             function getUrlParam(name){
-				name = name.replace(/[\[]/,"\\\[").replace(/[\]]/,"\\\]");
+                name = name.replace(/[\[]/,"\\\[").replace(/[\]]/,"\\\]");
 
-				var regexS = "[\\?&]"+name+"=([^&#]*)";
-				var regex = new RegExp( regexS );
-				var results = regex.exec( window.location.href );
+                var regexS = "[\\?&]"+name+"=([^&#]*)";
+                var regex = new RegExp( regexS );
+                var results = regex.exec( window.location.href );
 
-				if ( results == null ) {
-					return "";
-				} else {
-					return results[1];
-				}
-			}
-		</script>
+                if ( results === null ) {
+                    return "";
+                } else {
+                    return results[1];
+                }
+            }
+        </script>
     </head>
     <body>
-		<!--<script src="//www.fairgarage.de/partner/ZKF/_resources/fg-webkit.js"></script>-->
+        <!--<script src="//www.fairgarage.de/partner/ZKF/_resources/fg-webkit.js"></script>-->
 <script type="text/javascript">
 var WEBKIT_HOOKS = {
     'navigate:offer': function(ev,d){
@@ -296,7 +311,7 @@ var WEBKIT_HOOKS = {
                    }
                    */
                 }
-            }
+            };
 
             xmlhttp.open('GET', url, true);
             xmlhttp.send();
@@ -361,7 +376,7 @@ var WEBKIT_HOOKS = {
         }
 
         function getOfferOfDay(success){
-            var success = success || function(offer){
+            success = success || function(offer){
                 var actualGrossRate = offer.actualGrossRate;
                 var regularGrossRate = offer.regularGrossRate;
                 if (actualGrossRate != regularGrossRate) {
@@ -427,7 +442,8 @@ var WEBKIT_HOOKS = {
             newNode = document.createElement('div');
             newNode.id = 'fg-price-hint2';
             newNode.style = 'text-align:right;';
-            var text = document.createTextNode(hint);
+
+            text = document.createTextNode(hint);
             newNode.appendChild(text);
             getElementByAttribute('data-js','fg-booking-breakdown__total').appendChild(newNode);
         }
@@ -435,22 +451,22 @@ var WEBKIT_HOOKS = {
 };
 
 </script>
-		<div style="position:relative;z-index:10;">
-			<select id="select-application">
-				<option value="Webkit.Standard">Webkit Standard Test</option>
+        <div style="position:relative;z-index:10;">
+            <select id="select-application">
+                <option value="Webkit.Standard">Webkit Standard Test</option>
                 <option value="MyDealership.Standard">MyDealership Standard Test</option>
-				<option value="OSA.Standard">OSA Standard Test</option>
-				<option value="Webkit.Customized">Webkit Customized Test</option>
+                <option value="OSA.Standard">OSA Standard Test</option>
+                <option value="Webkit.Customized">Webkit Customized Test</option>
                 <option value="MyDealership.Customized">MyDealership Customized Test</option>
-				<option value="OSA.Customized">OSA Customized Test</option>
-			</select>
-            <select id="select-service-view">
-            	<option value="">select service view</option>
+                <option value="OSA.Customized">OSA Customized Test</option>
             </select>
-			<input type="text" id="contextKeyValue" style="display:none;">
-			<button id="submit" style="display:none;">Go</button>
-		</div>
-		<div id="textContainer"></div>
-		<div id="applicationContainer"></div>
-	</body>
+            <select id="select-service-view">
+                <option value="">select service view</option>
+            </select>
+            <input type="text" id="contextKeyValue" style="display:none;">
+            <button id="submit" style="display:none;">Go</button>
+        </div>
+        <div id="textContainer"></div>
+        <div id="applicationContainer"></div>
+    </body>
 </html>

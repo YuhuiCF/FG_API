@@ -1,13 +1,13 @@
 
 (function($){
-    
+
     var console = window.console || {};
     console.error = window.console.error || function(){};
 
     window.fg = function(fgObj){
         var self = {};
         var varPrivate = {};
-        
+
         self.properties = {
             ssl: 'http',
             env: 'api',
@@ -15,8 +15,8 @@
             languageCode: 'de',
             countryCode: 'DE'
         };
-        
-        /** 
+
+        /**
           * @desc set properties in self.properties
           * @param {object} newProperties - object with new properties to be added/modified
               * @key {string} apiBase - base URL of FairGarage API, default value is '.fairgarage.de/smp/api/'
@@ -35,8 +35,8 @@
             $.extend(self.properties,newProperties);
         };
         self.setProperties(fgObj);
-        
-        /** 
+
+        /**
           * @desc get property in self.properties
           * @param {string} propertyName - object with new properties to be added/modified
           * @return the value of the property, otherwise null, if propertyName not defined
@@ -44,8 +44,8 @@
         self.getProperty = function(propertyName){
             return self.properties[propertyName];
         };
-        
-        /** 
+
+        /**
           * @desc remove properties in self.properties
           * @param {array of strings} properties - array with names of properties to be added/modified in self.properties
         */
@@ -54,8 +54,8 @@
                 delete self.properties[this.toString()];
             });
         };
-        
-        /** 
+
+        /**
           * @desc ajax request
           * @param {object} obj - obj for jQuery ajax() function,
                                     except modifications in "url", "error"
@@ -84,7 +84,7 @@
                     self.error('Error in FairGarage API when trying to use function ' + functionName);
                 }
             };
-            
+
             var ajaxObj = {
                 crossDomain: true,
                 type: type,
@@ -96,13 +96,13 @@
                 data: obj.data || '',
                 error: error
             };
-            
+
             ajaxObj = $.extend(obj,ajaxObj);
-            
+
             $.ajax(ajaxObj);
         };
-        
-        /** 
+
+        /**
           * @desc show error with error message in console
           * @param {string} str - message string
         */
@@ -123,7 +123,7 @@
             var thisYear = years.sort()[0];
             return (thisYear + '-' + ('0' + constructionTimeMap[thisYear].sort(function(a,b){return a-b;})[0]).slice(-2) + '-01');
         };
-        
+
         /**
           * @desc convert FairGarage date string to timestamp number
           * @param {string} date - FairGarage date string, in the format YYYY-MM-01
@@ -137,10 +137,10 @@
             var month = parseInt(date.split('-')[1])-1;
             return (new Date(year,month)).getTime();
         };
-        
+
         /**
           * @desc convert timestamp number to FairGarage date string
-          * @param {number} timestamp 
+          * @param {number} timestamp
           * @return {string} date - FairGarage date string, in the format YYYY-MM-01
         */
         self.timestampToDate = function (timestamp){
@@ -150,8 +150,8 @@
             var date = year + '-' + ('0' + month).slice(-2) + '-01';
             return date;
         };
-        
-        /** 
+
+        /**
           * @desc find FairGarage agreements, API base path: /smp/api/agreements, API full path: /smp/api/agreements
           * @param {object} pobj
               * @key {object} criteria (opt) - search criteria; for more details, please refer to the description in http://www.fairgarage.de/smp/apitester/
@@ -193,7 +193,7 @@
             self.api($.extend(obj,ajax));
         };
 
-        /** 
+        /**
           * @desc check login status, API base path: /smp/api/authentication/login, API full path: /smp/api/authentication/login
           * @param {object} pobj
               * @key {object} ajax (opt) - key/value pairs of jQuery ajax() to be added/overwritten, if allowed
@@ -225,7 +225,7 @@
             self.api($.extend(obj,ajax));
         };
 
-        /** 
+        /**
           * @desc login, API base path: /smp/api/authentication/login, API full path: /smp/api/authentication/login
           * @param {object} pobj
               * @key {function(data)} newAgreements - to display the new agreements whenever there is an update of them, with parameter (data) of type object.
@@ -271,11 +271,11 @@
             }
             if (typeof loginData.username == 'undefined') {
                 paramMissingHint.push('"username" of type "string" in "loginData"');
-                
+
             }
             if (typeof loginData.password == 'undefined') {
                 paramMissingHint.push('"password" of type "string" in "loginData"');
-                
+
             }
             var quickHandle = pobj.quickHandle;
             if (paramMissingHint.length > 0) {
@@ -290,7 +290,7 @@
                 type: 'PUT',
                 success: function(data){
                     varPrivate.sessionId = data.user.sessionId;
-                    
+
                     if (typeof quickHandle == 'function') {
                         var newData = {
                             authorities: [],
@@ -349,7 +349,7 @@
                         newData.loginAgain = function(){
                             self.loginAgain();
                         }
-                        
+
                         newAgreements(newData);
                         return;
                     } else {
@@ -364,7 +364,7 @@
             self.api($.extend(obj,ajax));
         };
 
-        /** 
+        /**
           * @desc logout, API base path: /smp/api/authentication/logout, API full path: /smp/api/authentication/logout
           * @param {object} pobj
               * @key {object} ajax (opt) - key/value pairs of jQuery ajax() to be added/overwritten, if allowed
@@ -393,7 +393,7 @@
             self.api($.extend(obj,ajax));
         };
 
-        /** 
+        /**
           * @desc get booking version, API base path: /smp/api/bookings, API full path: /smp/api/bookings/{bookedOfferKey}/version
           * @param {object} pobj
               * @key {string} bookedOfferKey - booked offer key
@@ -421,7 +421,7 @@
             self.api($.extend(obj,ajax));
         };
 
-        /** 
+        /**
           * @desc create/post context, API base path: /smp/api/contexts, API full path: /smp/api/contexts
           * @param {object} pobj
               * @key {object} context - context config; for more details, please refer to the description in http://www.fairgarage.de/smp/apitester/
@@ -452,7 +452,7 @@
             self.api($.extend(obj,ajax));
         };
 
-        /** 
+        /**
           * @desc delete context, API base path: /smp/api/contexts, API full path: /smp/api/contexts/{key}
           * @param {object} pobj
               * @key {string} contextKey - context key
@@ -486,7 +486,7 @@
             self.api($.extend(obj,ajax));
         };
 
-        /** 
+        /**
           * @desc find context, API base path: /smp/api/contexts, API full path: /smp/api/contexts
           * @param {object} pobj
               * @key {object} criteria (opt) - search criteria; for more details, please refer to the description in http://www.fairgarage.de/smp/apitester/
@@ -511,7 +511,7 @@
             self.api($.extend(obj,ajax));
         };
 
-        /** 
+        /**
           * @desc get context, API base path: /smp/api/contexts, API full path: /smp/api/contexts/{key}
           * @param {object} pobj
               * @key {string} contextKey - context key
@@ -522,7 +522,11 @@
                 pobj = {};
             }
             var paramMissingHint = [];
-            var ajax = pobj.ajax || {};
+            var ajax = pobj.ajax || {
+                beforeSend: function (jqXHR, settings) {
+                    console.log(settings);
+                }
+            };
             var contextKey = pobj.contextKey;
             if (typeof contextKey == 'undefined') {
                 paramMissingHint.push('"contextKey" of type "string"');
@@ -534,12 +538,13 @@
             }
             var obj = {
                 apiUrl: 'contexts/' + contextKey,
+                urlParam: {locationId: 1},
                 functionName: 'getContext()'
             };
             self.api($.extend(obj,ajax));
         };
 
-        /** 
+        /**
           * @desc update/put context, API base path: /smp/api/contexts, API full path: /smp/api/contexts/{key}
           * @param {object} pobj
               * @key {object} context - context config; for more details, please refer to the description in http://www.fairgarage.de/smp/apitester/
@@ -570,7 +575,7 @@
             self.api($.extend(obj,ajax));
         };
 
-        /** 
+        /**
           * @desc find country configuration, API base path: /smp/api/countryconfig, API full path: /smp/api/countryconfig
           * @param {object} pobj
               * @key {object} criteria (opt) - search criteria; for more details, please refer to the description in http://www.fairgarage.de/smp/apitester/
@@ -595,7 +600,7 @@
             self.api($.extend(obj,ajax));
         };
 
-        /** 
+        /**
           * @desc get country configuration of the current context, API base path: /smp/api/countryconfig/current, API full path: /smp/api/countryconfig/current
           * @param {object} pobj
               * @key {object} ajax (opt) - key/value pairs of jQuery ajax() to be added/overwritten, if allowed
@@ -612,7 +617,7 @@
             self.api($.extend(obj,ajax));
         };
 
-        /** 
+        /**
           * @desc find location, API base path: /smp/api/locations, API full path: /smp/api/locations
           * @param {object} pobj
               * @key {object} criteria (opt) - search criteria; for more details, please refer to the description in http://www.fairgarage.de/smp/apitester/
@@ -638,7 +643,7 @@
             self.api($.extend(obj,ajax));
         };
 
-        /** 
+        /**
           * @desc get location, API base path: /smp/api/locations, API full path: /smp/api/locations/{locationId}
           * @param {object} pobj
               * @key {string} locationId - ID of the location; if not set, default value would be self.getProperty('locationId')
@@ -666,7 +671,7 @@
             self.api($.extend(obj,ajax));
         };
 
-        /** 
+        /**
           * @desc create mail configuration, API base path: /smp/api/mailconfigs, API full path: /smp/api/mailconfigs
           * @param {object} pobj
               * @key {object} mailConfig - mail configuration; for more details, please refer to the description in http://www.fairgarage.de/smp/apitester/
@@ -705,7 +710,7 @@
             }
             if (typeof mailConfig.name == 'undefined') {
                 paramMissingHint.push('"name" of type "string" in "mailConfig"');
-                
+
             }
             if (typeof mailConfig.providerId == 'undefined') {
                 var defaultValue = self.getProperty('providerId');
@@ -728,7 +733,7 @@
             self.api($.extend(obj,ajax));
         };
 
-        /** 
+        /**
           * @desc create mail template, API base path: /smp/api/mailconfigs, API full path: /smp/api/mailconfigs/{mailconfigId}/templates
           * @param {object} pobj
               * @key {object} mailTemplate - mail template; for more details, please refer to the description in http://www.fairgarage.de/smp/apitester/
@@ -748,7 +753,7 @@
             }
             if (typeof mailTemplate.mailConfigId == 'undefined') {
                 paramMissingHint.push('"mailConfigId" of type "string" in "mailTemplate"');
-                
+
             }
             if (paramMissingHint.length > 0) {
                 self.error('Please indicate in function createMailTemplate(): ' + paramMissingHint.join(', '));
@@ -763,7 +768,7 @@
             self.api($.extend(obj,ajax));
         };
 
-        /** 
+        /**
           * @desc delete all mail templates, API base path: /smp/api/mailconfigs, API full path: /smp/api/mailconfigs/{mailconfigId}/templates
           * @param {object} pobj
               * @key {string} mailConfigId - ID of the mail configuration
@@ -792,7 +797,7 @@
             self.api($.extend(obj,ajax));
         };
 
-        /** 
+        /**
           * @desc delete mail configuration, API base path: /smp/api/mailconfigs, API full path: /smp/api/mailconfigs/{id}
           * @param {object} pobj
               * @key {string} mailConfigId - ID of the mail configuration
@@ -821,7 +826,7 @@
             self.api($.extend(obj,ajax));
         };
 
-        /** 
+        /**
           * @desc delete mail template, API base path: /smp/api/mailconfigs, API full path: /smp/api/mailconfigs/{mailconfigId}/templates/{templateId}
           * @param {object} pobj
               * @key {string} mailConfigId - ID of the mail configuration
@@ -856,7 +861,7 @@
             self.api($.extend(obj,ajax));
         };
 
-        /** 
+        /**
           * @desc find mail configuration, API base path: /smp/api/mailconfigs, API full path: /smp/api/mailconfigs
           * @param {object} pobj
               * @key {object} criteria (opt) - search criteria; for more details, please refer to the description in http://www.fairgarage.de/smp/apitester/
@@ -881,7 +886,7 @@
             self.api($.extend(obj,ajax));
         };
 
-        /** 
+        /**
           * @desc find mail template, API base path: /smp/api/mailconfigs, API full path: /smp/api/mailconfigs/{mailconfigId}/templates
           * @param {object} pobj
               * @key {object} criteria - search criteria; for more details, please refer to the description in http://www.fairgarage.de/smp/apitester/
@@ -914,7 +919,7 @@
             self.api($.extend(obj,ajax));
         };
 
-        /** 
+        /**
           * @desc get mail configuration, API base path: /smp/api/mailconfigs, API full path: /smp/api/mailconfigs/{id}
           * @param {object} pobj
               * @key {string} mailConfigId - ID of the mail configuration
@@ -942,7 +947,7 @@
             self.api($.extend(obj,ajax));
         };
 
-        /** 
+        /**
           * @desc get mail template, API base path: /smp/api/mailconfigs, API full path: /smp/api/mailconfigs/{mailconfigId}/templates/{templateId}
           * @param {object} pobj
               * @key {string} mailConfigId - ID of the mail configuration
@@ -976,7 +981,7 @@
             self.api($.extend(obj,ajax));
         };
 
-        /** 
+        /**
           * @desc update mail configuration, API base path: /smp/api/mailconfigs, API full path: /smp/api/mailconfigs/{id}
           * @param {object} pobj
               * @key {object} mailConfig - mail configuration; for more details, please refer to the description in http://www.fairgarage.de/smp/apitester/
@@ -1006,7 +1011,7 @@
             self.api($.extend(obj,ajax));
         };
 
-        /** 
+        /**
           * @desc update mail template, API base path: /smp/api/mailconfigs, API full path: /smp/api/mailconfigs/{mailconfigId}/templates/{templateId}
           * @param {object} pobj
               * @key {object} mailTemplate - mail template; for more details, please refer to the description in http://www.fairgarage.de/smp/apitester/
@@ -1038,7 +1043,7 @@
             self.api($.extend(obj,ajax));
         };
 
-        /** 
+        /**
           * @desc get offer by offer key, API base path: /smp/api/offers, API full path: /smp/api/offers/{offerKey}
           * @param {object} pobj
               * @key {string} offerKey - offer key
@@ -1069,7 +1074,7 @@
             self.api($.extend(obj,ajax));
         };
 
-        /** 
+        /**
           * @desc get email template, used to send the offer, API base path: /smp/api/offers, API full path: /smp/api/offers/{offerKey}/mailcontent
           * @param {object} pobj
               * @key {string} offerKey - offer key
@@ -1100,7 +1105,7 @@
             self.api($.extend(obj,ajax));
         };
 
-        /** 
+        /**
           * @desc get offer list, API base path: /smp/api/offers/list, API full path: /smp/api/offers/list/{offerSearchKey}
           * @param {object} pobj
               * @key {string} offerSearchKey - offer search key
@@ -1133,7 +1138,7 @@
             self.api($.extend(obj,ajax));
         };
 
-        /** 
+        /**
           * @desc get time slot for offer with offer key, API base path: /smp/api/offers, API full path: /smp/api/offers/{offerKey}/timeslot
           * @param {object} pobj
               * @key {string} offerKey - offer key
@@ -1162,7 +1167,7 @@
             self.api($.extend(obj,ajax));
         };
 
-        /** 
+        /**
           * @desc send the offer with the email template, API base path: /smp/api/offers, API full path: /smp/api/offers/{offerKey}/mail
           * @param {object} pobj
               * @key {string} offerKey - offer key
@@ -1198,7 +1203,7 @@
             self.api($.extend(obj,ajax));
         };
 
-        /** 
+        /**
           * @desc create offer search, API base path: /smp/api/offersearches, API full path: /smp/api/offersearches
           * @param {object} pobj
               * @key {object} offerSearch - use vehicle, region, and service to create an offer search; for more details, please refer to the description in http://www.fairgarage.de/smp/apitester/
@@ -1222,11 +1227,11 @@
             }
             if (typeof offerSearch.selectedVehicle == 'undefined') {
                 paramMissingHint.push('"selectedVehicle" of type "object" in "offerSearch"');
-                
+
             }
             if (typeof offerSearch.selectedServiceList == 'undefined') {
                 paramMissingHint.push('"selectedServiceList" of type "array of objects" in "offerSearch"');
-                
+
             }
             var criteria = pobj.criteria;
             if (paramMissingHint.length > 0) {
@@ -1243,7 +1248,7 @@
             self.api($.extend(obj,ajax));
         };
 
-        /** 
+        /**
           * @desc get offer search, API base path: /smp/api/offersearches, API full path: /smp/api/offersearches/{offerSearchKey}
           * @param {object} pobj
               * @key {string} offerSearchKey - offer search key
@@ -1272,7 +1277,7 @@
             self.api($.extend(obj,ajax));
         };
 
-        /** 
+        /**
           * @desc get all part qualities, API base path: /smp/api/partqualities, API full path: /smp/api/partqualities
           * @param {object} pobj
               * @key {object} ajax (opt) - key/value pairs of jQuery ajax() to be added/overwritten, if allowed
@@ -1289,7 +1294,7 @@
             self.api($.extend(obj,ajax));
         };
 
-        /** 
+        /**
           * @desc find region, API base path: /smp/api/regions, API full path: /smp/api/regions
           * @param {object} pobj
               * @key {object} criteria (opt) - search criteria; for more details, please refer to the description in http://www.fairgarage.de/smp/apitester/
@@ -1332,7 +1337,7 @@
             self.api($.extend(obj,ajax));
         };
 
-        /** 
+        /**
           * @desc get region by region signature, API base path: /smp/api/regions/signature, API full path: /smp/api/regions/signature/{signature}
           * @param {object} pobj
               * @key {string} signature - region signature
@@ -1379,7 +1384,7 @@
             self.api($.extend(obj,ajax));
         };
 
-        /** 
+        /**
           * @desc get region of the user, API base path: /smp/api/regions/default, API full path: /smp/api/regions/default
           * @param {object} pobj
               * @key {function(data)} quickHandle (opt) - quickHandle function with parameter (data) of type object.
@@ -1415,7 +1420,7 @@
             self.api($.extend(obj,ajax));
         };
 
-        /** 
+        /**
           * @desc find service, API base path: /smp/api/services/services, API full path: /smp/api/services/services
           * @param {object} pobj
               * @key {object} criteria (opt) - search criteria; for more details, please refer to the description in http://www.fairgarage.de/smp/apitester/
@@ -1459,7 +1464,7 @@
             self.api($.extend(obj,ajax));
         };
 
-        /** 
+        /**
           * @desc find service by catalog, API base path: /smp/api/services/catalog, API full path: /smp/api/services/catalog/{serviceCategoryId}
           * @param {object} pobj
               * @key {string} serviceCategoryId - ID of service category
@@ -1492,7 +1497,7 @@
             self.api($.extend(obj,ajax));
         };
 
-        /** 
+        /**
           * @desc find top services for vehicle with ID of vehicle type, API base path: /smp/api/services/services/top, API full path: /smp/api/services/services/top/{vehicleTypeId}
           * @param {object} pobj
               * @key {string} vehicleTypeId - ID of vehicle type
@@ -1525,7 +1530,7 @@
             self.api($.extend(obj,ajax));
         };
 
-        /** 
+        /**
           * @desc get all inspection service positions, API base path: /smp/api/services/servicepositions, API full path: /smp/api/services/servicepositions/{serviceId}/{vehicleTypeId}/{constructionTime}
           * @param {object} pobj
               * @key {string or number} vehicleTypeId - ID of vehicle type
@@ -1569,7 +1574,7 @@
             self.api($.extend(obj,ajax));
         };
 
-        /** 
+        /**
           * @desc get service by service ID, API base path: /smp/api/services/services, API full path: /smp/api/services/services/{id}
           * @param {object} pobj
               * @key {string} serviceId - ID of service
@@ -1602,7 +1607,7 @@
             self.api($.extend(obj,ajax));
         };
 
-        /** 
+        /**
           * @desc get service category, API base path: /smp/api/services/servicecategories, API full path: /smp/api/services/servicecategories/{serviceCategoryId}
           * @param {object} pobj
               * @key {string} serviceCategoryId - ID of service category
@@ -1630,7 +1635,7 @@
             self.api($.extend(obj,ajax));
         };
 
-        /** 
+        /**
           * @desc register as individual FairGarage user. If this step is successful, the user will receive an email concerning setting the password, to complete the registration, API base path: /smp/api/users, API full path: /smp/api/users
           * @param {object} pobj
               * @key {string} registrationData - data of registration; for more details, please refer to the description in http://www.fairgarage.de/smp/apitester/
@@ -1654,23 +1659,23 @@
             }
             if (typeof registrationData.salutation == 'undefined') {
                 paramMissingHint.push('"salutation" of type "string" in "registrationData"');
-                
+
             }
             if (typeof registrationData.givenname == 'undefined') {
                 paramMissingHint.push('"givenname" of type "string" in "registrationData"');
-                
+
             }
             if (typeof registrationData.surname == 'undefined') {
                 paramMissingHint.push('"surname" of type "string" in "registrationData"');
-                
+
             }
             if (typeof registrationData.emailAddress == 'undefined') {
                 paramMissingHint.push('"emailAddress" of type "string" in "registrationData"');
-                
+
             }
             if (typeof registrationData.acceptedAgreements == 'undefined') {
                 paramMissingHint.push('"acceptedAgreements" of type "array of objects, the agreement objects can be obtained by findAgreement" in "registrationData"');
-                
+
             }
             if (paramMissingHint.length > 0) {
                 self.error('Please indicate in function registerUser(): ' + paramMissingHint.join(', '));
@@ -1685,7 +1690,7 @@
             self.api($.extend(obj,ajax));
         };
 
-        /** 
+        /**
           * @desc get vehicle by VIN, API base path: /smp/api/vehicles/vehicles, API full path: /smp/api/vehicles/vehicles/{vin}
           * @param {object} pobj
               * @key {string} vin - VIN of the vehicle
@@ -1734,7 +1739,7 @@
             self.api($.extend(obj,ajax));
         };
 
-        /** 
+        /**
           * @desc evaluate a vehicle, API base path: /smp/api/vehicles/evaluation, API full path: /smp/api/vehicles/evaluation
           * @param {object} pobj
               * @key {object} valuatedVehicle - vehicle information for the evaluation
@@ -1762,7 +1767,7 @@
             }
             if (typeof valuatedVehicle.datVehicleContainer == 'undefined') {
                 paramMissingHint.push('"datVehicleContainer" of type "object" in "valuatedVehicle"');
-                
+
             }
             var criteria = pobj.criteria;
             if (paramMissingHint.length > 0) {
@@ -1779,7 +1784,7 @@
             self.api($.extend(obj,ajax));
         };
 
-        /** 
+        /**
           * @desc find vehicle by catalog, API base path: /smp/api/vehicles/catalog, API full path: /smp/api/vehicles/catalog/{vehicleCategoryId}
           * @param {object} pobj
               * @key {string} categoryId - vehicle category ID. To find IDs of the next category, start with "62303" (default) for SUV/passenger cars, or "83503" for transporters
@@ -1867,7 +1872,7 @@
             self.api($.extend(obj,ajax));
         };
 
-        /** 
+        /**
           * @desc find vehicle by documents, either externalId, or both hsn and tsn must be given in criteria, API base path: /smp/api/vehicles/vehicletypes, API full path: /smp/api/vehicles/vehicletypes
           * @param {object} pobj
               * @key {object} criteria (opt) - search criteria; for more details, please refer to the description in http://www.fairgarage.de/smp/apitester/
@@ -1890,7 +1895,7 @@
             self.api($.extend(obj,ajax));
         };
 
-        /** 
+        /**
           * @desc find vehicle by the external ID of the vehicle, API base path: /smp/api/vehicles/vehicletypes, API full path: /smp/api/vehicles/vehicletypes
           * @param {object} pobj
               * @key {string} externalId - external ID or Ecode of the vehicle
@@ -1940,7 +1945,7 @@
             self.api($.extend(obj,ajax));
         };
 
-        /** 
+        /**
           * @desc find vehicle by HSN/TSN of the vehicle, API base path: /smp/api/vehicles/vehicletypes, API full path: /smp/api/vehicles/vehicletypes
           * @param {object} pobj
               * @key {string} hsn - HSN of the vehicle
@@ -1996,13 +2001,13 @@
             self.api($.extend(obj,ajax));
         };
 
-        /** 
+        /**
           * @desc find vehicle equipment, API base path: /smp/api/vehicles/vehicletypes, API full path: /smp/api/vehicles/vehicletypes/{id}/equipments
           * @param {object} pobj
               * @key {string} vehicleTypeId - ID of vehicle type
               * @key {function(data)} quickHandle (opt) - quickHandle function with parameter (data) of type array of objects.
                     The structure of each object in parameter data:
-                        
+
               * @key {object} ajax (opt) - key/value pairs of jQuery ajax() to be added/overwritten, if allowed
         */
         self.findVehicleEquipment = function(pobj){
@@ -2047,7 +2052,7 @@
             self.api($.extend(obj,ajax));
         };
 
-        /** 
+        /**
           * @desc find vehicle equipment for selected service, API base path: /smp/api/vehicles/vehicletypes, API full path: /smp/api/vehicles/vehicletypes/{id}/equipments/{serviceId}/{constructionTime}
           * @param {object} pobj
               * @key {string} vehicleTypeId - ID of vehicle type
@@ -2087,7 +2092,7 @@
             self.api($.extend(obj,ajax));
         };
 
-        /** 
+        /**
           * @desc get vehicle by vehicle type ID, API base path: /smp/api/vehicles/vehicletypes, API full path: /smp/api/vehicles/vehicletypes/{id}
           * @param {object} pobj
               * @key {string} vehicleTypeId - ID of vehicle type
@@ -2136,7 +2141,7 @@
             self.api($.extend(obj,ajax));
         };
 
-        /** 
+        /**
           * @desc create webkit config, API base path: /smp/api/webkit/webkitconfigs, API full path: /smp/api/webkit/webkitconfigs
           * @param {object} pobj
               * @key {object} webkitConfig - webkit config; for more details, please refer to the description in http://www.fairgarage.de/smp/apitester/
@@ -2166,7 +2171,7 @@
             self.api($.extend(obj,ajax));
         };
 
-        /** 
+        /**
           * @desc delete webkit config, API base path: /smp/api/webkit/webkitconfigs, API full path: /smp/api/webkit/webkitconfigs/{key}
           * @param {object} pobj
               * @key {string} webkitConfigKey - webkit config key
@@ -2200,7 +2205,7 @@
             self.api($.extend(obj,ajax));
         };
 
-        /** 
+        /**
           * @desc find webkit config, API base path: /smp/api/webkit/webkitconfigs, API full path: /smp/api/webkit/webkitconfigs
           * @param {object} pobj
               * @key {object} criteria (opt) - search criteria; for more details, please refer to the description in http://www.fairgarage.de/smp/apitester/
@@ -2224,7 +2229,7 @@
             self.api($.extend(obj,ajax));
         };
 
-        /** 
+        /**
           * @desc get webkit config, API base path: /smp/api/webkit/webkitconfigs, API full path: /smp/api/webkit/webkitconfigs/{key}
           * @param {object} pobj
               * @key {string} webkitConfigKey - webkit config key
@@ -2252,7 +2257,7 @@
             self.api($.extend(obj,ajax));
         };
 
-        /** 
+        /**
           * @desc update/put webkit config, API base path: /smp/api/webkit/webkitconfigs, API full path: /smp/api/webkit/webkitconfigs/{key}
           * @param {object} pobj
               * @key {object} webkitConfig - webkit config; for more details, please refer to the description in http://www.fairgarage.de/smp/apitester/
@@ -2284,5 +2289,5 @@
 
         return self;
     };
-    
+
 })(jQuery);

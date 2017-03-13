@@ -6,7 +6,7 @@
 		<meta http-equiv="content-type" content="text/html; charset=UTF-8">
 		<script src="_js/jquery.min.js"></script>
 		<script type="text/javascript">
-			if (window.location.search == '?dev') {
+			if (window.location.search.match(/(&|\?)dev=true/)) {
 				document.write('\x3Cscript type="text/javascript" src="dev/_js/fairgarage.js">\x3C/script>');
 			} else {
 				document.write('\x3Cscript type="text/javascript" src="_js/fairgarage.js">\x3C/script>');
@@ -29,7 +29,7 @@
 			var FGContextKey = 'BIhYGSk-DlrnijwhGHI-FwoS4etKfqi';
 			var contextKey, webkitConfigKey;
 
-			var env = window.location.hostname.split('.')[0];
+			//var env = window.location.hostname.split('.')[0];
 			//FG = new fg({contextKey:FGContextKey,env:env});
             FG = FG1;
 			//var apiBase = '//' + env + '.fairgarage.de/smp/api/';
@@ -40,7 +40,7 @@
 			$(document).ready(function(){
 				$messages = $('#messages');
 
-				checkAndLogin();
+				//checkAndLogin();
 
 				$('#actionsContainer select:eq(0)').prop('selectedIndex',0);
 			});
