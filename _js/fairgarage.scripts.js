@@ -17,6 +17,9 @@ function getEnvironment(){
     return getUrlParam('env') || hostEnv;
 }
 
+function matchEnvironment(environment){
+    // TODO
+}
 
 function write(data){
 	if (typeof data == 'string' || typeof data == 'number' || Object.prototype.toString.call(data) == '[object Array]') {
@@ -56,21 +59,30 @@ function appendButton(obj){// object
 }
 
 function getParamVal(name,string){
-    name = name.replace(/[\[]/,'\\\[').replace(/[\]]/,'\\\]');
-
-    var regexS = '[\\?&]'+name+'=([^&#]*)';
-    var regex = new RegExp(regexS);
-    var results = regex.exec(string);
-
-    if (results === null) {
-        return '';
-    } else {
-        return results[1];
+    var result = [];
+    var search = string;
+    //var search = window.location.search.substring(1);
+    var searchParameters = search.split('&');
+    for (var i = 0; i < searchParameters.length; i++ ){
+        var parameter = searchParameters[i].split('=');
+        if (parameter[0] === name && $.inArray(parameter[1], result) === -1) {
+            if (typeof parameter[1] === 'undefined'){
+                parameter[1]=true;
+            }
+            if (parameter[1] === 'true'){
+                parameter[1] = true;
+            }
+            if (parameter[1] === 'false'){
+                parameter[1] = false;
+            }
+            result.push(parameter[1]);
+        }
     }
+    return result;
 }
 
 function getUrlParam(name){
-    return getParamVal(name,window.location.href);
+    return getParamVal(name, window.location.search.substring(1));
 }
 
 function testNext(obj){
@@ -123,6 +135,11 @@ function login(pobj){
         contextKey = 'BIhYGSk-DlrnijwhGHI-FwoS4etKfqi';
     } else {
         contextKey = 'AAAT9x0T52EpJXNGT502';
+    }
+
+    var urlContextKey = getUrlParam('contextKey');
+    if (urlContextKey.length > 0) {
+        contextKey = urlContextKey[0];
     }
     window.FG1 = new fg({
             contextKey: contextKey,

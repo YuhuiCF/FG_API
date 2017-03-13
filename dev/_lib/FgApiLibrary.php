@@ -78,7 +78,8 @@ class FgApiLibrary{
         }
     }
 
-    function FgApiLibrary(){
+    function FgApiLibrary($jsHelperFile = './_modules/jsHelper.js'){
+
         $this -> countryCodeHint = 'country code; "DE", "GB", "PL", or other country codes that can be found by function '.$this -> functionFindCountryConfig.'()';
         $this -> languageCodeHint = 'language code; "de", "en", "pl", or other language codes that can be found by function '.$this -> functionFindCountryConfig.'()';
 
@@ -99,6 +100,9 @@ class FgApiLibrary{
             languageCode: 'de',
             countryCode: 'DE'
         };
+
+        // fake lodash/underscore javascript helper library
+        var helper = ". file_get_contents($jsHelperFile) ."
 
         /**
           * @desc set properties in ".$this -> outputObj.".".$this -> properties."
@@ -134,8 +138,8 @@ class FgApiLibrary{
           * @param {array of strings} properties - array with names of properties to be added/modified in ".$this -> outputObj.".".$this -> properties."
         */
         ".$this -> outputObj.".".$this -> functionRemoveProperties." = function(properties){
-            $.each(properties,function(){
-                delete ".$this -> outputObj.".properties[this.toString()];
+            helper.each(properties,function(property){
+                delete ".$this -> outputObj.".properties[property];
             });
         };
 
@@ -154,12 +158,12 @@ class FgApiLibrary{
             var error = obj.error || function(jqXHR,textStatus,errorThrown){
                 try {
                     var errMsg = [];
-                    $.each(jqXHR.responseJSON,function(){
+                    helper.each(jqXHR.responseJSON,function(response){
                         var temp;
-                        if (this.field) {
-                            temp = this.field.split('.')[1] || this.field.split('.')[0] + ' of the payload' + (this.errorMessage ? ', ' + this.errorMessage : ' error');
+                        if (response.field) {
+                            temp = response.field.split('.')[1] || response.field.split('.')[0] + ' of the payload' + (response.errorMessage ? ', ' + response.errorMessage : ' error');
                         } else {
-                            temp = this.errorMessage;
+                            temp = response.errorMessage;
                         }
                         errMsg.push(temp);
                     });
@@ -202,17 +206,6 @@ class FgApiLibrary{
         */
         function isType(variable, expectedType){
             return typeof(variable) === expectedType;
-        }
-
-        /**
-          * @desc private each function
-          * @param {array} array - array of items
-          * @param {function} handle - function applied to each of the item. This function takes 2 parameters:
-              * @param item - current item of the array
-              * @param index - index of current item
-        */
-        function each(array, handle){
-            $.each(array,handle);
         }
 
         /**
@@ -282,7 +275,7 @@ class FgApiLibrary{
         */
         ".$this -> outputObj.".".$this -> functionAreMandatoryParmsSet." = function(functionName,".$this -> functionParamObj.",paramConfigs){
             var missingMandatoryParams = [];
-            $.each(paramConfigs,function(i,config){
+            helper.each(paramConfigs,function(config, i){
                 var paramName = config.paramName;//string
                 var paramType = config.paramType;//string
                 var parentObj = config.parentObj;//string

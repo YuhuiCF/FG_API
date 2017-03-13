@@ -108,7 +108,7 @@ $FgApiLibrary -> addFunction(array(
         "type" => "'POST'",
         "apiUrl" => "'bookings'",
         "data" => "bookingData",
-        "urlParam" => "extend(criteria,{status:{name:'BOOKED'}})"
+        "urlParam" => "helper.assign(criteria,{status:{name:'BOOKED'}})"
     )
 ));
 

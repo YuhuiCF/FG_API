@@ -1,6 +1,8 @@
 # FG_API
 
 
+local.fairgarage.de
+
 test.fairgarage.api.*** are the test pages for each API category
 
 
