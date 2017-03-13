@@ -120,15 +120,160 @@
             });
             */
 
-            testNext();
+            //testNext();
 
 		</script>
+
+        <script>
+
+            tests.push(function(){
+                FG1.setProperties({
+                    contextKey: 'BIhYGSk-DlrnijwhGHI-FwoS4etKfqi',
+                    languageCode: 'de',
+                    countryCode: 'DE',
+                    env: 'api-dev',
+                    ssl: 'http'
+                });
+            });
+
+            tests.push(function(){
+                /*
+                FG1.adminUserLogin({
+                    loginData: {
+                        "username": "admin@fairgarage.de",
+                        "password": "abc123"
+                    },
+                    ajax: {
+                        complete: function(){
+                            testNext();
+                        }
+                    }
+                });
+                */
+                FG1.locationUserLogin({
+                    loginData: {
+                        "datCustomerNumber": 1324227,
+                        "username": "admin@fairgarage.de",
+                        "password": "abc123"
+                    },
+                    ajax: {
+                        complete: function(){
+                            testNext();
+                        }
+                    }
+                });
+            });
+
+
+            var modelData =
+{
+  "salutation": "M",
+  "firstname": "Yuhui",
+  "lastname": "Tester",
+  "email": "yuhui.xiong@mcon-group.com",
+  "phone": "0199456789",
+  "vin": "TMBBH65J883184653",
+  "licensePlate": "ABC-123",
+  "registrationDate": {
+    "time": 1217520000000
+  },
+  "currentMileage": 50000,
+  "bookOffers": true,
+  "mailNotification": false,
+  "withAdditionalServices": true,
+  "createEvaluation": true,
+  "partQualityId": "73e34692dc6a4a55cda571da",
+  "evaluationType": "EVALUATION",
+  "percentage": 2,
+  "forecastMonths": [
+    12
+  ],
+  "mileagePerYear": 20000,
+  "locationId": 1
+};
+/*
+{
+  "brand": "renaut",
+  "container": null,
+  "origin": null
+}
+*/
+
+            tests.push(function(){
+                FG1.api({
+                    type: 'POST',
+                    apiUrl: 'predictive/model',
+                    urlParam: {
+                        /*
+                        languageCode: 'en',
+                        countryCode: 'DE'
+                        */
+                    },
+                    data: JSON.stringify(modelData)
+                });
+            });
+
+            testNext();
+/*
+            tests.push(function(){
+                FG1.createOfferSearch({
+                    ajax: {
+                        urlParam: {
+                                            countryCode: 'DE',
+                                            languageCode: 'en'
+                                        }},
+                    offerSearch: {
+                        "locale": {
+    "country": "DE",
+    "language": "en"
+  },
+  "vehicleConfig": {
+    "vin": "WVWZZZAUZDW003966",
+    "constructionTime": {
+      "time": 1348243200000
+    },
+    "registrationDate": {
+      "time": 1348243200000
+    },
+    "mileage": 50000,
+    "container": "DE004",
+    "evaluationType": "FORECAST",
+    "licenseNumber": "ES DAT 123",
+    "forecastMonths": [
+      5
+    ],
+    "mileagePerYear": 20000
+  },
+  "services": [
+    {
+      "serviceId": "1d8619db-5d7a-4268-9d7f-477cdeb33045",
+      "percentage": 70
+    },
+    {
+      "serviceId": "43ea6512-f1b6-4b02-a181-7a6896eeea46",
+      "percentage": 60
+    }
+  ],
+  "locationIds": [
+    1
+  ],
+  "generateEmptyOffer": false,
+  "generateEvaluation": true,
+  "withAdditionalServices": false
+                    }
+                });
+                testNext();
+            });
+*/
+            testNext();
+        </script>
+
         <script>
             /*
                 randomSelectVehicle(id)
                 findAllWebkitAndContext(limit)
             */
-
+            /*
             var year = [],month = [];
             for (var i = 2000; i <= 2012; i++){
                 year.push(i.toString());
@@ -204,6 +349,7 @@
                     }
                 });
             }
+            */
 
         </script>
 	</head>
