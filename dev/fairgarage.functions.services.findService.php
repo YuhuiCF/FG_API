@@ -59,10 +59,10 @@ $FgApiLibrary -> addFunction(array(
         "success" => "function(data){
                     if (isType(".$FgApiLibrary -> functionQuickHandle.",'function')) {
                         var newData = [];
-                        $.each(data,function(){
+                        helper.each(data,function(service){
                             newData.push({
-                                serviceId: this.id,
-                                serviceName: this.name
+                                serviceId: service.id,
+                                serviceName: service.name
                             });
                         });
                         ".$FgApiLibrary -> functionQuickHandle."(newData);

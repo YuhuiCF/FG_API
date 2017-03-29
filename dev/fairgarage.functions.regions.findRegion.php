@@ -36,11 +36,11 @@ $FgApiLibrary -> addFunction(array(
         "success" => "function(data){
                     if (isType(".$FgApiLibrary -> functionQuickHandle.",'function')) {
                         var newData = [];
-                        $.each(data,function(){
+                        helper.each(data,function(region){
                             newData.push({
-                                formattedName: this.formattedName,
-                                nearbyLocationCount: this.nearbyLocationCount,
-                                signature: this.signature
+                                formattedName: region.formattedName,
+                                nearbyLocationCount: region.nearbyLocationCount,
+                                signature: region.signature
                             });
                         });
                         ".$FgApiLibrary -> functionQuickHandle."(newData);

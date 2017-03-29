@@ -80,8 +80,8 @@ $FgApiLibrary -> addFunction(array(
                             middlename: data.user.middlename,
                             surname: data.user.surname
                         };
-                        $.each(data.user.authorities,function(){
-                            newData.authorities.push(this.authority);
+                        helper.each(data.user.authorities,function(authority){
+                            newData.authorities.push(authority.authority);
                         });
                         ".$FgApiLibrary -> functionQuickHandle."(newData);
                     }
@@ -89,34 +89,34 @@ $FgApiLibrary -> addFunction(array(
                 }",
         "complete" => "function(jqXHR,textStatus){
                     var data = jqXHR.responseJSON;
-                    if (textStatus == 'error' && (data.agreementVersionsAdded || data.agreementVersionsUpdated)) {// treat new agreements
+                    if (textStatus === 'error' && data.all) {// treat new agreements
                         var newData = {
                             addedAgreements: [],
                             updatedAgreements: []
                         };
                         var agreementVersions = [];
-                        $.each(data.agreementVersionsAdded,function(){
+                        helper.each(data.agreementVersionsAdded,function(agreement){
                             newData.addedAgreements.push({
-                                agreementId: this.agreementId,
-                                title: this.title,
-                                htmlText: this.text
+                                agreementId: agreement.agreementId,
+                                title: agreement.title,
+                                htmlText: agreement.text
                             });
                             agreementVersions.push({
-                                agreementId: this.agreementId,
-                                providerId: this.providerId,
-                                agreementVersionId: this.id
+                                agreementId: agreement.agreementId,
+                                locationId: agreement.locationId,
+                                id: agreement.id
                             });
                         });
-                        $.each(data.agreementVersionsUpdated,function(){
+                        helper.each(data.agreementVersionsUpdated,function(agreement){
                             newData.updatedAgreements.push({
-                                agreementId: this.agreementId,
-                                title: this.title,
-                                htmlText: this.text
+                                agreementId: agreement.agreementId,
+                                title: agreement.title,
+                                htmlText: agreement.text
                             });
                             agreementVersions.push({
-                                agreementId: this.agreementId,
-                                providerId: this.providerId,
-                                agreementVersionId: this.id
+                                agreementId: agreement.agreementId,
+                                locationId: agreement.locationId,
+                                id: agreement.id
                             });
                         });
                         ".$FgApiLibrary -> varPrivate.".loginArguments.loginData.agreementVersions = agreementVersions;

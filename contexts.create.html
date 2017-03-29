@@ -61,7 +61,7 @@
 									eval('jsons.' + category + '.agreementIds=agreementIds');
 								}
 								var webkitConfigKey = $('#webkitConfigKey').val();
-								if (webkitConfigKey != '') {
+								if (webkitConfigKey !== '') {
 									eval('jsons.' + category + '.webkitConfigKey=webkitConfigKey');
 								}
 								break;
@@ -74,14 +74,14 @@
 						break;
 					case 'GET':
 						$('textarea:eq(0)').val('');
-						if ($('#'+category).val() != '') {
+						if ($('#'+category).val() !== '') {
 							$('#submit').trigger('click');
 						} else {
 							alert('Please enter your ' + category + ' and Go');
 						}
 						break;
 					case 'PUT':
-						if ($('textarea:eq(0)').val() != '' && $('#'+category).val() != '') {
+						if ($('textarea:eq(0)').val() !== '' && $('#'+category).val() !== '') {
 							//var jsonsTemp = jsons[category];
 							//delete jsonsTemp.id;
 							//$('textarea:eq(0)').val(JSON.stringify(jsonsTemp,null,4))
@@ -98,7 +98,7 @@
 			});
 
 			$(document).on('blur','textarea',function(){
-				if ($(this).val() == '') {
+				if ($(this).val() === '') {
 					$(this).removeClass('redBorder');
 					return;
 				}
@@ -487,7 +487,8 @@
     "vehicleSelectionConfig": {
         "selectionMethods": [
             "CATALOG",
-            "HSN_TSN"
+            "HSN_TSN",
+            "VIN"
         ],
         "hideIfOnlyOneChoice": [],
         "preSelected": {
@@ -516,13 +517,46 @@
         ]
     },
     "resultListConfig": {
-        "offerDisplayAttributes": [],
-        "locationDisplayAttributes": [],
-        "offerSortingOptions": [],
-        "locationSortingOptions": []
+        "locationDisplayAttributes": [
+            "DISTANCE",
+            "WORKSHOP_NAME",
+            "WORKSHOP_IMAGE",
+            "WORKSHOP_ADDRESS",
+            "WORKSHOP_PHONE",
+            "WORKSHOP_RATING",
+            "WORKSHOP_TYPE_NAME",
+            "MATCHING_BRAND_LOGO",
+            "TESTING_ORGANIZATIONS"
+        ],
+        "locationSortingOptions": [
+            "DISTANCE",
+            "WORKSHOP_TYPE"
+        ],
+        "offerDisplayAttributes": [
+            "DISTANCE",
+            "REVIEWS",
+            "PART_QUALITY",
+            "WORKSHOP_NAME",
+            "WORKSHOP_IMAGE",
+            "WORKSHOP_ADDRESS",
+            "WORKSHOP_TYPE_NAME",
+            "MATCHING_BRAND_LOGO",
+            "TESTING_ORGANIZATIONS",
+            "GUILD_MEMBERSHIP"
+        ],
+        "offerSortingOptions": [
+            "DISTANCE",
+            "PRICE",
+            "USER_RATING",
+            "RELEVANCE"
+        ]
+
     },
     "cssConfig": {
-        "theme": "fg-webkit"
+        "theme": "fg-webkit",
+        "hideSearchNavigation": true,
+        "hideLoginNavigation": true,
+        "hideRegisterNavigation": true
     },
     "monitoringStatus": "INACTIVE",
     "googleAnalyticsIds": []
@@ -543,7 +577,7 @@
     "agreementIds": [],
     "properties": null,
     "channelId": null,
-    "partQualityList": null,
+    "partQualityTypeIds": null,
     "urlConfigurations": [
         {
             "hosts": [
@@ -552,6 +586,7 @@
             "urls": []
         }
     ],
+    "safe": false,
     "countryCode": "DE"
 }
 </pre>
