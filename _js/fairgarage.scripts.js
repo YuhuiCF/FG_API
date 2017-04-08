@@ -82,7 +82,15 @@ function getParamVal(name,string){
 }
 
 function getUrlParam(name){
-    return getParamVal(name, window.location.search.substring(1));
+    var value = getParamVal(name, window.location.search.substring(1));
+
+    if (value.length > 1) {
+        return value;
+    } else if (value.length === 1) {
+        return value[0];
+    } else {
+        return false;
+    }
 }
 
 function testNext(obj){
