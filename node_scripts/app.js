@@ -1,5 +1,6 @@
 
 const fgApi = require('./fg-api-core');
+const fgAuth = require('../auth/fg');
 const newBids = require('./bids');
 const Promise = require('bluebird');
 
@@ -7,13 +8,13 @@ const locationIds = [1038374, 1059199, 1072961, 1323754, 1063988];
 
 
 
-fgApi.configure('https://api-qa.fairgarage.de');
+fgApi.configure(fgAuth.host);
 
 fgApi
   .login({
     requestBody: {
-      username: 'admin@fairgarage.de',
-      password: 'abc123'
+      username: fgAuth.username,
+      password: fgAuth.password
     }
   })
   .then(() => {
