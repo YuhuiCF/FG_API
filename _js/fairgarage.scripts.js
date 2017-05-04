@@ -147,7 +147,7 @@ function login(pobj){
 
     var urlContextKey = getUrlParam('contextKey');
     if (urlContextKey.length > 0) {
-        contextKey = urlContextKey[0];
+        contextKey = urlContextKey;
     }
     window.FG1 = new fg({
             contextKey: contextKey,
