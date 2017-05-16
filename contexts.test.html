@@ -23,8 +23,6 @@ localStorage.setItem('SMP_CONFIG', JSON.stringify(myConfig));
             //var contextKey = 'fNgmCOD2iGe9';// QA-webkit
             //var contextKey = 'eq2OSblwNE0Z';// QA-myd
             //var contextKey = 'GfZ2XM6x28hB';// QA-osa
-            //var contextKey = 'fNQz1eEjugef';// DEMO-webkit
-            //var contextKey = 'eQdZHYzQRKOc';// DEMO-myd
             //var contextKey = 'fOD1kkTgfja4';// LIVE-webkit
             //var contextKey = 'fODaLIDv05Lx';// LIVE-myd
             //var contextKey = 'lFkFVwHGdorM';// temp-webkit
@@ -213,11 +211,11 @@ localStorage.setItem('SMP_CONFIG', JSON.stringify(myConfig));
                 var contextKeyTemp;
                 if (env.indexOf('qa') >= 0) {// QA
                     if (myD) {
-                        contextKeyTemp = 'eq2OSblwNE0Z';
+                        contextKeyTemp = 'fODaLIDv05Lx';
                     } else if (osa) {
-                        contextKeyTemp = 'GfZ2XM6x28hB';
+                        contextKeyTemp = 'GfZ2XM6x28hB';// 404
                     } else {
-                        contextKeyTemp = 'fNgmCOD2iGe9';
+                        contextKeyTemp = 'fOD1kkTgfja4';
                     }
                 } else if (env.indexOf('dev') >= 0) {// DEV
                     contextKeyTemp = 'MgQQKkvrHqFG';

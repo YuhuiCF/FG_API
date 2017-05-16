@@ -6,6 +6,7 @@ let fgApiCoreModule = {
     deleteBid: deleteBid,
     getOffer: getOffer,
     getOfferDetail: getOfferDetail,
+    getRegionBySignature: getRegionBySignature,
     getSearch: getSearch,
     listBids: listBids,
     listBookedOfferHistories: listBookedOfferHistories,
@@ -100,6 +101,17 @@ function getOfferDetail(params) {
     const options = getMergedFgOptions({
         method: 'GET',
         uri: setUri('offer2/offers_brief/' + offerKey + '/detail')
+    });
+
+    return request(options);
+}
+
+function getRegionBySignature(params) {
+    const signature = params.pathParams.signature;
+
+    const options = getMergedFgOptions({
+        method: 'GET',
+        uri: setUri('regions/signature/' + signature)
     });
 
     return request(options);
