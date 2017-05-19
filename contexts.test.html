@@ -218,10 +218,16 @@ localStorage.setItem('SMP_CONFIG', JSON.stringify(myConfig));
                         contextKeyTemp = 'fOD1kkTgfja4';
                     }
                 } else if (env.indexOf('dev') >= 0) {// DEV
-                    contextKeyTemp = 'MgQQKkvrHqFG';
+                    if (osa) {
+                        contextKeyTemp = 'F8NPDVDopoyC';
+                    } else {
+                        contextKeyTemp = 'fOD1kkTgfja4';
+                    }
                 } else {// LIVE
                     if (myD) {
                         contextKeyTemp = 'fODaLIDv05Lx';
+                    } else if (osa) {
+                        contextKeyTemp = 'clDqiT0RfeHt';
                     } else {
                         contextKeyTemp = 'fOD1kkTgfja4';
                     }
