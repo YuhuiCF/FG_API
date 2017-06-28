@@ -14,6 +14,7 @@ let fgApiCoreModule = {
     listBookedOfferVersions: listBookedOfferVersions,
     listBriefOffers: listBriefOffers,
     listCalculations: listCalculations,
+    listLoggings: listLoggings,
     listOffers: listOffers,
     listOfferSearches: listOfferSearches,
     login: login,
@@ -194,6 +195,18 @@ function listCalculations(params) {
     const options = getMergedFgOptions({
         method: 'GET',
         uri: setUri('offer2/calculations'),
+        qs: requestParams
+    });
+
+    return request(options);
+}
+
+function listLoggings(params) {
+    const requestParams = params.requestParams;
+
+    const options = getMergedFgOptions({
+        method: 'GET',
+        uri: setUri('loggings'),
         qs: requestParams
     });
 
