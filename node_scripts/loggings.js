@@ -95,11 +95,33 @@ function listApiErrors({LIMIT, params}) {
           const data = logging.infos[0].restangularErrorResponse.data;
           if (data) {
             const errorObj = data[0];
-            errorObj.logginId = logging.id;
+            errorObj.loggingId = logging.id;
             const finalErrorObj = extractError(errorObj);
             // if (finalErrorObj.lastErrorCode === 'EXCEPTION_VEHICLE_IDENTIFICATION_BY_VIN') {
               log(finalErrorObj);
             // }
+          }
+        }, loggings);
+      }
+      log(loggings.length);
+    })
+  ;
+}
+
+function listBdkReferrerErrors({LIMIT, params}) {
+  params.requestParams.type = 'BDK_REFERRER';
+  log(params);
+
+  return fgApi
+    .listLoggings(params)
+    .then((loggings) => {
+      if (loggings.length === LIMIT) {
+        log('LIMIT reached');
+      } else {
+        R.forEach((logging) => {
+          const data = logging.infos[0];
+          if (data) {
+            log(data);
           }
         }, loggings);
       }
@@ -125,7 +147,7 @@ function listVinApiErrors({LIMIT, params}) {
 
           if (data) {
             const errorObj = data[0];
-            errorObj.logginId = logging.id;
+            errorObj.loggingId = logging.id;
             const finalErrorObj = extractError(errorObj);
             if (
               finalErrorObj.lastErrorCode === 'EXCEPTION_VEHICLE_IDENTIFICATION_BY_VIN' &&
@@ -159,13 +181,13 @@ function listVinApiErrors({LIMIT, params}) {
 
 function extractError(errorObj) {
   if (errorObj && errorObj.causedBy) {
-    const {logginId} = errorObj;
+    const {loggingId} = errorObj;
     const lastErrorCode = errorObj.errorCode || errorObj.lastErrorCode;
     const lastErrorMessage = errorObj.errorMessage || errorObj.lastErrorMessage;
     const newErrorObj = R.merge(errorObj.causedBy, {
       lastErrorCode,
       lastErrorMessage,
-      logginId,
+      loggingId,
     });
 
     return extractError(newErrorObj);
@@ -207,9 +229,12 @@ function listWindowJSError({LIMIT, params}) {
       if (loggings.length === LIMIT) {
         log('LIMIT reached');
       } else {
-        R.forEach((logging) => {
-          const info = logging.infos[0];
-          log(info);
+        R.forEach(({infos, stackTrace}) => {
+          const info = infos[0];
+          log({
+            info,
+            stackTrace,
+          });
         }, loggings);
       }
       log(loggings.length);
@@ -233,7 +258,7 @@ fgApi
       requestParams: {
         // contextKey,
         component: 'FRONT-END',
-        from: 1510128701088,// 1510303870457
+        from: 1520412701852,// 1520585312675
         offset: 0,
         limit: LIMIT,
         // type: 'ApiError',// type: 'WindowJSError',// type: 'WEBKIT_TEXT_USED',
@@ -283,10 +308,11 @@ fgApi
 
     // return listContextsWithTranslations({handledContextKeys, LIMIT, params, toBeHandledContextKeys});
 
-    // return listLoggingTypes({LIMIT, params});
+    return listLoggingTypes({LIMIT, params});
     // return listEquipmentsLength({LIMIT, params});
     // return listWindowJSError({LIMIT, params});
-    return listApiErrors({LIMIT, params});
+    // return listBdkReferrerErrors({LIMIT, params});
+    // return listApiErrors({LIMIT, params});
     // return listVinApiErrors({LIMIT, params});
   })
   .finally(() => {
