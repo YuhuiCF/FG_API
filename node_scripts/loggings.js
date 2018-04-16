@@ -62,6 +62,7 @@ function listContextsWithTranslations({handledContextKeys, LIMIT, params, toBeHa
 }
 
 function listLoggingTypes({LIMIT, params}) {
+  log(params);
   return fgApi
     .listLoggings(params)
     .then((loggings) => {
@@ -100,6 +101,8 @@ function listApiErrors({LIMIT, params}) {
             // if (finalErrorObj.lastErrorCode === 'EXCEPTION_VEHICLE_IDENTIFICATION_BY_VIN') {
               log(finalErrorObj);
             // }
+          } else {
+            log(logging.infos[0].restangularErrorResponse);
           }
         }, loggings);
       }
@@ -258,7 +261,7 @@ fgApi
       requestParams: {
         // contextKey,
         component: 'FRONT-END',
-        from: 1520412701852,// 1520585312675
+        from: 1523602184385,// 1523862074488
         offset: 0,
         limit: LIMIT,
         // type: 'ApiError',// type: 'WindowJSError',// type: 'WEBKIT_TEXT_USED',
@@ -308,12 +311,13 @@ fgApi
 
     // return listContextsWithTranslations({handledContextKeys, LIMIT, params, toBeHandledContextKeys});
 
-    return listLoggingTypes({LIMIT, params});
-    // return listEquipmentsLength({LIMIT, params});
+    // return listLoggingTypes({LIMIT, params});
     // return listWindowJSError({LIMIT, params});
     // return listBdkReferrerErrors({LIMIT, params});
     // return listApiErrors({LIMIT, params});
+
     // return listVinApiErrors({LIMIT, params});
+    // return listEquipmentsLength({LIMIT, params});
   })
   .finally(() => {
     return fgApi.logout();
